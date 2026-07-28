@@ -1,0 +1,427 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>卵巢癌治療線 checklist × 下一步推斷</title>
+<meta name="description" content="勾選已使用過的處方，並設定目前的鉑敏感度與生物標記狀態，工具即依疾病病程邏輯推斷「還有哪些治療可推進」、哪些已用盡、哪些需先補做檢測。以 high-grade serous 為主要情境。">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=Noto+Sans+TC:wght@400;500;700&family=Noto+Serif+TC:wght@600;900&display=swap" rel="stylesheet">
+<style>
+:root{
+  --ink:#0C1F26; --ink-soft:#4A6068; --paper:#EDF1F1; --surface:#FFFFFF;
+  --rule:#C9D5D6; --rule-soft:#E4EAEA;
+  --platinum:#0E6E75; --resist:#9A4B22; --marker:#5A4A86; --amber:#8A6D00;
+  --platinum-bg:#EAF3F3; --resist-bg:#F6EEE9; --marker-bg:#F6F5FA; --test-bg:#F6F2E4; --used-bg:#EEF1F1;
+  --shadow:0 1px 0 rgba(12,31,38,.06), 0 12px 30px -18px rgba(12,31,38,.35);
+  --serif:"Noto Serif TC",Georgia,serif;
+  --sans:"Noto Sans TC","Helvetica Neue",Arial,sans-serif;
+  --mono:"IBM Plex Mono",monospace;
+  --radius:4px;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{-webkit-text-size-adjust:100%}
+body{font-family:var(--sans);line-height:1.7;color:var(--ink);background:var(--paper);
+  font-size:16px;-webkit-font-smoothing:antialiased}
+.wrap{max-width:1120px;margin:0 auto;padding:0 24px 90px}
+
+/* masthead */
+.masthead{padding:52px 0 28px;border-bottom:2px solid var(--ink);margin-bottom:8px}
+.eyebrow{font-family:var(--mono);font-size:11px;letter-spacing:.22em;text-transform:uppercase;
+  color:var(--platinum);margin:0 0 16px}
+.masthead h1{font-family:var(--serif);font-weight:900;font-size:clamp(28px,5vw,48px);
+  line-height:1.14;letter-spacing:-.01em;margin:0 0 12px;text-wrap:balance}
+.masthead .sub{max-width:66ch;color:var(--ink-soft);font-size:15px;margin:0 0 22px}
+.meta{display:flex;flex-wrap:wrap;gap:10px 26px;font-family:var(--mono);font-size:12px;color:var(--ink-soft)}
+.meta b{color:var(--ink);font-weight:500}
+.disclaimer{margin:20px 0 0;padding:13px 18px;border-left:3px solid var(--resist);
+  background:var(--resist-bg);border-radius:0 3px 3px 0;font-size:13px;color:var(--ink-soft)}
+.disclaimer b{color:var(--resist)}
+
+/* generic section */
+.section{margin:34px 0}
+.section > .stepnum{font-family:var(--mono);font-size:12px;color:var(--platinum);letter-spacing:.06em;font-weight:600;display:block;margin-bottom:2px}
+.section > h2{font-family:var(--serif);font-weight:600;font-size:22px;margin:0 0 4px;line-height:1.3}
+.section > .lede{color:var(--ink-soft);margin:0 0 18px;font-size:13.5px}
+
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:26px;align-items:start}
+@media (max-width:940px){.grid2{grid-template-columns:1fr}}
+
+/* card */
+.card{background:var(--surface);border:1px solid var(--rule);border-radius:var(--radius);
+  box-shadow:var(--shadow);padding:20px 22px;margin-bottom:18px}
+.card h3{font-size:15px;font-weight:700;margin:0 0 12px}
+
+/* context controls */
+.ctx-row{margin-bottom:16px}
+.ctx-row:last-child{margin-bottom:0}
+.ctx-row label.k{display:block;font-family:var(--mono);font-size:10.5px;letter-spacing:.11em;
+  text-transform:uppercase;color:var(--ink-soft);margin-bottom:7px}
+.ctx-row label.k .hint{text-transform:none;letter-spacing:0;font-weight:400}
+.seg{display:inline-flex;flex-wrap:wrap;gap:6px;margin-bottom:8px}
+.seg:last-child{margin-bottom:0}
+.seg button{font-family:var(--sans);font-size:13px;cursor:pointer;border:1px solid var(--rule);
+  background:#F7FAFA;color:var(--ink-soft);padding:6px 13px;border-radius:2px;transition:all .12s}
+.seg button:hover{border-color:var(--ink-soft)}
+.seg button[aria-pressed="true"]{background:var(--ink);border-color:var(--ink);color:#fff;font-weight:500}
+.seg button[aria-pressed="true"][data-tone="platinum"]{background:var(--platinum);border-color:var(--platinum)}
+.seg button[aria-pressed="true"][data-tone="resist"]{background:var(--resist);border-color:var(--resist)}
+.seg button[aria-pressed="true"][data-tone="marker"]{background:var(--marker);border-color:var(--marker)}
+
+/* checklist (used) */
+.catgroup{margin-bottom:20px}
+.catgroup > h3{font-family:var(--mono);font-size:11px;letter-spacing:.1em;text-transform:uppercase;
+  color:var(--ink);font-weight:600;margin:0 0 8px;padding-bottom:6px;border-bottom:1px solid var(--rule)}
+.catgroup > h3 .badge{float:right;color:var(--ink-soft);font-weight:400}
+.item{display:flex;gap:11px;align-items:flex-start;padding:8px 10px;border-radius:3px;cursor:pointer;transition:background .1s}
+.item:hover{background:#F2F6F6}
+.item input{margin-top:4px;width:16px;height:16px;accent-color:var(--platinum);cursor:pointer;flex:none}
+.item .n{font-weight:600;font-size:14px}
+.item .n small{display:block;font-weight:400;font-size:12px;color:var(--ink-soft);margin-top:1px;font-family:var(--mono)}
+.item.checked .n{color:#7A8A8C}
+.item .tr{margin-left:auto;font-family:var(--mono);font-size:10.5px;color:var(--marker);white-space:nowrap;padding-top:2px;flex:none}
+
+/* sequencer output */
+.out{position:sticky;top:18px}
+@media (max-width:940px){.out{position:static}}
+.outcard{background:var(--surface);border:1px solid var(--rule);border-radius:var(--radius);box-shadow:var(--shadow);overflow:hidden}
+.outcard .oh{padding:16px 20px;background:var(--ink);color:#fff}
+.oh .state{font-family:var(--mono);font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:#8FB4B8;margin:0 0 6px}
+.oh h3{margin:0;font-family:var(--serif);font-weight:600;font-size:20px;color:#fff}
+.oh .stat{margin:6px 0 0;font-size:12.5px;color:#A9C3C6}
+.obody{padding:6px 20px 18px}
+.obucket{margin-top:16px}
+.obucket .bh{font-family:var(--mono);font-size:11px;letter-spacing:.08em;text-transform:uppercase;font-weight:600;margin:0 0 8px;display:flex;align-items:center;gap:8px}
+.dot{width:9px;height:9px;border-radius:50%;flex:none}
+.b-go .dot{background:var(--platinum)} .b-go .bh{color:var(--platinum)}
+.b-test .dot{background:var(--amber)} .b-test .bh{color:var(--amber)}
+.b-used .dot{background:#7A8A8C} .b-used .bh{color:#7A8A8C}
+.b-no .dot{background:var(--resist)} .b-no .bh{color:var(--resist)}
+.orow{padding:9px 12px;border-radius:3px;margin-bottom:7px;font-size:13.5px;border:1px solid transparent}
+.b-go .orow{background:var(--platinum-bg);border-color:#CFE4E4}
+.b-test .orow{background:var(--test-bg);border-color:#E9E1C2}
+.b-used .orow{background:var(--used-bg)}
+.b-no .orow{background:var(--resist-bg)}
+.orow .rn{font-weight:700}
+.orow .rn .star{color:var(--platinum);margin-left:5px;font-size:12px}
+.orow .rd{font-family:var(--mono);font-size:11.5px;color:var(--ink-soft);margin-top:1px}
+.orow .rr{font-size:12.5px;color:var(--ink-soft);margin-top:3px}
+.emptyhint{font-size:13px;color:var(--ink-soft);padding:4px 0}
+details.nogroup{margin-top:16px}
+details.nogroup summary{cursor:pointer;font-family:var(--mono);font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--resist);font-weight:600;outline:none}
+
+/* selector tiers + biomarker cards */
+.tier{background:#F7FAFA;border:1px solid var(--rule);border-radius:var(--radius);padding:20px;margin-bottom:20px}
+.tier > .tt{font-family:var(--serif);font-size:17px;font-weight:600;color:var(--platinum);margin:0 0 14px;display:flex;align-items:center;gap:8px}
+.tcard{background:#F1F5F5;border:1px solid var(--rule);border-radius:3px;padding:16px;margin-bottom:14px}
+.tcard > h4{font-family:var(--mono);font-size:12px;letter-spacing:.05em;font-weight:600;margin:0 0 10px;color:var(--ink)}
+.rx{background:var(--surface);border:1px solid var(--rule);border-radius:3px;padding:16px;margin-bottom:14px;border-left:4px solid var(--marker);transition:opacity .15s}
+.rx.p-high{border-left-color:var(--resist);background:var(--resist-bg)}
+.rx.p-med{border-left-color:var(--marker);background:var(--marker-bg)}
+.rx.p-low{border-left-color:var(--platinum);background:var(--platinum-bg)}
+.rx .rh{display:flex;align-items:flex-start;justify-content:space-between;gap:12px}
+.rx .rh .rname{font-size:15.5px;font-weight:700;color:var(--ink)}
+.rx .badge2{font-family:var(--mono);padding:4px 10px;border-radius:2px;font-size:11px;font-weight:600;letter-spacing:.03em;color:#fff;white-space:nowrap;flex:none}
+.bg-high{background:var(--resist)} .bg-med{background:var(--marker)} .bg-low{background:var(--platinum)} .bg-info{background:var(--platinum)}
+.rx .rgrid{display:grid;grid-template-columns:auto 1fr;gap:6px 12px;margin-top:8px;font-size:13.5px;color:var(--ink-soft)}
+.rx .rgrid .lbl{font-weight:600;color:var(--ink)}
+.tier .tnote{font-size:13px;color:var(--ink-soft);margin-bottom:12px}
+
+/* callouts / static */
+.callout{border-left:3px solid var(--marker);background:var(--marker-bg);padding:14px 18px;margin:0 0 16px;font-size:13.5px;border-radius:0 3px 3px 0;color:var(--ink-soft)}
+.callout.warn{border-left-color:var(--resist);background:var(--resist-bg)}
+.callout.info{border-left-color:var(--platinum);background:var(--platinum-bg)}
+.callout h4{font-family:var(--serif);margin:0 0 8px;font-size:15px;font-weight:600;color:var(--marker)}
+.callout.warn h4{color:var(--resist)} .callout.info h4{color:var(--platinum)}
+.callout ul{padding-left:20px;margin:0}
+.callout li{margin-bottom:5px}
+ul.tight{margin:0;padding-left:1.15em} ul.tight li{margin-bottom:6px}
+
+/* form utilities (static capture blocks) */
+.fgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:14px}
+.fld{display:flex;flex-direction:column;gap:5px}
+.fld > span{font-family:var(--mono);font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-soft)}
+.fld input,.fld select{font:inherit;font-size:14px;padding:9px 12px;border:1px solid var(--rule);border-radius:3px;background:#fdfdfb;color:var(--ink)}
+.chips{display:flex;flex-wrap:wrap;gap:8px}
+.chips label{display:flex;align-items:center;gap:7px;background:#F7FAFA;border:1px solid var(--rule);border-radius:2px;padding:7px 12px;font-size:13.5px;cursor:pointer}
+.chips input{accent-color:var(--platinum)}
+
+/* flowchart */
+.flow{background:var(--surface);border:1px solid var(--rule);border-radius:var(--radius);padding:20px;overflow-x:auto}
+.flow .step{background:#F7FAFA;border:1.5px solid var(--platinum);border-radius:3px;padding:12px 16px;text-align:center;font-weight:600;font-size:14px;margin-bottom:12px}
+.flow .arrow{text-align:center;font-size:18px;color:var(--platinum);margin:-6px 0 6px;font-weight:bold}
+.flow .branch{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px;margin-bottom:12px}
+.flow .node{background:var(--surface);border:1px solid var(--rule);border-top:4px solid var(--marker);border-radius:3px;padding:12px;font-size:13px;box-shadow:var(--shadow)}
+.flow .node strong{display:block;margin-bottom:4px;color:var(--platinum)}
+
+/* actions + footer */
+.actions{display:flex;gap:10px;margin-top:18px;flex-wrap:wrap}
+.btn{font-family:var(--mono);font-size:12px;letter-spacing:.06em;cursor:pointer;border:1px solid var(--ink);background:var(--surface);color:var(--ink);padding:9px 16px;border-radius:2px}
+.btn:hover{background:var(--ink);color:#fff}
+.btn.primary{background:var(--ink);color:#fff}
+.btn.primary:hover{background:var(--platinum);border-color:var(--platinum)}
+.foot{margin-top:56px;padding-top:24px;border-top:2px solid var(--ink);font-size:12.5px;color:var(--ink-soft)}
+.foot h4{margin:0 0 10px;font-size:12px;letter-spacing:.14em;text-transform:uppercase;font-family:var(--mono);color:var(--ink);font-weight:500}
+.notecard{margin-top:16px;border-left:3px solid var(--marker);background:var(--marker-bg);padding:11px 15px;font-size:12.5px;border-radius:0 3px 3px 0;color:var(--ink-soft)}
+.notecard b{color:var(--marker)}
+
+@media (max-width:640px){.wrap{padding:0 16px 64px}}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+@media print{
+  body{background:#fff;font-size:11px}
+  .actions,.no-print{display:none!important}
+  .out{position:static}
+  .card,.outcard,.rx,.tcard,.flow{box-shadow:none;break-inside:avoid}
+  .rx,.orow{-webkit-print-color-adjust:exact;print-color-adjust:exact}
+  .wrap{padding:0}
+}
+
+</style>
+</head>
+<body>
+<div class="wrap" id="app"></div>
+<script>var ONCO_DATA = {"id": "ovarian", "archetype": "sequencer", "title": "卵巢癌治療線 checklist × 下一步推斷", "eyebrow": "Epithelial ovarian / fallopian tube / primary peritoneal · treatment-line planner", "subtitle": "勾選已使用過的處方，並設定目前的鉑敏感度與生物標記狀態，工具即依疾病病程邏輯推斷「還有哪些治療可推進」、哪些已用盡、哪些需先補做檢測。以 high-grade serous 為主要情境。", "guideline": "NCCN v4.2026（2026-04-10）/ ESMO", "updated": "2026-07-28", "disclaimer": "<b>非處方指令。</b>本工具為臨床決策的邏輯輔助速查，推斷規則為簡化啟發式，非窮盡；實際治療須由主治醫師依最新指引、當地藥證/健保給付、器官功能、PS 與病人偏好個別判斷。生物標記與 PFI 由使用者輸入，工具不驗證其正確性。", "primaryKey": "stage", "stageNames": {"1L": "前線治療中 / 尚未復發", "sensitive": "鉑敏感復發 (PFI ≥6mo)", "resistant": "鉑抗性復發 (PFI <6mo)"}, "emptyGo": {"1L": "此病況下暫無新藥物線（多為手術/化療進行中）。"}, "context": [{"key": "stage", "label": "疾病病程 / 鉑敏感度", "hint": "（PFI = 距最後一劑鉑類至進展）", "default": "1L", "options": [{"v": "1L", "label": "前線治療中 / 尚未復發"}, {"v": "sensitive", "label": "鉑敏感復發 · PFI ≥6mo", "tone": "platinum"}, {"v": "resistant", "label": "鉑抗性復發 · PFI <6mo", "tone": "resist"}]}, {"key": "brca", "label": "BRCA1/2（germline + somatic）", "default": "unk", "options": [{"v": "m", "label": "突變 BRCAm"}, {"v": "wt", "label": "野生型"}, {"v": "unk", "label": "未檢測"}]}, {"key": "hrd", "label": "HRD（同源重組缺陷）", "default": "unk", "options": [{"v": "pos", "label": "HRD+"}, {"v": "neg", "label": "HRP / 陰性"}, {"v": "unk", "label": "未檢測"}]}, {"key": "fra", "label": "FRα 葉酸受體α（IHC）", "default": "unk", "options": [{"v": "high", "label": "高表現 ≥75% 2+"}, {"v": "low", "label": "低 / 陰性"}, {"v": "unk", "label": "未檢測"}]}, {"key": "her2", "label": "HER2（IHC）", "default": "unk", "options": [{"v": "3", "label": "HER2 IHC 3+"}, {"v": "2", "label": "HER2 2+"}, {"v": "neg", "label": "<2+"}, {"v": "unk", "label": "未檢測"}]}, {"key": "mmr", "label": "dMMR/MSI-H · TMB", "default": "unk", "options": [{"v": "pos", "label": "dMMR/MSI-H 或 TMB-high"}, {"v": "neg", "label": "否"}, {"v": "unk", "label": "未檢測"}]}, {"key": "lgsoc", "label": "組織型 · KRAS", "default": "neg", "options": [{"v": "pos", "label": "LGSOC 且 KRAS 突變"}, {"v": "neg", "label": "否 / 非 LGSOC"}]}, {"key": "braf", "label": "泛腫瘤 NGS：BRAF", "hint": "（罕見；預設未檢出）", "default": "neg", "options": [{"v": "pos", "label": "BRAF V600E"}, {"v": "neg", "label": "未檢出"}]}, {"key": "ntrk", "label": "泛腫瘤 NGS：NTRK", "default": "neg", "options": [{"v": "pos", "label": "NTRK 融合"}, {"v": "neg", "label": "未檢出"}]}, {"key": "ret", "label": "泛腫瘤 NGS：RET", "default": "neg", "options": [{"v": "pos", "label": "RET 融合"}, {"v": "neg", "label": "未檢出"}]}], "gateLabels": {"brca": "BRCAm", "hrd": "HRD", "fra": "FRα 高表現", "her2": "HER2 IHC 3+/2+", "mmr": "dMMR/MSI-H", "lgsoc": "KRAS 突變 LGSOC", "braf": "BRAF V600E", "ntrk": "NTRK 融合", "ret": "RET 融合"}, "groups": [{"id": "surgery", "title": "減積手術", "kind": "history", "noReason": "手術史（非藥物線）"}, {"id": "firstline", "title": "前線化療骨幹", "activeStages": ["1L"], "goReason": "前線含鉑雙藥骨幹", "ineligible": "屬前線骨幹"}, {"id": "firstmaint", "title": "前線維持", "activeStages": ["1L"], "goReason": "化療達 CR/PR 後啟動維持", "ineligible": "屬前線維持", "exhaust": "已用過 PARP 抑制劑 → 其他 PARPi 維持視為用盡（rechallenge 效益有限）"}, {"id": "senschemo", "title": "鉑敏感復發 · 含鉑雙藥", "activeStages": ["sensitive"], "goReason": "鉑敏感 → 回到含鉑雙藥；並評估二次減積", "ineligible": "需鉑敏感復發"}, {"id": "sensmaint", "title": "鉑敏感復發 · 反應後 PARPi 維持", "activeStages": ["sensitive"], "goReason": "含鉑再治療反應後維持（PARPi-naïve）", "ineligible": "需鉑敏感復發後反應", "exhaust": "已用過 PARP 抑制劑 → 視為用盡"}, {"id": "resistchemo", "title": "鉑抗性 · 單藥非鉑化療", "activeStages": ["resistant"], "goReason": "鉑抗性 → 序貫單藥；避免合併細胞毒藥", "ineligible": "需鉑抗性復發"}, {"id": "targeted", "title": "生物標記導向 / ADC / 標靶", "activeStages": ["sensitive", "resistant"], "goReason": "生物標記匹配之導向治療", "ineligible": "復發後才評估", "exhaust": "已用過 PARP 抑制劑 → 視為用盡"}], "items": [{"id": "pds", "group": "surgery", "name": "Primary debulking (PDS)", "dose": "目標 R0，術後接 6 cycles 化療"}, {"id": "ids", "group": "surgery", "name": "Neoadjuvant → IDS", "dose": "先化療 3–4 cycles → 手術 → 完成剩餘"}, {"id": "tc", "group": "firstline", "name": "TC 標準", "dose": "Paclitaxel 175 + Carboplatin AUC 5–6, q3w ×6"}, {"id": "ddtc", "group": "firstline", "name": "Dose-dense TC", "dose": "Pac 80 D1/8/15 + Carbo AUC 6 D1, q3w", "trial": "JGOG3016"}, {"id": "wtc", "group": "firstline", "name": "Weekly TC", "dose": "Pac 60 + Carbo AUC 2, D1/8/15", "trial": "MITO-7"}, {"id": "cpld", "group": "firstline", "name": "Carbo + PLD", "dose": "PLD 30 + Carbo AUC 5, q4w"}, {"id": "cdoc", "group": "firstline", "name": "Carbo + Docetaxel", "dose": "Docetaxel 60–75 + Carbo AUC 5–6, q3w"}, {"id": "bev1", "group": "firstline", "name": "+ Bevacizumab (1L)", "dose": "15 mg/kg q3w（GOG-218）；ICON7 為 7.5 mg/kg。與化療併用後續維持", "trial": "GOG-218 / ICON7"}, {"id": "ola1", "group": "firstmaint", "name": "Olaparib 維持", "dose": "300 mg BID × 2 年", "trial": "SOLO-1", "family": "parp", "gate": {"key": "brca", "need": "m"}}, {"id": "olabev", "group": "firstmaint", "name": "Olaparib + Bev 維持", "dose": "Ola 300 BID + Bev 15 q3w", "trial": "PAOLA-1", "family": "parp", "gate": {"anyOf": [{"key": "brca", "need": "m"}, {"key": "hrd", "need": "pos"}], "label": "BRCAm 或 HRD+"}}, {"id": "nira1", "group": "firstmaint", "name": "Niraparib 維持", "dose": "200/300 mg QD（個體化）", "trial": "PRIMA", "family": "parp"}, {"id": "bevm", "group": "firstmaint", "name": "Bevacizumab 單藥維持 / 觀察", "dose": "15 mg/kg q3w"}, {"id": "scp", "group": "senschemo", "name": "Carbo + Paclitaxel (re-challenge)", "dose": "同前線劑量"}, {"id": "scg", "group": "senschemo", "name": "Carbo + Gemcitabine ± Bev", "dose": "Carbo AUC 4 + Gem 1000 D1/8 ± Bev", "trial": "OCEANS"}, {"id": "scpld", "group": "senschemo", "name": "Carbo + PLD", "dose": "Carbo AUC 5 + PLD 30, q4w", "trial": "CALYPSO"}, {"id": "cisgem", "group": "senschemo", "name": "Cisplatin + Gemcitabine", "dose": "含鉑替代雙藥"}, {"id": "ola2", "group": "sensmaint", "name": "Olaparib 維持", "dose": "300 mg BID", "trial": "SOLO-2", "family": "parp", "gate": {"key": "brca", "need": "m"}}, {"id": "nira2", "group": "sensmaint", "name": "Niraparib 維持", "dose": "200/300 mg QD", "trial": "NOVA", "family": "parp", "gate": {"key": "brca", "need": "m"}}, {"id": "ruca", "group": "sensmaint", "name": "Rucaparib 維持", "dose": "600 mg BID", "trial": "ARIEL3", "family": "parp", "gate": {"key": "brca", "need": "m"}}, {"id": "wpac", "group": "resistchemo", "name": "Weekly Paclitaxel", "dose": "80 mg/m² 每週（D1,8,15,22）q4w", "trial": "AURELIA"}, {"id": "rpld", "group": "resistchemo", "name": "PLD", "dose": "40 mg/m², q4w"}, {"id": "topo", "group": "resistchemo", "name": "Topotecan", "dose": "4 D1/8/15 q4w 或 1.25 D1–5 q3w"}, {"id": "gem", "group": "resistchemo", "name": "Gemcitabine", "dose": "1000 mg/m² D1/8/15, q4w"}, {"id": "relac", "group": "resistchemo", "name": "nab-Paclitaxel + Relacorilant", "dose": "Relacorilant 150 mg PO（nab-pac 前/當日/後）+ nab-Paclitaxel 80 mg/m² D1,8,15 q28d（2025 FDA 核准，需既往含 bev）", "trial": "ROSELLA"}, {"id": "bevr", "group": "resistchemo", "name": "+ Bevacizumab", "dose": "10 q2w 或 15 q3w，加於單藥", "trial": "AURELIA"}, {"id": "mirv", "group": "targeted", "name": "Mirvetuximab soravtansine", "dose": "6 mg/kg (AIBW) IV q3w；需眼科監測。鉑抗性列為高證據首選；加 bev 之 FRα 門檻：≥50%（敏感）/≥25%（抗性）", "trial": "MIRASOL / PICCOLO", "gate": {"key": "fra", "need": "high"}}, {"id": "tdxd", "group": "targeted", "name": "Trastuzumab deruxtecan", "dose": "5.4 mg/kg q3w；監測 ILD。HER2 3+（或 2+，證據較低）", "trial": "DESTINY / HER2", "gate": {"key": "her2", "need": ["3", "2"]}}, {"id": "pembro", "group": "targeted", "name": "Pembrolizumab", "dose": "200 q3w / 400 q6w（tumor-agnostic）", "trial": "dMMR/MSI-H·TMB-H", "gate": {"key": "mmr", "need": "pos"}}, {"id": "dostar", "group": "targeted", "name": "Dostarlimab", "dose": "500 mg IV q3w ×4 → 1000 mg q6w（tumor-agnostic dMMR/MSI-H）", "trial": "dMMR/MSI-H", "gate": {"key": "mmr", "need": "pos"}}, {"id": "avuto", "group": "targeted", "name": "Avutometinib + Defactinib", "dose": "Avutometinib 3.2 mg PO 每週2次 + Defactinib 200 mg PO BID；3 週用/1 週停（4 週週期）", "trial": "RAMP-201 (LGSOC)", "gate": {"key": "lgsoc", "need": "pos"}}, {"id": "dabtram", "group": "targeted", "name": "Dabrafenib + Trametinib", "dose": "口服 BRAF/MEK 抑制（tumor-agnostic）", "trial": "BRAF V600E", "gate": {"key": "braf", "need": "pos"}}, {"id": "ntrki", "group": "targeted", "name": "NTRK 抑制劑", "dose": "Larotrectinib / Entrectinib / Repotrectinib", "trial": "NTRK 融合", "gate": {"key": "ntrk", "need": "pos"}}, {"id": "selper", "group": "targeted", "name": "Selpercatinib", "dose": "口服 RET 抑制（tumor-agnostic）", "trial": "RET 融合", "gate": {"key": "ret", "need": "pos"}}, {"id": "parptx", "group": "targeted", "name": "PARPi 單藥治療", "dose": "Olaparib 300 BID / Rucaparib 600 BID", "trial": "BRCAm ≥2–3L", "family": "parp", "gate": {"key": "brca", "need": "m"}}], "stageNotes": {"1L": "<b>檢測時機</b>：所有晚期病人於前線即應完成 BRCA1/2（germline+somatic）與 HRD，以決定維持策略。", "sensitive": "<b>提醒</b>：鉑敏感復發同時應評估<b>二次減積手術</b>（DESKTOP III / AGO score 陽性者獲益最大）。", "resistant": "<b>治療目標轉向</b>：以症狀控制與生活品質為核心，每 2–3 週期評估效益，無反應者及早換線或轉安寧共照。"}, "sections": [{"type": "sequencer", "contextTitle": "目前病況", "contextLede": "這組設定是推斷的主開關 — 同一組已用處方，在不同鉑敏感度/標記下的下一步完全不同。", "checklistTitle": "已使用過的處方", "checklistLede": "勾選病人曾接受的治療（含手術）。工具會把已勾選者標為「已使用」，並排除其後續路徑。", "outputTitle": "還可以推進什麼？", "outputLede": "依左側設定即時計算。★ = 與生物標記匹配的高價值選項。", "outputHead": "下一步治療選項"}], "foot": "<h4>推斷邏輯與限制</h4><ul class=\"tight\"><li><b>鉑敏感度是主軸</b>：PFI ≥6mo 回到含鉑雙藥並評估二次減積（AGO/DESKTOP III）；<6mo 改序貫單藥非鉑化療 ± bevacizumab，並依標記考慮 ADC/標靶。</li><li><b>PARPi 一次為原則</b>：任一 PARP 抑制劑用過後即把其他 PARPi 維持標為「已用盡」。NCCN v4.2026 起，復發後 PARPi 維持（含 niraparib、rucaparib）限用於 BRCAm，且須先前未於 PARPi 上進展。</li><li><b>生物標記導向</b>：mirvetuximab 需 FRα 高表現；T-DXd 需 HER2 IHC 3+/2+；pembrolizumab / dostarlimab 需 dMMR/MSI-H；avutometinib+defactinib 用於 KRAS 突變 LGSOC；BRAF/NTRK/RET 對應泛腫瘤標靶。標記「未檢測」時提示補做而非直接排除。</li><li>劑量為索引層級之常用值；使用前務必以最新 NCCN v4.2026／ESMO 指引與藥品仿單核對。</li></ul><div class=\"notecard\"><b>查證出處（2026-07-28）</b>：分流與劑量對照 NCCN Ovarian v4.2026（OV-D）；數字回溯原始試驗與 FDA 仿單 — GOG-218/ICON7、SOLO-1/PAOLA-1/PRIMA、OCEANS/CALYPSO、AURELIA、ROSELLA、MIRASOL、DESTINY、RAMP-201、GARNET。教學用途；與 NCCN 無隸屬或背書關係。</div>"};</script>
+<script>
+/* onco-decision-kit engine — data-driven, two archetypes:
+   - "sequencer": line-of-therapy planner; items bucketed go/test/used/ineligible
+   - "selector" : biomarker-driven highlight of treatment tiers
+   The page is an ordered list of DATA.sections. Content lives in the data pack. */
+window.ONCO = (function(){
+  "use strict";
+  var DATA, ctx, used, root;
+
+  function esc(s){return String(s).replace(/[&<>"]/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c];});}
+  function h(tag,cls,html){var e=document.createElement(tag); if(cls)e.className=cls; if(html!=null)e.innerHTML=html; return e;}
+  function group(id){return (DATA.groups||[]).filter(function(g){return g.id===id;})[0]||{};}
+  function itemById(id){return (DATA.items||[]).filter(function(i){return i.id===id;})[0];}
+  var UNK = 'unk';
+
+  /* ---------- shared gate/eligibility ---------- */
+  function gate1(g){
+    var v=ctx[g.key], need=g.need;
+    var match=Array.isArray(need)?need.indexOf(v)>=0:v===need;
+    if(match) return 'yes';
+    if(v===UNK) return 'unk';
+    return 'no';
+  }
+  function gateOK(item){
+    var g=item.gate; if(!g) return 'na';
+    if(g.anyOf){ var yes=false,unk=false;
+      g.anyOf.forEach(function(s){var r=gate1(s); if(r==='yes')yes=true; else if(r==='unk')unk=true;});
+      return yes?'yes':(unk?'unk':'no'); }
+    return gate1(g);
+  }
+  function gateLabel(item){var g=item.gate; return (g&&g.label)||(g&&DATA.gateLabels&&DATA.gateLabels[g.key])||'標記';}
+  function stageEligible(item){
+    var g=group(item.group), st=g.activeStages;
+    if(!st||st.indexOf('*')>=0) return true;
+    return st.indexOf(ctx[DATA.primaryKey])>=0;
+  }
+  function anyFamilyUsed(fam){return (DATA.items||[]).some(function(i){return i.family===fam&&used.has(i.id);});}
+
+  function evaluate(item){
+    if(used.has(item.id)) return {bucket:'used',reason:'已使用'};
+    var g=group(item.group);
+    if(g.kind==='history') return {bucket:'no',reason:g.noReason||'（病史，非藥物線）'};
+    if(!stageEligible(item)) return {bucket:'no',reason:'現階段不適用'+(g.ineligible?('（'+g.ineligible+'）'):'')};
+    var gk=gateOK(item);
+    if(gk==='no') return {bucket:'no',reason:'生物標記不符（'+gateLabel(item)+'）'};
+    if(gk==='unk') return {bucket:'test',reason:'需先檢測 '+gateLabel(item)+' 才能評估'};
+    if(item.family&&anyFamilyUsed(item.family)) return {bucket:'used',reason:g.exhaust||'同類藥物已用過 → 視為用盡'};
+    return {bucket:'go',reason:g.goReason||'符合現況',star:(gk==='yes'&&!!item.gate)};
+  }
+  // expose for tests
+  function evalAll(data, state){ if(data) DATA=data; ctx=state.ctx; used=new Set(state.used||[]);
+    var b={go:[],test:[],used:[],no:[]}; (DATA.items||[]).forEach(function(i){b[evaluate(i).bucket].push(i.id);}); return b; }
+
+  /* ---------- context controls (shared) ---------- */
+  function renderCtxRows(container, keys){
+    (DATA.context||[]).forEach(function(c){
+      if(keys && keys.indexOf(c.key)<0) return;
+      var row=h('div','ctx-row');
+      row.innerHTML='<label class="k">'+esc(c.label)+(c.hint?' <span class="hint">'+esc(c.hint)+'</span>':'')+'</label>';
+      var seg=h('div','seg'); seg.setAttribute('data-key',c.key);
+      c.options.forEach(function(o){
+        var b=h('button'); b.textContent=o.label; b.setAttribute('data-v',o.v);
+        if(o.tone) b.setAttribute('data-tone',o.tone);
+        b.setAttribute('aria-pressed', ctx[c.key]===o.v?'true':'false');
+        b.addEventListener('click',function(){
+          ctx[c.key]=o.v;
+          seg.querySelectorAll('button').forEach(function(x){x.setAttribute('aria-pressed',x===b?'true':'false');});
+          recompute();
+        });
+        seg.appendChild(b);
+      });
+      row.appendChild(seg); container.appendChild(row);
+    });
+  }
+
+  /* ---------- sequencer ---------- */
+  var seqRefs={};
+  function renderSequencer(sec){
+    var grid=h('div','grid2');
+    var left=h('div'), right=h('div');
+    // context
+    var s1=h('div','section');
+    s1.innerHTML='<span class="stepnum">STEP 1</span><h2>'+esc(sec.contextTitle||'目前病況')+'</h2><p class="lede">'+esc(sec.contextLede||'')+'</p>';
+    var card=h('div','card'); renderCtxRows(card,null); s1.appendChild(card); left.appendChild(s1);
+    // checklist
+    var s2=h('div','section');
+    s2.innerHTML='<span class="stepnum">STEP 2</span><h2>'+esc(sec.checklistTitle||'已使用過的處方')+'</h2><p class="lede">'+esc(sec.checklistLede||'')+'</p>';
+    var cl=h('div'); cl.id='checklist'; s2.appendChild(cl);
+    var acts=h('div','actions no-print');
+    acts.innerHTML='<button class="btn" id="btnReset">清除全部</button><button class="btn primary" onclick="window.print()">列印 / 存 PDF</button>';
+    s2.appendChild(acts); left.appendChild(s2);
+    // output
+    var s3=h('div','section out');
+    s3.innerHTML='<span class="stepnum">推斷結果</span><h2>'+esc(sec.outputTitle||'還可以推進什麼？')+'</h2><p class="lede">'+esc(sec.outputLede||'')+'</p>'+
+      '<div class="outcard"><div class="oh"><p class="state" id="ohState"></p><h3 id="ohTitle">'+esc(sec.outputHead||'下一步治療選項')+'</h3><p class="stat" id="ohStat"></p></div><div class="obody" id="obody"></div></div>';
+    right.appendChild(s3);
+    grid.appendChild(left); grid.appendChild(right); root.appendChild(grid);
+    buildChecklist();
+    document.getElementById('btnReset').addEventListener('click',function(){used.clear();buildChecklist();recompute();});
+  }
+  function buildChecklist(){
+    var cl=document.getElementById('checklist'); cl.innerHTML='';
+    (DATA.groups||[]).forEach(function(g){
+      var items=(DATA.items||[]).filter(function(i){return i.group===g.id;});
+      if(!items.length) return;
+      var box=h('div','catgroup');
+      box.innerHTML='<h3>'+esc(g.title)+'<span class="badge" data-badge="'+g.id+'"></span></h3>';
+      items.forEach(function(c){
+        var lab=h('label','item'+(used.has(c.id)?' checked':''));
+        lab.innerHTML='<input type="checkbox" data-id="'+c.id+'"'+(used.has(c.id)?' checked':'')+'>'+
+          '<span class="n">'+esc(c.name)+(c.dose?'<small>'+esc(c.dose)+'</small>':'')+'</span>'+
+          (c.trial?'<span class="tr">'+esc(c.trial)+'</span>':'');
+        box.appendChild(lab);
+      });
+      cl.appendChild(box);
+    });
+    cl.querySelectorAll('input[type=checkbox]').forEach(function(cb){
+      cb.addEventListener('change',function(e){var id=e.target.dataset.id; e.target.checked?used.add(id):used.delete(id); recompute();});
+    });
+  }
+  function computeSequencer(){
+    var b={go:[],test:[],used:[],no:[]};
+    (DATA.items||[]).forEach(function(c){var r=evaluate(c); b[r.bucket].push({c:c,r:r});});
+    var st=ctx[DATA.primaryKey];
+    var sn=document.getElementById('ohState'); if(sn) sn.textContent=(DATA.stageNames&&DATA.stageNames[st])||'';
+    var stat=document.getElementById('ohStat'); if(stat) stat.textContent='可推進 '+b.go.length+' · 待檢測 '+b.test.length+' · 已使用 '+b.used.length;
+    // badges
+    (DATA.groups||[]).forEach(function(g){
+      var badge=document.querySelector('[data-badge="'+g.id+'"]'); if(!badge) return;
+      var tot=(DATA.items||[]).filter(function(i){return i.group===g.id;}).length;
+      var u=(DATA.items||[]).filter(function(i){return i.group===g.id&&used.has(i.id);}).length;
+      badge.textContent=u?(u+'/'+tot+' 已用'):'';
+    });
+    var ob=document.getElementById('obody'); if(!ob) return; ob.innerHTML='';
+    ob.appendChild(bucketEl('b-go','可推進 — 符合現況',b.go,(DATA.emptyGo&&DATA.emptyGo[st])||'目前設定下沒有明確可推進選項。'));
+    if(b.test.length) ob.appendChild(bucketEl('b-test','建議先補做檢測',b.test));
+    if(b.used.length) ob.appendChild(bucketEl('b-used','已使用 / 已用盡',b.used));
+    if(DATA.stageNotes&&DATA.stageNotes[st]){var nc=h('div','notecard',DATA.stageNotes[st]); ob.appendChild(nc);}
+    if(b.no.length){
+      var det=h('details','nogroup'); det.innerHTML='<summary>目前不適用（'+b.no.length+'）</summary>';
+      var inner=h('div'); inner.style.marginTop='10px';
+      b.no.forEach(function(x){inner.appendChild(rowEl(x));}); det.appendChild(inner); ob.appendChild(det);
+    }
+  }
+  function bucketEl(cls,title,arr,empty){
+    var b=h('div','obucket '+cls);
+    b.innerHTML='<p class="bh"><span class="dot"></span>'+esc(title)+' · '+arr.length+'</p>';
+    if(!arr.length){b.appendChild(h('div','emptyhint',esc(empty||'—')));}
+    else arr.forEach(function(x){b.appendChild(rowEl(x));});
+    return b;
+  }
+  function rowEl(x){
+    var c=x.c,r=x.r, e=h('div','orow');
+    e.innerHTML='<div class="rn">'+esc(c.name)+(r.star?'<span class="star">★ 標記匹配</span>':'')+
+      (c.trial?' <span style="font-family:var(--mono);font-size:11px;color:var(--marker);font-weight:400">· '+esc(c.trial)+'</span>':'')+'</div>'+
+      (c.dose?'<div class="rd">'+esc(c.dose)+'</div>':'')+'<div class="rr">'+esc(r.reason)+'</div>';
+    return e;
+  }
+
+  /* ---------- selector ---------- */
+  function renderTiers(sec){
+    var s=h('div','section');
+    s.innerHTML=(sec.stepnum?'<span class="stepnum">'+esc(sec.stepnum)+'</span>':'')+'<h2>'+esc(sec.title||'治療方案選擇')+'</h2>'+(sec.lede?'<p class="lede">'+esc(sec.lede)+'</p>':'');
+    (sec.tiers||[]).forEach(function(t){
+      var tier=h('div','tier');
+      tier.innerHTML='<p class="tt">'+esc(t.title)+'</p>'+(t.note?'<p class="tnote">'+esc(t.note)+'</p>':'');
+      (t.items||[]).forEach(function(id){
+        var c=itemById(id); if(!c) return;
+        var rx=h('div','rx'+(c.priority?(' p-'+c.priority):'')); rx.id='rx-'+id;
+        if(c.highlightWhen) rx.setAttribute('data-hl','1');
+        var grid=(c.details||[]).map(function(d){return '<span class="lbl">'+esc(d.lbl)+'：</span><span>'+esc(d.val)+'</span>';}).join('');
+        rx.innerHTML='<div class="rh"><div class="rname">'+esc(c.name)+'</div>'+(c.badge?'<span class="badge2 bg-'+(c.badgeTone||'med')+'">'+esc(c.badge)+'</span>':'')+'</div>'+
+          (grid?'<div class="rgrid">'+grid+'</div>':'');
+        tier.appendChild(rx);
+      });
+      s.appendChild(tier);
+    });
+    root.appendChild(s);
+  }
+  function computeSelector(){
+    var anyPos=(DATA.items||[]).some(function(c){return c.highlightWhen&&c.highlightWhen.some(function(w){return ctx[w.key]===w.need;});});
+    (DATA.items||[]).forEach(function(c){
+      var rx=document.getElementById('rx-'+c.id); if(!rx||!c.highlightWhen) return;
+      var match=c.highlightWhen.some(function(w){return ctx[w.key]===w.need;});
+      rx.style.opacity = (!anyPos||match)?'1':'0.45';
+    });
+  }
+
+  /* ---------- static / provenance / masthead / foot ---------- */
+  function renderStatic(sec){
+    var s=h('div','section');
+    var head=(sec.stepnum?'<span class="stepnum">'+esc(sec.stepnum)+'</span>':'')+(sec.title?'<h2>'+esc(sec.title)+'</h2>':'')+(sec.lede?'<p class="lede">'+esc(sec.lede)+'</p>':'');
+    s.innerHTML=head+(sec.html||'');
+    root.appendChild(s);
+  }
+  function renderContextCard(sec){
+    var s=h('div','section');
+    s.innerHTML=(sec.stepnum?'<span class="stepnum">'+esc(sec.stepnum)+'</span>':'')+'<h2>'+esc(sec.title||'病況與標記')+'</h2>'+(sec.lede?'<p class="lede">'+esc(sec.lede)+'</p>':'');
+    var card=h('div','card'); renderCtxRows(card, sec.keys||null); s.appendChild(card); root.appendChild(s);
+  }
+  function renderMasthead(){
+    var m=h('header','masthead');
+    m.innerHTML=(DATA.eyebrow?'<p class="eyebrow">'+esc(DATA.eyebrow)+'</p>':'')+
+      '<h1>'+ (DATA.titleHtml||esc(DATA.title)) +'</h1>'+
+      (DATA.subtitle?'<p class="sub">'+esc(DATA.subtitle)+'</p>':'')+
+      '<div class="meta">'+(DATA.guideline?'<span><b>參考架構</b> '+esc(DATA.guideline)+'</span>':'')+(DATA.updated?'<span><b>更新</b> '+esc(DATA.updated)+'</span>':'')+'</div>'+
+      (DATA.disclaimer?'<div class="disclaimer">'+DATA.disclaimer+'</div>':'');
+    root.appendChild(m);
+  }
+  function renderFoot(){
+    if(!DATA.foot) return;
+    var f=h('footer','foot'); f.innerHTML=DATA.foot; root.appendChild(f);
+  }
+
+  function renderSection(sec){
+    switch(sec.type){
+      case 'sequencer': renderSequencer(sec); break;
+      case 'context':   renderContextCard(sec); break;
+      case 'tiers':     renderTiers(sec); break;
+      case 'static':    renderStatic(sec); break;
+      default: renderStatic(sec);
+    }
+  }
+  function recompute(){
+    if(DATA.archetype==='sequencer') computeSequencer();
+    else computeSelector();
+  }
+  function init(data){
+    DATA=data; ctx={}; used=new Set();
+    (DATA.context||[]).forEach(function(c){ctx[c.key]=c.default;});
+    root=document.getElementById('app');
+    renderMasthead();
+    (DATA.sections||[]).forEach(renderSection);
+    renderFoot();
+    recompute();
+  }
+  return {init:init, _eval:evalAll, _data:function(){return DATA;}};
+})();
+
+</script>
+<script>ONCO.init(ONCO_DATA);</script>
+</body>
+</html>
