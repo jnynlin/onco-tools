@@ -1,0 +1,442 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>食道癌（晚期/轉移）生物標記導向治療選擇</title>
+<meta name="description" content="晚期食道癌依組織型（鱗癌 ESCC / 腺癌 EAC・GEJ）與生物標記（PD-L1 CPS · HER2 · Claudin18.2 · MSI · NTRK）凸顯對應治療。台灣以鱗癌為主；HER2/CLDN18.2/ramucirumab 限腺癌。">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=Noto+Sans+TC:wght@400;500;700&family=Noto+Serif+TC:wght@600;900&display=swap" rel="stylesheet">
+<style>
+:root{
+  --ink:#0C1F26; --ink-soft:#4A6068; --paper:#EDF1F1; --surface:#FFFFFF;
+  --rule:#C9D5D6; --rule-soft:#E4EAEA;
+  --platinum:#0E6E75; --resist:#9A4B22; --marker:#5A4A86; --amber:#8A6D00;
+  --platinum-bg:#EAF3F3; --resist-bg:#F6EEE9; --marker-bg:#F6F5FA; --test-bg:#F6F2E4; --used-bg:#EEF1F1;
+  --shadow:0 1px 0 rgba(12,31,38,.06), 0 12px 30px -18px rgba(12,31,38,.35);
+  --serif:"Noto Serif TC",Georgia,serif;
+  --sans:"Noto Sans TC","Helvetica Neue",Arial,sans-serif;
+  --mono:"IBM Plex Mono",monospace;
+  --radius:4px;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{-webkit-text-size-adjust:100%}
+body{font-family:var(--sans);line-height:1.7;color:var(--ink);background:var(--paper);
+  font-size:16px;-webkit-font-smoothing:antialiased}
+.wrap{max-width:1120px;margin:0 auto;padding:0 24px 90px}
+
+/* masthead */
+.masthead{padding:52px 0 28px;border-bottom:2px solid var(--ink);margin-bottom:8px}
+.eyebrow{font-family:var(--mono);font-size:11px;letter-spacing:.22em;text-transform:uppercase;
+  color:var(--platinum);margin:0 0 16px}
+.masthead h1{font-family:var(--serif);font-weight:900;font-size:clamp(28px,5vw,48px);
+  line-height:1.14;letter-spacing:-.01em;margin:0 0 12px;text-wrap:balance}
+.masthead .sub{max-width:66ch;color:var(--ink-soft);font-size:15px;margin:0 0 22px}
+.meta{display:flex;flex-wrap:wrap;gap:10px 26px;font-family:var(--mono);font-size:12px;color:var(--ink-soft)}
+.meta b{color:var(--ink);font-weight:500}
+.disclaimer{margin:20px 0 0;padding:13px 18px;border-left:3px solid var(--resist);
+  background:var(--resist-bg);border-radius:0 3px 3px 0;font-size:13px;color:var(--ink-soft)}
+.disclaimer b{color:var(--resist)}
+
+/* generic section */
+.section{margin:34px 0}
+.section > .stepnum{font-family:var(--mono);font-size:12px;color:var(--platinum);letter-spacing:.06em;font-weight:600;display:block;margin-bottom:2px}
+.section > h2{font-family:var(--serif);font-weight:600;font-size:22px;margin:0 0 4px;line-height:1.3}
+.section > .lede{color:var(--ink-soft);margin:0 0 18px;font-size:13.5px}
+
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:26px;align-items:start}
+@media (max-width:940px){.grid2{grid-template-columns:1fr}}
+
+/* card */
+.card{background:var(--surface);border:1px solid var(--rule);border-radius:var(--radius);
+  box-shadow:var(--shadow);padding:20px 22px;margin-bottom:18px}
+.card h3{font-size:15px;font-weight:700;margin:0 0 12px}
+
+/* context controls */
+.ctx-row{margin-bottom:16px}
+.ctx-row:last-child{margin-bottom:0}
+.ctx-row label.k{display:block;font-family:var(--mono);font-size:10.5px;letter-spacing:.11em;
+  text-transform:uppercase;color:var(--ink-soft);margin-bottom:7px}
+.ctx-row label.k .hint{text-transform:none;letter-spacing:0;font-weight:400}
+.seg{display:inline-flex;flex-wrap:wrap;gap:6px;margin-bottom:8px}
+.seg:last-child{margin-bottom:0}
+.seg button{font-family:var(--sans);font-size:13px;cursor:pointer;border:1px solid var(--rule);
+  background:#F7FAFA;color:var(--ink-soft);padding:6px 13px;border-radius:2px;transition:all .12s}
+.seg button:hover{border-color:var(--ink-soft)}
+.seg button[aria-pressed="true"]{background:var(--ink);border-color:var(--ink);color:#fff;font-weight:500}
+.seg button[aria-pressed="true"][data-tone="platinum"]{background:var(--platinum);border-color:var(--platinum)}
+.seg button[aria-pressed="true"][data-tone="resist"]{background:var(--resist);border-color:var(--resist)}
+.seg button[aria-pressed="true"][data-tone="marker"]{background:var(--marker);border-color:var(--marker)}
+.assay{margin-top:8px}
+.assay summary{cursor:pointer;font-family:var(--mono);font-size:10px;letter-spacing:.08em;text-transform:uppercase;color:var(--platinum);outline:none;user-select:none}
+.assay summary::marker{color:var(--rule)}
+.assay .assay-body{margin-top:6px;display:grid;grid-template-columns:auto 1fr;gap:4px 10px;font-size:12px;color:var(--ink-soft);background:#F7FAFA;border:1px solid var(--rule);border-radius:3px;padding:9px 11px;line-height:1.5}
+.assay .al{font-family:var(--mono);font-size:9.5px;letter-spacing:.06em;text-transform:uppercase;color:var(--ink);font-weight:600;padding-top:1px}
+
+/* checklist (used) */
+.catgroup{margin-bottom:20px}
+.catgroup > h3{font-family:var(--mono);font-size:11px;letter-spacing:.1em;text-transform:uppercase;
+  color:var(--ink);font-weight:600;margin:0 0 8px;padding-bottom:6px;border-bottom:1px solid var(--rule)}
+.catgroup > h3 .badge{float:right;color:var(--ink-soft);font-weight:400}
+.item{display:flex;gap:11px;align-items:flex-start;padding:8px 10px;border-radius:3px;cursor:pointer;transition:background .1s}
+.item:hover{background:#F2F6F6}
+.item input{margin-top:4px;width:16px;height:16px;accent-color:var(--platinum);cursor:pointer;flex:none}
+.item .n{font-weight:600;font-size:14px}
+.item .n small{display:block;font-weight:400;font-size:12px;color:var(--ink-soft);margin-top:1px;font-family:var(--mono)}
+.item.checked .n{color:#7A8A8C}
+.item .tr{margin-left:auto;font-family:var(--mono);font-size:10.5px;color:var(--marker);white-space:nowrap;padding-top:2px;flex:none}
+
+/* sequencer output */
+.out{position:sticky;top:18px}
+@media (max-width:940px){.out{position:static}}
+.outcard{background:var(--surface);border:1px solid var(--rule);border-radius:var(--radius);box-shadow:var(--shadow);overflow:hidden}
+.outcard .oh{padding:16px 20px;background:var(--ink);color:#fff}
+.oh .state{font-family:var(--mono);font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:#8FB4B8;margin:0 0 6px}
+.oh h3{margin:0;font-family:var(--serif);font-weight:600;font-size:20px;color:#fff}
+.oh .stat{margin:6px 0 0;font-size:12.5px;color:#A9C3C6}
+.obody{padding:6px 20px 18px}
+.obucket{margin-top:16px}
+.obucket .bh{font-family:var(--mono);font-size:11px;letter-spacing:.08em;text-transform:uppercase;font-weight:600;margin:0 0 8px;display:flex;align-items:center;gap:8px}
+.dot{width:9px;height:9px;border-radius:50%;flex:none}
+.b-go .dot{background:var(--platinum)} .b-go .bh{color:var(--platinum)}
+.b-test .dot{background:var(--amber)} .b-test .bh{color:var(--amber)}
+.b-used .dot{background:#7A8A8C} .b-used .bh{color:#7A8A8C}
+.b-no .dot{background:var(--resist)} .b-no .bh{color:var(--resist)}
+.orow{padding:9px 12px;border-radius:3px;margin-bottom:7px;font-size:13.5px;border:1px solid transparent}
+.b-go .orow{background:var(--platinum-bg);border-color:#CFE4E4}
+.b-test .orow{background:var(--test-bg);border-color:#E9E1C2}
+.b-used .orow{background:var(--used-bg)}
+.b-no .orow{background:var(--resist-bg)}
+.orow .rn{font-weight:700}
+.orow .rn .star{color:var(--platinum);margin-left:5px;font-size:12px}
+.orow .rd{font-family:var(--mono);font-size:11.5px;color:var(--ink-soft);margin-top:1px}
+.orow .rr{font-size:12.5px;color:var(--ink-soft);margin-top:3px}
+.emptyhint{font-size:13px;color:var(--ink-soft);padding:4px 0}
+details.nogroup{margin-top:16px}
+details.nogroup summary{cursor:pointer;font-family:var(--mono);font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--resist);font-weight:600;outline:none}
+
+/* selector tiers + biomarker cards */
+.tier{background:#F7FAFA;border:1px solid var(--rule);border-radius:var(--radius);padding:20px;margin-bottom:20px}
+.tier > .tt{font-family:var(--serif);font-size:17px;font-weight:600;color:var(--platinum);margin:0 0 14px;display:flex;align-items:center;gap:8px}
+.tcard{background:#F1F5F5;border:1px solid var(--rule);border-radius:3px;padding:16px;margin-bottom:14px}
+.tcard > h4{font-family:var(--mono);font-size:12px;letter-spacing:.05em;font-weight:600;margin:0 0 10px;color:var(--ink)}
+.rx{background:var(--surface);border:1px solid var(--rule);border-radius:3px;padding:16px;margin-bottom:14px;border-left:4px solid var(--marker);transition:opacity .15s}
+.rx.p-high{border-left-color:var(--resist);background:var(--resist-bg)}
+.rx.p-med{border-left-color:var(--marker);background:var(--marker-bg)}
+.rx.p-low{border-left-color:var(--platinum);background:var(--platinum-bg)}
+.rx .rh{display:flex;align-items:flex-start;justify-content:space-between;gap:12px}
+.rx .rh .rname{font-size:15.5px;font-weight:700;color:var(--ink)}
+.rx .badge2{font-family:var(--mono);padding:4px 10px;border-radius:2px;font-size:11px;font-weight:600;letter-spacing:.03em;color:#fff;white-space:nowrap;flex:none}
+.bg-high{background:var(--resist)} .bg-med{background:var(--marker)} .bg-low{background:var(--platinum)} .bg-info{background:var(--platinum)}
+.rx .rgrid{display:grid;grid-template-columns:auto 1fr;gap:6px 12px;margin-top:8px;font-size:13.5px;color:var(--ink-soft)}
+.rx .rgrid .lbl{font-weight:600;color:var(--ink)}
+.tier .tnote{font-size:13px;color:var(--ink-soft);margin-bottom:12px}
+
+/* callouts / static */
+.callout{border-left:3px solid var(--marker);background:var(--marker-bg);padding:14px 18px;margin:0 0 16px;font-size:13.5px;border-radius:0 3px 3px 0;color:var(--ink-soft)}
+.callout.warn{border-left-color:var(--resist);background:var(--resist-bg)}
+.callout.info{border-left-color:var(--platinum);background:var(--platinum-bg)}
+.callout h4{font-family:var(--serif);margin:0 0 8px;font-size:15px;font-weight:600;color:var(--marker)}
+.callout.warn h4{color:var(--resist)} .callout.info h4{color:var(--platinum)}
+.callout ul{padding-left:20px;margin:0}
+.callout li{margin-bottom:5px}
+ul.tight{margin:0;padding-left:1.15em} ul.tight li{margin-bottom:6px}
+
+/* form utilities (static capture blocks) */
+.fgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:14px}
+.fld{display:flex;flex-direction:column;gap:5px}
+.fld > span{font-family:var(--mono);font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-soft)}
+.fld input,.fld select{font:inherit;font-size:14px;padding:9px 12px;border:1px solid var(--rule);border-radius:3px;background:#fdfdfb;color:var(--ink)}
+.chips{display:flex;flex-wrap:wrap;gap:8px}
+.chips label{display:flex;align-items:center;gap:7px;background:#F7FAFA;border:1px solid var(--rule);border-radius:2px;padding:7px 12px;font-size:13.5px;cursor:pointer}
+.chips input{accent-color:var(--platinum)}
+
+/* flowchart */
+.flow{background:var(--surface);border:1px solid var(--rule);border-radius:var(--radius);padding:20px;overflow-x:auto}
+.flow .step{background:#F7FAFA;border:1.5px solid var(--platinum);border-radius:3px;padding:12px 16px;text-align:center;font-weight:600;font-size:14px;margin-bottom:12px}
+.flow .arrow{text-align:center;font-size:18px;color:var(--platinum);margin:-6px 0 6px;font-weight:bold}
+.flow .branch{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px;margin-bottom:12px}
+.flow .node{background:var(--surface);border:1px solid var(--rule);border-top:4px solid var(--marker);border-radius:3px;padding:12px;font-size:13px;box-shadow:var(--shadow)}
+.flow .node strong{display:block;margin-bottom:4px;color:var(--platinum)}
+
+/* actions + footer */
+.actions{display:flex;gap:10px;margin-top:18px;flex-wrap:wrap}
+.btn{font-family:var(--mono);font-size:12px;letter-spacing:.06em;cursor:pointer;border:1px solid var(--ink);background:var(--surface);color:var(--ink);padding:9px 16px;border-radius:2px}
+.btn:hover{background:var(--ink);color:#fff}
+.btn.primary{background:var(--ink);color:#fff}
+.btn.primary:hover{background:var(--platinum);border-color:var(--platinum)}
+.foot{margin-top:56px;padding-top:24px;border-top:2px solid var(--ink);font-size:12.5px;color:var(--ink-soft)}
+.foot h4{margin:0 0 10px;font-size:12px;letter-spacing:.14em;text-transform:uppercase;font-family:var(--mono);color:var(--ink);font-weight:500}
+.notecard{margin-top:16px;border-left:3px solid var(--marker);background:var(--marker-bg);padding:11px 15px;font-size:12.5px;border-radius:0 3px 3px 0;color:var(--ink-soft)}
+.notecard b{color:var(--marker)}
+
+@media (max-width:640px){.wrap{padding:0 16px 64px}}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+@media print{
+  body{background:#fff;font-size:11px}
+  .actions,.no-print{display:none!important}
+  .out{position:static}
+  .card,.outcard,.rx,.tcard,.flow{box-shadow:none;break-inside:avoid}
+  .rx,.orow{-webkit-print-color-adjust:exact;print-color-adjust:exact}
+  .wrap{padding:0}
+}
+
+</style>
+</head>
+<body>
+<div class="wrap" id="app"></div>
+<script>var ONCO_DATA = {"id": "esophageal", "group": "消化道腫瘤", "archetype": "selector", "title": "食道癌（晚期/轉移）生物標記導向治療選擇", "eyebrow": "Advanced esophageal / GEJ cancer · biomarker-directed selector", "subtitle": "晚期食道癌依組織型（鱗癌 ESCC / 腺癌 EAC・GEJ）與生物標記（PD-L1 CPS · HER2 · Claudin18.2 · MSI · NTRK）凸顯對應治療。台灣以鱗癌為主；HER2/CLDN18.2/ramucirumab 限腺癌。", "guideline": "NCCN / ESMO · 原始試驗 + FDA 仿單", "updated": "2026-07-28", "disclaimer": "<b>非處方指令。</b>本工具為晚期/轉移食道與胃食道交界 (GEJ) 癌之生物標記導向決策輔助；組織型與標記由使用者輸入，工具不驗證。實際治療須由主治醫師依組織型、線別、最新指引與當地藥證個別判斷。", "context": [{"key": "histo", "label": "組織型", "default": "escc", "options": [{"v": "escc", "label": "鱗癌 (ESCC)"}, {"v": "eac", "label": "腺癌 (EAC / GEJ)"}, {"v": "unk", "label": "未定"}], "assay": {"method": "病理（H&E + IHC：p40/p63 vs 腺體標記）", "specimen": "腫瘤組織", "timing": "診斷時", "pitfall": "台灣以鱗癌 (ESCC) 為主；腺癌多在 GEJ，HER2/CLDN18.2/ramucirumab 僅適腺癌"}}, {"key": "pdl1", "label": "PD-L1（IHC 22C3 · CPS）", "default": "unk", "options": [{"v": "high", "label": "CPS ≥10"}, {"v": "low", "label": "CPS 1–9"}, {"v": "neg", "label": "CPS <1"}, {"v": "unk", "label": "未檢測"}], "assay": {"method": "IHC 22C3（CPS 計分）", "specimen": "腫瘤組織", "timing": "1L 治療前", "pitfall": "閾值依試驗不同（KEYNOTE-590 CPS≥10 獲益最大；CheckMate-648 PD-L1≥1）；抗體/計分不可互換"}}, {"key": "her2", "label": "HER2（限腺癌）", "default": "unk", "options": [{"v": "pos", "label": "HER2 陽性"}, {"v": "neg", "label": "陰性"}, {"v": "unk", "label": "未檢測"}], "assay": {"method": "IHC ±ISH", "specimen": "腫瘤組織", "timing": "腺癌 1L 前", "pitfall": "僅適腺癌；HER2 異質性高，建議多切片"}}, {"key": "cldn", "label": "Claudin 18.2（限腺癌）", "default": "unk", "options": [{"v": "pos", "label": "CLDN18.2 陽性 (≥75% 2+/3+)"}, {"v": "neg", "label": "陰性"}, {"v": "unk", "label": "未檢測"}], "assay": {"method": "IHC（CLDN18.2，≥75% 腫瘤細胞 2+/3+）", "specimen": "腫瘤組織", "timing": "腺癌、HER2− 後", "pitfall": "僅適腺癌/GEJ；與 HER2 分開評估"}}, {"key": "msi", "label": "MSI-H / dMMR", "default": "unk", "options": [{"v": "pos", "label": "dMMR/MSI-H 或 TMB-high"}, {"v": "neg", "label": "否"}, {"v": "unk", "label": "未檢測"}], "assay": {"method": "IHC（4 蛋白）/ PCR / NGS", "specimen": "腫瘤組織", "timing": "診斷", "pitfall": "dMMR 者免疫治療獲益大"}}, {"key": "ntrk", "label": "NTRK 融合", "default": "neg", "options": [{"v": "pos", "label": "NTRK 融合"}, {"v": "neg", "label": "未檢出"}], "assay": {"method": "RNA-based NGS", "specimen": "腫瘤組織", "timing": "廣泛定序時", "pitfall": "罕見；DNA-only panel 常漏融合"}}], "items": [{"id": "io_chemo", "name": "化療 + PD-1 抑制劑 (pembrolizumab / nivolumab)", "priority": "high", "badge": "1L 首選", "badgeTone": "high", "highlightWhen": [{"key": "pdl1", "need": "high"}, {"key": "pdl1", "need": "low"}], "details": [{"lbl": "適用條件", "val": "PD-L1 CPS ≥1（≥10 獲益最大）；鱗癌與腺癌皆可"}, {"lbl": "臨床證據", "val": "KEYNOTE-590（pembro+化療）/ CheckMate-648（nivo+化療）"}, {"lbl": "用法", "val": "PD-1 + 氟嘧啶 + 鉑類"}]}, {"id": "nivo_ipi", "name": "Nivolumab + Ipilimumab（無化療）", "priority": "high", "badge": "鱗癌 · 雙免疫", "badgeTone": "high", "highlightWhen": [{"key": "pdl1", "need": "high"}, {"key": "pdl1", "need": "low"}], "details": [{"lbl": "適用條件", "val": "限鱗癌 (ESCC)，PD-L1 ≥1"}, {"lbl": "臨床證據", "val": "CheckMate-648（nivo+ipi arm）"}]}, {"id": "her2_chemo", "name": "Trastuzumab + 化療 (± Pembrolizumab)", "priority": "high", "badge": "HER2+ 腺癌", "badgeTone": "high", "highlightWhen": [{"key": "her2", "need": "pos"}], "details": [{"lbl": "適用條件", "val": "限 HER2+ 腺癌 / GEJ"}, {"lbl": "臨床證據", "val": "ToGA；CPS≥1 加 pembrolizumab → KEYNOTE-811"}]}, {"id": "zolbe", "name": "Zolbetuximab + 化療 (CAPOX / mFOLFOX)", "priority": "high", "badge": "CLDN18.2+ 腺癌", "badgeTone": "high", "highlightWhen": [{"key": "cldn", "need": "pos"}], "details": [{"lbl": "適用條件", "val": "限 CLDN18.2+（≥75% 2+/3+）、HER2− 腺癌 / GEJ"}, {"lbl": "臨床證據", "val": "SPOTLIGHT / GLOW（FDA 2024）"}]}, {"id": "pembro_msi_e", "name": "Pembrolizumab（tumor-agnostic）", "priority": "high", "badge": "dMMR/MSI-H", "badgeTone": "high", "highlightWhen": [{"key": "msi", "need": "pos"}], "details": [{"lbl": "適用條件", "val": "dMMR/MSI-H 或 TMB-high"}, {"lbl": "用法", "val": "200 q3w / 400 q6w"}]}, {"id": "tdxd_e", "name": "Trastuzumab Deruxtecan (T-DXd)", "priority": "med", "badge": "HER2+ 腺癌 2L", "badgeTone": "info", "highlightWhen": [{"key": "her2", "need": "pos"}], "details": [{"lbl": "適用條件", "val": "限 HER2+ 腺癌 / GEJ，既往 trastuzumab 後"}, {"lbl": "臨床證據", "val": "DESTINY-Gastric01 / 02"}, {"lbl": "用法", "val": "6.4 mg/kg q3w；監測 ILD"}]}, {"id": "ramu", "name": "Ramucirumab ± Paclitaxel", "priority": "med", "badge": "腺癌 2L", "badgeTone": "med", "details": [{"lbl": "適用條件", "val": "限腺癌 / GEJ，2L"}, {"lbl": "臨床證據", "val": "RAINBOW（+paclitaxel）/ REGARD（單藥）"}]}, {"id": "chemo2_e", "name": "2L 化療 (taxane / irinotecan)", "priority": "med", "badge": "後線骨幹", "badgeTone": "med", "details": [{"lbl": "適用條件", "val": "1L 進展後之通用化療（鱗癌與腺癌皆可）"}]}, {"id": "ntrki_e", "name": "NTRK 抑制劑 (Larotrectinib / Entrectinib)", "priority": "high", "badge": "NTRK 融合", "badgeTone": "high", "highlightWhen": [{"key": "ntrk", "need": "pos"}], "details": [{"lbl": "適用條件", "val": "NTRK 基因融合（tumor-agnostic）"}]}], "sections": [{"type": "context", "stepnum": "STEP 1", "title": "組織型與生物標記", "lede": "先定組織型（鱗癌/腺癌），再驗 PD-L1、HER2、CLDN18.2、MSI、NTRK；勾選後下方對應治療凸顯。"}, {"type": "tiers", "stepnum": "STEP 2", "title": "治療方案選擇", "lede": "標記匹配時對應卡片高亮；HER2/CLDN18.2/ramucirumab 僅適腺癌，化療骨幹恆列於後。", "tiers": [{"title": "🥇 第一線全身治療", "note": "PD-L1 陽性 → 化療+PD-1（鱗癌可 nivo+ipi）；HER2+ 或 CLDN18.2+ 腺癌走對應標靶。", "items": ["io_chemo", "nivo_ipi", "her2_chemo", "zolbe", "pembro_msi_e"]}, {"title": "🥈 第二線及後線", "items": ["tdxd_e", "ramu", "ntrki_e", "chemo2_e"]}]}, {"type": "static", "title": "🔬 研究中（尚未成為標準）", "html": "<div class='callout info'><ul class='tight'><li><b>DESTINY-Gastric03</b>：T-DXd + 氟嘧啶 + pembrolizumab 之 1L HER2+ 組合（含食道腺癌），仍在研究，尚非標準。</li></ul></div>"}], "foot": "<h4>查證出處與免責</h4><ul class='tight'><li>回溯原始試驗與 FDA 仿單（查證 2026-07-28）：KEYNOTE-590（pembro+化療，食道/GEJ）、CheckMate-648（nivo+化療 / nivo+ipi，鱗癌）、ToGA / KEYNOTE-811（HER2+ 腺癌）、SPOTLIGHT/GLOW（zolbetuximab，CLDN18.2+，FDA 2024）、DESTINY-Gastric01/02（T-DXd，HER2+ 2L）、RAINBOW/REGARD（ramucirumab，腺癌 2L）、KEYNOTE-158（pembrolizumab，dMMR）。</li><li>本清單僅供醫療專業人員臨床討論與教學參考，非處方指令；實際治療須依組織型、患者狀況、最新指引與當地藥證/給付制定。</li></ul>"};</script>
+<script>
+/* onco-decision-kit engine — data-driven, two archetypes:
+   - "sequencer": line-of-therapy planner; items bucketed go/test/used/ineligible
+   - "selector" : biomarker-driven highlight of treatment tiers
+   The page is an ordered list of DATA.sections. Content lives in the data pack. */
+window.ONCO = (function(){
+  "use strict";
+  var DATA, ctx, used, root;
+
+  function esc(s){return String(s).replace(/[&<>"]/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c];});}
+  function h(tag,cls,html){var e=document.createElement(tag); if(cls)e.className=cls; if(html!=null)e.innerHTML=html; return e;}
+  function group(id){return (DATA.groups||[]).filter(function(g){return g.id===id;})[0]||{};}
+  function itemById(id){return (DATA.items||[]).filter(function(i){return i.id===id;})[0];}
+  var UNK = 'unk';
+
+  /* ---------- shared gate/eligibility ---------- */
+  function gate1(g){
+    var v=ctx[g.key], need=g.need;
+    var match=Array.isArray(need)?need.indexOf(v)>=0:v===need;
+    if(match) return 'yes';
+    if(v===UNK) return 'unk';
+    return 'no';
+  }
+  function gateOK(item){
+    var g=item.gate; if(!g) return 'na';
+    if(g.anyOf){ var yes=false,unk=false;
+      g.anyOf.forEach(function(s){var r=gate1(s); if(r==='yes')yes=true; else if(r==='unk')unk=true;});
+      return yes?'yes':(unk?'unk':'no'); }
+    return gate1(g);
+  }
+  function gateLabel(item){var g=item.gate; return (g&&g.label)||(g&&DATA.gateLabels&&DATA.gateLabels[g.key])||'標記';}
+  function stageEligible(item){
+    var g=group(item.group), st=g.activeStages;
+    if(!st||st.indexOf('*')>=0) return true;
+    return st.indexOf(ctx[DATA.primaryKey])>=0;
+  }
+  function anyFamilyUsed(fam){return (DATA.items||[]).some(function(i){return i.family===fam&&used.has(i.id);});}
+
+  function evaluate(item){
+    if(used.has(item.id)) return {bucket:'used',reason:'已使用'};
+    var g=group(item.group);
+    if(g.kind==='history') return {bucket:'no',reason:g.noReason||'（病史，非藥物線）'};
+    if(!stageEligible(item)) return {bucket:'no',reason:'現階段不適用'+(g.ineligible?('（'+g.ineligible+'）'):'')};
+    var gk=gateOK(item);
+    if(gk==='no') return {bucket:'no',reason:'生物標記不符（'+gateLabel(item)+'）'};
+    if(gk==='unk') return {bucket:'test',reason:'需先檢測 '+gateLabel(item)+' 才能評估'};
+    if(item.family&&anyFamilyUsed(item.family)) return {bucket:'used',reason:g.exhaust||'同類藥物已用過 → 視為用盡'};
+    return {bucket:'go',reason:g.goReason||'符合現況',star:(gk==='yes'&&!!item.gate)};
+  }
+  // expose for tests
+  function evalAll(data, state){ if(data) DATA=data; ctx=state.ctx; used=new Set(state.used||[]);
+    var b={go:[],test:[],used:[],no:[]}; (DATA.items||[]).forEach(function(i){b[evaluate(i).bucket].push(i.id);}); return b; }
+
+  /* ---------- context controls (shared) ---------- */
+  function renderCtxRows(container, keys){
+    (DATA.context||[]).forEach(function(c){
+      if(keys && keys.indexOf(c.key)<0) return;
+      var row=h('div','ctx-row');
+      row.innerHTML='<label class="k">'+esc(c.label)+(c.hint?' <span class="hint">'+esc(c.hint)+'</span>':'')+'</label>';
+      var seg=h('div','seg'); seg.setAttribute('data-key',c.key);
+      c.options.forEach(function(o){
+        var b=h('button'); b.textContent=o.label; b.setAttribute('data-v',o.v);
+        if(o.tone) b.setAttribute('data-tone',o.tone);
+        b.setAttribute('aria-pressed', ctx[c.key]===o.v?'true':'false');
+        b.addEventListener('click',function(){
+          ctx[c.key]=o.v;
+          seg.querySelectorAll('button').forEach(function(x){x.setAttribute('aria-pressed',x===b?'true':'false');});
+          recompute();
+        });
+        seg.appendChild(b);
+      });
+      row.appendChild(seg);
+      if(c.assay){
+        var a=c.assay, det=h('details','assay');
+        det.innerHTML='<summary>檢測實務</summary><div class="assay-body">'+
+          (a.method?'<span class="al">方法</span><span>'+esc(a.method)+'</span>':'')+
+          (a.specimen?'<span class="al">檢體</span><span>'+esc(a.specimen)+'</span>':'')+
+          (a.timing?'<span class="al">時機</span><span>'+esc(a.timing)+'</span>':'')+
+          (a.pitfall?'<span class="al">陷阱</span><span>'+esc(a.pitfall)+'</span>':'')+'</div>';
+        row.appendChild(det);
+      }
+      container.appendChild(row);
+    });
+  }
+
+  /* ---------- sequencer ---------- */
+  var seqRefs={};
+  function renderSequencer(sec){
+    var grid=h('div','grid2');
+    var left=h('div'), right=h('div');
+    // context
+    var s1=h('div','section');
+    s1.innerHTML='<span class="stepnum">STEP 1</span><h2>'+esc(sec.contextTitle||'目前病況')+'</h2><p class="lede">'+esc(sec.contextLede||'')+'</p>';
+    var card=h('div','card'); renderCtxRows(card,null); s1.appendChild(card); left.appendChild(s1);
+    // checklist
+    var s2=h('div','section');
+    s2.innerHTML='<span class="stepnum">STEP 2</span><h2>'+esc(sec.checklistTitle||'已使用過的處方')+'</h2><p class="lede">'+esc(sec.checklistLede||'')+'</p>';
+    var cl=h('div'); cl.id='checklist'; s2.appendChild(cl);
+    var acts=h('div','actions no-print');
+    acts.innerHTML='<button class="btn" id="btnReset">清除全部</button><button class="btn primary" onclick="window.print()">列印 / 存 PDF</button>';
+    s2.appendChild(acts); left.appendChild(s2);
+    // output
+    var s3=h('div','section out');
+    s3.innerHTML='<span class="stepnum">推斷結果</span><h2>'+esc(sec.outputTitle||'還可以推進什麼？')+'</h2><p class="lede">'+esc(sec.outputLede||'')+'</p>'+
+      '<div class="outcard"><div class="oh"><p class="state" id="ohState"></p><h3 id="ohTitle">'+esc(sec.outputHead||'下一步治療選項')+'</h3><p class="stat" id="ohStat"></p></div><div class="obody" id="obody"></div></div>';
+    right.appendChild(s3);
+    grid.appendChild(left); grid.appendChild(right); root.appendChild(grid);
+    buildChecklist();
+    document.getElementById('btnReset').addEventListener('click',function(){used.clear();buildChecklist();recompute();});
+  }
+  function buildChecklist(){
+    var cl=document.getElementById('checklist'); cl.innerHTML='';
+    (DATA.groups||[]).forEach(function(g){
+      var items=(DATA.items||[]).filter(function(i){return i.group===g.id;});
+      if(!items.length) return;
+      var box=h('div','catgroup');
+      box.innerHTML='<h3>'+esc(g.title)+'<span class="badge" data-badge="'+g.id+'"></span></h3>';
+      items.forEach(function(c){
+        var lab=h('label','item'+(used.has(c.id)?' checked':''));
+        lab.innerHTML='<input type="checkbox" data-id="'+c.id+'"'+(used.has(c.id)?' checked':'')+'>'+
+          '<span class="n">'+esc(c.name)+(c.dose?'<small>'+esc(c.dose)+'</small>':'')+'</span>'+
+          (c.trial?'<span class="tr">'+esc(c.trial)+'</span>':'');
+        box.appendChild(lab);
+      });
+      cl.appendChild(box);
+    });
+    cl.querySelectorAll('input[type=checkbox]').forEach(function(cb){
+      cb.addEventListener('change',function(e){var id=e.target.dataset.id; e.target.checked?used.add(id):used.delete(id); recompute();});
+    });
+  }
+  function computeSequencer(){
+    var b={go:[],test:[],used:[],no:[]};
+    (DATA.items||[]).forEach(function(c){var r=evaluate(c); b[r.bucket].push({c:c,r:r});});
+    var st=ctx[DATA.primaryKey];
+    var sn=document.getElementById('ohState'); if(sn) sn.textContent=(DATA.stageNames&&DATA.stageNames[st])||'';
+    var stat=document.getElementById('ohStat'); if(stat) stat.textContent='可推進 '+b.go.length+' · 待檢測 '+b.test.length+' · 已使用 '+b.used.length;
+    // badges
+    (DATA.groups||[]).forEach(function(g){
+      var badge=document.querySelector('[data-badge="'+g.id+'"]'); if(!badge) return;
+      var tot=(DATA.items||[]).filter(function(i){return i.group===g.id;}).length;
+      var u=(DATA.items||[]).filter(function(i){return i.group===g.id&&used.has(i.id);}).length;
+      badge.textContent=u?(u+'/'+tot+' 已用'):'';
+    });
+    var ob=document.getElementById('obody'); if(!ob) return; ob.innerHTML='';
+    ob.appendChild(bucketEl('b-go','可推進 — 符合現況',b.go,(DATA.emptyGo&&DATA.emptyGo[st])||'目前設定下沒有明確可推進選項。'));
+    if(b.test.length) ob.appendChild(bucketEl('b-test','建議先補做檢測',b.test));
+    if(b.used.length) ob.appendChild(bucketEl('b-used','已使用 / 已用盡',b.used));
+    if(DATA.stageNotes&&DATA.stageNotes[st]){var nc=h('div','notecard',DATA.stageNotes[st]); ob.appendChild(nc);}
+    if(b.no.length){
+      var det=h('details','nogroup'); det.innerHTML='<summary>目前不適用（'+b.no.length+'）</summary>';
+      var inner=h('div'); inner.style.marginTop='10px';
+      b.no.forEach(function(x){inner.appendChild(rowEl(x));}); det.appendChild(inner); ob.appendChild(det);
+    }
+  }
+  function bucketEl(cls,title,arr,empty){
+    var b=h('div','obucket '+cls);
+    b.innerHTML='<p class="bh"><span class="dot"></span>'+esc(title)+' · '+arr.length+'</p>';
+    if(!arr.length){b.appendChild(h('div','emptyhint',esc(empty||'—')));}
+    else arr.forEach(function(x){b.appendChild(rowEl(x));});
+    return b;
+  }
+  function rowEl(x){
+    var c=x.c,r=x.r, e=h('div','orow');
+    e.innerHTML='<div class="rn">'+esc(c.name)+(r.star?'<span class="star">★ 標記匹配</span>':'')+
+      (c.trial?' <span style="font-family:var(--mono);font-size:11px;color:var(--marker);font-weight:400">· '+esc(c.trial)+'</span>':'')+'</div>'+
+      (c.dose?'<div class="rd">'+esc(c.dose)+'</div>':'')+'<div class="rr">'+esc(r.reason)+'</div>';
+    return e;
+  }
+
+  /* ---------- selector ---------- */
+  function renderTiers(sec){
+    var s=h('div','section');
+    s.innerHTML=(sec.stepnum?'<span class="stepnum">'+esc(sec.stepnum)+'</span>':'')+'<h2>'+esc(sec.title||'治療方案選擇')+'</h2>'+(sec.lede?'<p class="lede">'+esc(sec.lede)+'</p>':'');
+    (sec.tiers||[]).forEach(function(t){
+      var tier=h('div','tier');
+      tier.innerHTML='<p class="tt">'+esc(t.title)+'</p>'+(t.note?'<p class="tnote">'+esc(t.note)+'</p>':'');
+      (t.items||[]).forEach(function(id){
+        var c=itemById(id); if(!c) return;
+        var rx=h('div','rx'+(c.priority?(' p-'+c.priority):'')); rx.id='rx-'+id;
+        if(c.highlightWhen) rx.setAttribute('data-hl','1');
+        var grid=(c.details||[]).map(function(d){return '<span class="lbl">'+esc(d.lbl)+'：</span><span>'+esc(d.val)+'</span>';}).join('');
+        rx.innerHTML='<div class="rh"><div class="rname">'+esc(c.name)+'</div>'+(c.badge?'<span class="badge2 bg-'+(c.badgeTone||'med')+'">'+esc(c.badge)+'</span>':'')+'</div>'+
+          (grid?'<div class="rgrid">'+grid+'</div>':'');
+        tier.appendChild(rx);
+      });
+      s.appendChild(tier);
+    });
+    root.appendChild(s);
+  }
+  function computeSelector(){
+    var anyPos=(DATA.items||[]).some(function(c){return c.highlightWhen&&c.highlightWhen.some(function(w){return ctx[w.key]===w.need;});});
+    (DATA.items||[]).forEach(function(c){
+      var rx=document.getElementById('rx-'+c.id); if(!rx||!c.highlightWhen) return;
+      var match=c.highlightWhen.some(function(w){return ctx[w.key]===w.need;});
+      rx.style.opacity = (!anyPos||match)?'1':'0.45';
+    });
+  }
+
+  /* ---------- static / provenance / masthead / foot ---------- */
+  function renderStatic(sec){
+    var s=h('div','section');
+    var head=(sec.stepnum?'<span class="stepnum">'+esc(sec.stepnum)+'</span>':'')+(sec.title?'<h2>'+esc(sec.title)+'</h2>':'')+(sec.lede?'<p class="lede">'+esc(sec.lede)+'</p>':'');
+    s.innerHTML=head+(sec.html||'');
+    root.appendChild(s);
+  }
+  function renderContextCard(sec){
+    var s=h('div','section');
+    s.innerHTML=(sec.stepnum?'<span class="stepnum">'+esc(sec.stepnum)+'</span>':'')+'<h2>'+esc(sec.title||'病況與標記')+'</h2>'+(sec.lede?'<p class="lede">'+esc(sec.lede)+'</p>':'');
+    var card=h('div','card'); renderCtxRows(card, sec.keys||null); s.appendChild(card); root.appendChild(s);
+  }
+  function renderMasthead(){
+    var m=h('header','masthead');
+    m.innerHTML=(DATA.eyebrow?'<p class="eyebrow">'+esc(DATA.eyebrow)+'</p>':'')+
+      '<h1>'+ (DATA.titleHtml||esc(DATA.title)) +'</h1>'+
+      (DATA.subtitle?'<p class="sub">'+esc(DATA.subtitle)+'</p>':'')+
+      '<div class="meta">'+(DATA.guideline?'<span><b>參考架構</b> '+esc(DATA.guideline)+'</span>':'')+(DATA.updated?'<span><b>更新</b> '+esc(DATA.updated)+'</span>':'')+'</div>'+
+      (DATA.disclaimer?'<div class="disclaimer">'+DATA.disclaimer+'</div>':'');
+    root.appendChild(m);
+  }
+  function renderFoot(){
+    if(!DATA.foot) return;
+    var f=h('footer','foot'); f.innerHTML=DATA.foot; root.appendChild(f);
+  }
+
+  function renderSection(sec){
+    switch(sec.type){
+      case 'sequencer': renderSequencer(sec); break;
+      case 'context':   renderContextCard(sec); break;
+      case 'tiers':     renderTiers(sec); break;
+      case 'static':    renderStatic(sec); break;
+      default: renderStatic(sec);
+    }
+  }
+  function recompute(){
+    if(DATA.archetype==='sequencer') computeSequencer();
+    else computeSelector();
+  }
+  function init(data){
+    DATA=data; ctx={}; used=new Set();
+    (DATA.context||[]).forEach(function(c){ctx[c.key]=c.default;});
+    root=document.getElementById('app');
+    renderMasthead();
+    (DATA.sections||[]).forEach(renderSection);
+    renderFoot();
+    recompute();
+  }
+  return {init:init, _eval:evalAll, _data:function(){return DATA;}};
+})();
+
+</script>
+<script>ONCO.init(ONCO_DATA);</script>
+</body>
+</html>
