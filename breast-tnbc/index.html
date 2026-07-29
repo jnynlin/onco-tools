@@ -86,6 +86,18 @@ body{font-family:var(--sans);line-height:1.7;color:var(--ink);background:var(--p
 .item .n small{display:block;font-weight:400;font-size:12px;color:var(--ink-soft);margin-top:1px;font-family:var(--mono)}
 .item.checked .n{color:#7A8A8C}
 .item .tr{margin-left:auto;font-family:var(--mono);font-size:10.5px;color:var(--marker);white-space:nowrap;padding-top:2px;flex:none}
+.item .twtag{margin-left:8px}
+
+/* Taiwan-access tags */
+.twtag{display:inline-block;font-family:var(--mono);font-size:10px;font-weight:600;letter-spacing:.02em;
+  padding:1px 7px;border-radius:2px;white-space:nowrap;vertical-align:middle;border:1px solid transparent}
+.tw-nhi{background:#E4F0E7;color:#1F6B3B;border-color:#BADBC4}
+.tw-self{background:#F6F0DE;color:#8A6D00;border-color:#E6DBB6}
+.tw-none{background:#F3E7E3;color:#9A4B22;border-color:#E4CBBE}
+.rx .rh .rname .twtag{margin-left:8px}
+.twlegend{margin:16px 0 4px;padding:10px 14px;background:var(--surface);border:1px solid var(--rule);
+  border-radius:3px;font-size:12px;color:var(--ink-soft);line-height:1.9}
+.twlegend b{color:var(--ink);font-weight:600}
 
 /* sequencer output */
 .out{position:sticky;top:18px}
@@ -201,6 +213,9 @@ window.ONCO = (function(){
   function group(id){return (DATA.groups||[]).filter(function(g){return g.id===id;})[0]||{};}
   function itemById(id){return (DATA.items||[]).filter(function(i){return i.id===id;})[0];}
   var UNK = 'unk';
+  var TW = { nhi:{cls:'tw-nhi',label:'健保'}, self:{cls:'tw-self',label:'自費'}, none:{cls:'tw-none',label:'未上市'} };
+  function twChip(item){ var t=item&&item.tw&&TW[item.tw]; return t?'<span class="twtag '+t.cls+'" title="台灣可及性">'+t.label+'</span>':''; }
+  function hasTW(){ return (DATA.items||[]).some(function(i){return i.tw;}); }
 
   /* ---------- shared gate/eligibility ---------- */
   function gate1(g){
@@ -308,6 +323,7 @@ window.ONCO = (function(){
         var lab=h('label','item'+(used.has(c.id)?' checked':''));
         lab.innerHTML='<input type="checkbox" data-id="'+c.id+'"'+(used.has(c.id)?' checked':'')+'>'+
           '<span class="n">'+esc(c.name)+(c.dose?'<small>'+esc(c.dose)+'</small>':'')+'</span>'+
+          twChip(c)+
           (c.trial?'<span class="tr">'+esc(c.trial)+'</span>':'');
         box.appendChild(lab);
       });
@@ -368,7 +384,7 @@ window.ONCO = (function(){
         var rx=h('div','rx'+(c.priority?(' p-'+c.priority):'')); rx.id='rx-'+id;
         if(c.highlightWhen) rx.setAttribute('data-hl','1');
         var grid=(c.details||[]).map(function(d){return '<span class="lbl">'+esc(d.lbl)+'：</span><span>'+esc(d.val)+'</span>';}).join('');
-        rx.innerHTML='<div class="rh"><div class="rname">'+esc(c.name)+'</div>'+(c.badge?'<span class="badge2 bg-'+(c.badgeTone||'med')+'">'+esc(c.badge)+'</span>':'')+'</div>'+
+        rx.innerHTML='<div class="rh"><div class="rname">'+esc(c.name)+twChip(c)+'</div>'+(c.badge?'<span class="badge2 bg-'+(c.badgeTone||'med')+'">'+esc(c.badge)+'</span>':'')+'</div>'+
           (grid?'<div class="rgrid">'+grid+'</div>':'');
         tier.appendChild(rx);
       });
@@ -429,6 +445,14 @@ window.ONCO = (function(){
     (DATA.context||[]).forEach(function(c){ctx[c.key]=c.default;});
     root=document.getElementById('app');
     renderMasthead();
+    if(hasTW()){
+      var lg=h('div','twlegend');
+      lg.innerHTML='<b>台灣可及性</b>（指引性，以 TFDA／健保官方查詢為準；資料源：健保藥物給付第 9 節）：'+
+        '<span class="twtag tw-nhi">健保</span> 給付本適應症 · '+
+        '<span class="twtag tw-self">自費</span> 已上市但此癌自費（健保限他癌／適應外）· '+
+        '<span class="twtag tw-none">未上市</span> 台灣未引進（或專案自費）';
+      root.appendChild(lg);
+    }
     (DATA.sections||[]).forEach(renderSection);
     renderFoot();
     recompute();
