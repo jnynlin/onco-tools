@@ -199,6 +199,13 @@ ul.tight{margin:0;padding-left:1.15em} ul.tight li{margin-bottom:6px}
 .rx .rhr{display:flex;flex-direction:column;align-items:flex-end;gap:4px;flex:none}
 .rx .tr2{font-family:var(--mono);font-size:10.5px;color:var(--marker);white-space:nowrap}
 
+/* selector 卡片摺疊詳情(ovarian 密度標竿:預設 2 行,勾標記自動展開) */
+.rx .rmore summary{cursor:pointer;font-size:11.5px;color:var(--muted,#7c8691);list-style:none;margin-top:2px;user-select:none}
+.rx .rmore summary::before{content:'▸ '}
+.rx .rmore[open] summary::before{content:'▾ '}
+.rx .rmore summary::-webkit-details-marker{display:none}
+.rx .rmore .rgrid{margin-top:6px}
+
 </style>
 </head>
 <body>
@@ -392,7 +399,7 @@ window.ONCO = (function(){
         rx.innerHTML='<div class="rh"><div class="rname">'+esc(c.name)+twChip(c)+'</div>'+
           '<div class="rhr">'+(c.trial?'<span class="tr2">'+esc(c.trial)+'</span>':'')+(c.badge?'<span class="badge2 bg-'+(c.badgeTone||'med')+'">'+esc(c.badge)+'</span>':'')+'</div></div>'+
           (c.dose?'<div class="rdose">'+esc(c.dose)+'</div>':'')+
-          (grid?'<div class="rgrid">'+grid+'</div>':'');
+          (grid?'<details class="rmore"><summary>詳情(適用條件 · 證據 · 給付)</summary><div class="rgrid">'+grid+'</div></details>':'');
         tier.appendChild(rx);
       });
       s.appendChild(tier);
@@ -405,6 +412,8 @@ window.ONCO = (function(){
       var rx=document.getElementById('rx-'+c.id); if(!rx||!c.highlightWhen) return;
       var match=c.highlightWhen.some(function(w){return ctx[w.key]===w.need;});
       rx.style.opacity = (!anyPos||match)?'1':'0.45';
+      var det=rx.querySelector('details.rmore');
+      if(det){ if(match){det.setAttribute('open','');} else if(anyPos){det.removeAttribute('open');} }
     });
   }
 
