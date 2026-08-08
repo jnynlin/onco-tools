@@ -194,8 +194,10 @@ ul.tight{margin:0;padding-left:1.15em} ul.tight li{margin-bottom:6px}
   .wrap{padding:0}
 }
 
-/* selector 卡片的劑量列(等寬字,與臨床內文區隔) */
-.rx .dose{font-family:"IBM Plex Mono",ui-monospace,monospace;font-size:.86em;letter-spacing:-.01em}
+/* selector 卡片:劑量行(ovarian 標竿:名字下無標籤等寬行)+ 試驗小標 */
+.rx .rdose{font-family:var(--mono);font-size:12.5px;color:var(--ink2,#40484f);margin:4px 0 2px;line-height:1.55}
+.rx .rhr{display:flex;flex-direction:column;align-items:flex-end;gap:4px;flex:none}
+.rx .tr2{font-family:var(--mono);font-size:10.5px;color:var(--marker);white-space:nowrap}
 
 </style>
 </head>
@@ -386,9 +388,10 @@ window.ONCO = (function(){
         var c=itemById(id); if(!c) return;
         var rx=h('div','rx'+(c.priority?(' p-'+c.priority):'')); rx.id='rx-'+id;
         if(c.highlightWhen) rx.setAttribute('data-hl','1');
-        var grid=(c.dose?'<span class="lbl">劑量用法：</span><span class="dose">'+esc(c.dose)+'</span>':'')+
-          (c.details||[]).map(function(d){return '<span class="lbl">'+esc(d.lbl)+'：</span><span>'+esc(d.val)+'</span>';}).join('');
-        rx.innerHTML='<div class="rh"><div class="rname">'+esc(c.name)+twChip(c)+'</div>'+(c.badge?'<span class="badge2 bg-'+(c.badgeTone||'med')+'">'+esc(c.badge)+'</span>':'')+'</div>'+
+        var grid=(c.details||[]).map(function(d){return '<span class="lbl">'+esc(d.lbl)+'：</span><span>'+esc(d.val)+'</span>';}).join('');
+        rx.innerHTML='<div class="rh"><div class="rname">'+esc(c.name)+twChip(c)+'</div>'+
+          '<div class="rhr">'+(c.trial?'<span class="tr2">'+esc(c.trial)+'</span>':'')+(c.badge?'<span class="badge2 bg-'+(c.badgeTone||'med')+'">'+esc(c.badge)+'</span>':'')+'</div></div>'+
+          (c.dose?'<div class="rdose">'+esc(c.dose)+'</div>':'')+
           (grid?'<div class="rgrid">'+grid+'</div>':'');
         tier.appendChild(rx);
       });
