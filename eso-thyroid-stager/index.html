@@ -1,0 +1,291 @@
+<!doctype html><html lang="zh-Hant"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Esophageal &amp; Thyroid Staging · 專業即時查詢</title>
+<style>
+:root{
+  --bg:#f7f8fa; --card:#fff; --ink:#1c2434; --navy:#1c2b45; --head:#1c2b45;
+  --body:#3b4453; --muted:#667085; --line:#e6e8ec; --line2:#d5d9e0;
+  --accent:#2f5fd0; --accentd:#1e46b4; --accentbg:#eff4ff;
+  --green:#027a48; --greenbg:#ecfdf3; --greenbd:#a6f4c5;
+  --red:#b42318; --redbg:#fef3f2; --redbd:#fecdca;
+  --amber:#b54708; --amberbg:#fffaeb; --amberbd:#fedf89;
+  --action:#c07d1a; --actionbg:#fffdf6;
+  --sh1:0 1px 2px rgba(16,24,40,.05); --sh2:0 2px 8px rgba(16,24,40,.06); --sh3:0 16px 40px rgba(16,24,40,.16);
+  --r:12px; --fs:17px;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--body);font:var(--fs)/1.66 -apple-system,BlinkMacSystemFont,"Segoe UI","Microsoft JhengHei","Noto Sans TC",sans-serif;-webkit-font-smoothing:antialiased}
+.wrap{max-width:1080px;margin:0 auto;padding:0 16px 48px}
+header{position:sticky;top:0;z-index:20;background:rgba(247,248,250,.92);backdrop-filter:blur(8px);border-bottom:1px solid var(--line);padding:14px 0 10px;margin-bottom:6px}
+.hrow{display:flex;align-items:center;gap:12px;flex-wrap:wrap;max-width:1080px;margin:0 auto;padding:0 16px}
+h1{font-size:1.4rem;color:var(--head);font-weight:800;letter-spacing:-.01em}
+.sub{color:var(--muted);font-size:.92rem}
+.spacer{flex:1}
+.hbtn{border:1px solid var(--line2);background:var(--card);color:var(--body);border-radius:9px;padding:6px 11px;font-size:.9rem;cursor:pointer;box-shadow:var(--sh1)}
+.hbtn:hover{border-color:var(--accent);color:var(--accentd)}
+.tabs{display:flex;gap:8px;max-width:1080px;margin:8px auto 0;padding:0 16px}
+.tab{border:1px solid var(--line);background:var(--card);border-radius:10px 10px 0 0;padding:9px 18px;font-weight:700;color:var(--muted);cursor:pointer;box-shadow:var(--sh1)}
+.tab.on{color:var(--head);border-bottom-color:var(--card);background:var(--card);box-shadow:none;border-top:3px solid var(--accent);padding-top:7px}
+.grid{display:grid;grid-template-columns:minmax(320px,1fr) minmax(340px,1.15fr);gap:18px;margin-top:14px}
+@media(max-width:820px){.grid{grid-template-columns:1fr}}
+.panel{background:var(--card);border:1px solid var(--line);border-radius:var(--r);box-shadow:var(--sh1);padding:16px 18px}
+.panel h2{font-size:1.05rem;color:var(--head);font-weight:800;margin-bottom:4px}
+.panel .note{color:var(--muted);font-size:.88rem;margin-bottom:10px}
+.fld{margin:11px 0}
+.fld label{display:block;font-size:.86rem;color:var(--muted);font-weight:700;margin-bottom:4px}
+.fld select{width:100%;font:inherit;font-size:1rem;padding:9px 11px;border:1px solid var(--line2);border-radius:9px;background:var(--card);color:var(--ink);cursor:pointer}
+.fld select:focus{outline:none;border-color:var(--accent);box-shadow:0 0 0 3px var(--accentbg)}
+.result .badge{display:flex;align-items:baseline;gap:10px;flex-wrap:wrap;padding:14px 16px;border-radius:var(--r);margin-bottom:12px}
+.result .stg{font-size:2rem;font-weight:800;letter-spacing:-.02em;line-height:1}
+.sev-low{background:var(--greenbg);border:1px solid var(--greenbd)} .sev-low .stg{color:var(--green)}
+.sev-mid{background:var(--amberbg);border:1px solid var(--amberbd)} .sev-mid .stg{color:var(--amber)}
+.sev-high{background:var(--redbg);border:1px solid var(--redbd)} .sev-high .stg{color:var(--red)}
+.sev-none{background:#f2f4f7;border:1px solid var(--line2)} .sev-none .stg{color:var(--muted);font-size:1.4rem}
+.badge .via{font-size:.86rem;color:var(--body)}
+.acard{border:1px solid var(--line);border-left:4px solid var(--accent);border-radius:9px;padding:10px 13px;margin:9px 0;font-size:.92rem}
+.acard.amber{border-left-color:var(--action);background:var(--actionbg)}
+.acard.green{border-left-color:var(--green);background:var(--greenbg)}
+.acard .t{font-weight:800;color:var(--head);display:block;margin-bottom:2px;font-size:.9rem}
+.defs{margin-top:12px}
+.defs .dr{display:grid;grid-template-columns:56px 1fr;gap:10px;padding:7px 0;border-top:1px dashed var(--line);font-size:.92rem}
+.defs .dc{font-weight:800;color:var(--accentd);font-family:"SF Mono",ui-monospace,monospace}
+.prov{margin-top:12px;font-size:.85rem;color:var(--muted);border-top:1px solid var(--line);padding-top:9px}
+.prov a{color:var(--accentd)}
+.vchip{display:inline-block;font-size:.76rem;font-weight:800;background:var(--greenbg);color:var(--green);border:1px solid var(--greenbd);border-radius:6px;padding:1px 7px;vertical-align:middle}
+.nccn{margin-top:8px;padding:9px 11px;background:var(--accentbg);border-radius:8px;font-size:.9rem}
+.nccn-h{display:block;font-weight:800;color:var(--accentd);font-size:.82rem;margin-bottom:2px}
+.foot{margin-top:22px;color:var(--muted);font-size:.82rem;text-align:center}
+.discl{background:var(--amberbg);border:1px solid var(--amberbd);color:#7a4e12;border-radius:9px;padding:9px 13px;font-size:.85rem;margin-top:12px}
+@media print{header,.tabs,.hbtn{position:static} .grid{grid-template-columns:1fr} .panel{break-inside:avoid;box-shadow:none} body{--bg:#fff}}
+</style></head><body>
+
+<header><div class="hrow">
+  <div><h1>Esophageal &amp; Thyroid Staging</h1><div class="sub">AJCC 8th · 專業即時分期查詢 · source-verified</div></div>
+  <div class="spacer"></div>
+  <button class="hbtn" onclick="fs(-1)">A−</button>
+  <button class="hbtn" onclick="fs(1)">A+</button>
+  <button class="hbtn" onclick="window.print()">🖨 列印</button>
+</div>
+<div class="tabs">
+  <div class="tab on" id="tab-eso" onclick="show('eso')">🫓 食道 Esophageal</div>
+  <div class="tab" id="tab-thy" onclick="show('thy')">🦋 甲狀腺 Thyroid</div>
+</div></header>
+
+<div class="wrap">
+  <div class="grid" id="view">
+    <section class="panel"><h2 id="fTitle"></h2><div class="note" id="fNote"></div><div id="form"></div></section>
+    <section class="panel result" id="result"></section>
+  </div>
+  <div class="discl">⚠️ 臨床決策支援工具，非診斷。分期規則已對來源逐行查核，臨床使用前仍請對照 AJCC 正本。</div>
+  <div class="foot" id="foot"></div>
+</div>
+
+<script>
+/* ===== verified data (reused verbatim from the Cancer Staging Hub) ===== */
+const T1any = ["T1","T1a","T1b"];
+const ESO = {
+  source: "Rice et al., J Thorac Oncol 2017;12:36–42 (IASLC/AJCC 8th, Figs 4–6)",
+  url: "https://doi.org/10.1016/j.jtho.2016.10.016", verified: true,
+  cTNM_SCC: [
+    {stage:"IVB", M:["M1"], cite:"cSCC: M1"},
+    {stage:"0", T:["Tis"], N:["N0"], M:["M0"], cite:"cSCC: Tis N0"},
+    {stage:"IVA", N:["N3"], M:["M0"], cite:"cSCC: any T N3"},
+    {stage:"IVA", T:["T4","T4a","T4b"], N:["N0","N1","N2"], M:["M0"], cite:"cSCC: T4 N0–2"},
+    {stage:"III", T:["T3"], N:["N1"], M:["M0"], cite:"cSCC: T3 N1"},
+    {stage:"III", T:[...T1any,"T2","T3"], N:["N2"], M:["M0"], cite:"cSCC: T1–3 N2"},
+    {stage:"II", T:["T2"], N:["N0","N1"], M:["M0"], cite:"cSCC: T2 N0–1"},
+    {stage:"II", T:["T3"], N:["N0"], M:["M0"], cite:"cSCC: T3 N0"},
+    {stage:"I", T:[...T1any], N:["N0","N1"], M:["M0"], cite:"cSCC: T1 N0–1"}
+  ],
+  cTNM_EAC: [
+    {stage:"IVB", M:["M1"], cite:"cEAC: M1"},
+    {stage:"0", T:["Tis"], N:["N0"], M:["M0"], cite:"cEAC: Tis N0"},
+    {stage:"IVA", N:["N3"], M:["M0"], cite:"cEAC: any T N3"},
+    {stage:"IVA", T:["T4b"], N:["N0","N1","N2"], M:["M0"], cite:"cEAC: T4b N0–2"},
+    {stage:"IVA", T:[...T1any,"T2","T3","T4a"], N:["N2"], M:["M0"], cite:"cEAC: T1–4a N2"},
+    {stage:"III", T:["T3","T4a"], N:["N0","N1"], M:["M0"], cite:"cEAC: T3/T4a N0–1"},
+    {stage:"III", T:["T2"], N:["N1"], M:["M0"], cite:"cEAC: T2 N1"},
+    {stage:"IIB", T:["T2"], N:["N0"], M:["M0"], cite:"cEAC: T2 N0"},
+    {stage:"IIA", T:[...T1any], N:["N1"], M:["M0"], cite:"cEAC: T1 N1"},
+    {stage:"I", T:[...T1any], N:["N0"], M:["M0"], cite:"cEAC: T1 N0"}
+  ],
+  ypTNM: [
+    {stage:"IVB", M:["M1"], cite:"yp: M1"},
+    {stage:"IVA", N:["N3"], M:["M0"], cite:"yp: any T N3"},
+    {stage:"IVA", T:["T4b"], N:["N0","N1","N2"], M:["M0"], cite:"yp: T4b N0–2"},
+    {stage:"IVA", T:["T4a"], N:["N1","N2"], M:["M0"], cite:"yp: T4a N1–2"},
+    {stage:"IIIB", T:["T4a"], N:["N0"], M:["M0"], cite:"yp: T4a N0"},
+    {stage:"IIIB", T:["T3"], N:["N1"], M:["M0"], cite:"yp: T3 N1"},
+    {stage:"IIIB", T:["T0","Tis",...T1any,"T2","T3"], N:["N2"], M:["M0"], cite:"yp Fig5: T0–2/T3 N2"},
+    {stage:"IIIA", T:["T0","Tis",...T1any,"T2"], N:["N1"], M:["M0"], cite:"yp Fig5: T0–2 N1"},
+    {stage:"II", T:["T3"], N:["N0"], M:["M0"], cite:"yp Fig5: T3 N0"},
+    {stage:"I", T:["T0","Tis",...T1any,"T2"], N:["N0"], M:["M0"], cite:"yp Fig5: T0–2 N0"}
+  ],
+  pTNM_SCC: [
+    {stage:"IVB", M:["M1"], cite:"pSCC: M1"},
+    {stage:"0", T:["Tis"], N:["N0"], M:["M0"], cite:"pSCC: Tis N0"},
+    {stage:"IVA", N:["N3"], M:["M0"], cite:"pSCC: any T N3"},
+    {stage:"IVA", T:["T4b"], N:["N0","N1","N2"], M:["M0"], cite:"pSCC: T4b N0–2"},
+    {stage:"IVA", T:["T4a"], N:["N2"], M:["M0"], cite:"pSCC: T4a N2"},
+    {stage:"IIIB", T:["T4a"], N:["N0","N1"], M:["M0"], cite:"pSCC: T4a N0–1"},
+    {stage:"IIIB", T:["T3"], N:["N1","N2"], M:["M0"], cite:"pSCC: T3 N1–2"},
+    {stage:"IIIB", T:["T2"], N:["N2"], M:["M0"], cite:"pSCC: T2 N2"},
+    {stage:"IIIA", T:["T2"], N:["N1"], M:["M0"], cite:"pSCC: T2 N1"},
+    {stage:"IIIA", T:[...T1any], N:["N2"], M:["M0"], cite:"pSCC: T1 N2"},
+    {stage:"IIB", T:[...T1any], N:["N1"], M:["M0"], cite:"pSCC: T1 N1"},
+    {stage:"IIB", T:["T3"], N:["N0"], location:["upper","middle"], grade:["G2","G3"], M:["M0"], cite:"pSCC Fig4B: T3N0 U/M G2–3"},
+    {stage:"IIA", T:["T3"], N:["N0"], location:["lower"], M:["M0"], cite:"pSCC Fig4B: T3N0 lower (any G)"},
+    {stage:"IIA", T:["T3"], N:["N0"], location:["upper","middle"], grade:["G1"], M:["M0"], cite:"pSCC Fig4B: T3N0 U/M G1"},
+    {stage:"IIA", T:["T2"], N:["N0"], grade:["G2","G3"], M:["M0"], cite:"pSCC: T2 N0 G2–3"},
+    {stage:"IB", T:["T2"], N:["N0"], grade:["G1"], M:["M0"], cite:"pSCC: T2 N0 G1"},
+    {stage:"IB", T:["T1b"], N:["N0"], M:["M0"], cite:"pSCC: T1b N0"},
+    {stage:"IB", T:["T1a"], N:["N0"], grade:["G2","G3"], M:["M0"], cite:"pSCC: T1a N0 G2–3"},
+    {stage:"IA", T:["T1a"], N:["N0"], grade:["G1"], M:["M0"], cite:"pSCC: T1a N0 G1"}
+  ],
+  pTNM_EAC: [
+    {stage:"IVB", M:["M1"], cite:"pEAC: M1"},
+    {stage:"0", T:["Tis"], N:["N0"], M:["M0"], cite:"pEAC: Tis N0"},
+    {stage:"IVA", N:["N3"], M:["M0"], cite:"pEAC: any T N3"},
+    {stage:"IVA", T:["T4b"], N:["N0","N1","N2"], M:["M0"], cite:"pEAC: T4b N0–2"},
+    {stage:"IVA", T:["T4a"], N:["N2"], M:["M0"], cite:"pEAC: T4a N2"},
+    {stage:"IIIB", T:["T4a"], N:["N0","N1"], M:["M0"], cite:"pEAC: T4a N0–1"},
+    {stage:"IIIB", T:["T3"], N:["N1","N2"], M:["M0"], cite:"pEAC: T3 N1–2"},
+    {stage:"IIIB", T:["T2"], N:["N2"], M:["M0"], cite:"pEAC: T2 N2"},
+    {stage:"IIIA", T:["T2"], N:["N1"], M:["M0"], cite:"pEAC: T2 N1"},
+    {stage:"IIIA", T:[...T1any], N:["N2"], M:["M0"], cite:"pEAC: T1 N2"},
+    {stage:"IIB", T:["T3"], N:["N0"], M:["M0"], cite:"pEAC: T3 N0"},
+    {stage:"IIB", T:[...T1any], N:["N1"], M:["M0"], cite:"pEAC: T1 N1"},
+    {stage:"IIA", T:["T2"], N:["N0"], grade:["G3"], M:["M0"], cite:"pEAC: T2 N0 G3"},
+    {stage:"IC", T:["T2"], N:["N0"], grade:["G1","G2"], M:["M0"], cite:"pEAC: T2 N0 G1–2"},
+    {stage:"IC", T:[...T1any], N:["N0"], grade:["G3"], M:["M0"], cite:"pEAC: T1 N0 G3"},
+    {stage:"IB", T:["T1b"], N:["N0"], grade:["G1","G2"], M:["M0"], cite:"pEAC: T1b N0 G1–2"},
+    {stage:"IB", T:["T1a"], N:["N0"], grade:["G2"], M:["M0"], cite:"pEAC: T1a N0 G2"},
+    {stage:"IA", T:["T1a"], N:["N0"], grade:["G1"], M:["M0"], cite:"pEAC: T1a N0 G1"}
+  ]
+};
+const THY = {
+  source: "AJCC Cancer Staging Manual, 8th Edition — Differentiated Thyroid Carcinoma (papillary/follicular)",
+  url: "https://link.springer.com/article/10.1245/s10434-019-07490-w", verified: true,
+  rows: [
+    {stage:"II", age:["under55"], M:["M1"], cite:"DTC <55: any T, any N, M1"},
+    {stage:"I", age:["under55"], M:["M0"], cite:"DTC <55: any T, any N, M0"},
+    {stage:"IVB", age:["over55"], M:["M1"], cite:"DTC ≥55: any T/N, M1"},
+    {stage:"IVA", age:["over55"], T:["T4b"], M:["M0"], cite:"DTC ≥55: T4b, any N"},
+    {stage:"III", age:["over55"], T:["T4a"], M:["M0"], cite:"DTC ≥55: T4a, any N"},
+    {stage:"II", age:["over55"], T:["T3","T3a","T3b"], M:["M0"], cite:"DTC ≥55: T3a/T3b, any N"},
+    {stage:"II", age:["over55"], T:["T1","T1a","T1b","T2"], N:["N1","N1a","N1b"], M:["M0"], cite:"DTC ≥55: T1–2, N1"},
+    {stage:"I", age:["over55"], T:["T1","T1a","T1b","T2"], N:["N0","NX"], M:["M0"], cite:"DTC ≥55: T1–2, N0/NX"}
+  ]
+};
+/* ===== resolver (verbatim) ===== */
+const RESERVED_ROW_KEYS = new Set(["stage","cite","src","locus"]);
+function resolveGroup(rows, ctx){
+  return rows.find(row => Object.keys(row).every(k => {
+    if (RESERVED_ROW_KEYS.has(k)) return true;
+    const val = ctx[k.toLowerCase()];
+    return Array.isArray(row[k]) ? row[k].includes(val) : row[k] === val;
+  })) || null;
+}
+const ESO_SUBSTAGES = { T1:["T1a","T1b"], T4:["T4a","T4b"] };
+function resolveWithSubstages(rows, ctx, subMap){
+  const direct = resolveGroup(rows, ctx); if (direct) return direct;
+  const subs = subMap[ctx.t];
+  if (subs){ const hits = subs.map(t => resolveGroup(rows, {...ctx, t}));
+    if (hits.every(h => h) && hits.every(h => h.stage === hits[0].stage)) return {...hits[0], cite: hits[0].cite + " (substages agree)"}; }
+  return null;
+}
+const resolveEsoGroup = (rows, ctx) => resolveWithSubstages(rows, ctx, ESO_SUBSTAGES);
+const cap = s => s ? s.charAt(0).toUpperCase() + s.slice(1) : s;
+const esc = s => String(s==null?"":s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+
+/* ===== T/N/M definitions (from the hub modules) ===== */
+const ESO_T={T0:"No evidence of primary tumor (e.g. complete response after neoadjuvant therapy).",Tis:"High-grade dysplasia (confined to basement membrane).",T1:"Invades lamina propria, muscularis mucosae, or submucosa.",T1a:"Invades lamina propria or muscularis mucosae.",T1b:"Invades the submucosa.",T2:"Invades the muscularis propria.",T3:"Invades the adventitia.",T4:"Invades adjacent structures.",T4a:"Resectable: pleura, pericardium, or diaphragm.",T4b:"Unresectable: aorta, trachea, etc."};
+const ESO_N={N0:"No regional lymph node metastasis.",N1:"1–2 regional nodes.",N2:"3–6 regional nodes.",N3:"≥7 regional nodes."};
+const ESO_M={M0:"No distant metastasis.",M1:"Distant metastasis."};
+const THY_T={T1:"≤2 cm, limited to thyroid.",T1a:"≤1 cm, limited to thyroid.",T1b:">1–2 cm, limited to thyroid.",T2:">2–4 cm, limited to thyroid.",T3:">4 cm limited, or gross ETE to strap muscles.",T3a:">4 cm, limited to thyroid.",T3b:"Gross ETE invading strap muscles.",T4:"Advanced (T4a/T4b).",T4a:"Gross ETE: subcut, larynx, trachea, esophagus, or RLN.",T4b:"Gross ETE: prevertebral fascia, carotid, or mediastinal vessels."};
+const THY_N={N0:"No regional node metastasis.",N1:"Regional node metastasis.",N1a:"Level VI/VII (central).",N1b:"Lateral cervical (I–V) or retropharyngeal."};
+const THY_M={M0:"No distant metastasis.",M1:"Distant metastasis."};
+
+/* ===== field configs ===== */
+const CFG={
+  eso:{title:"食道癌 Esophageal", note:"AJCC 8th · 依組織型(SCC/EAC)與分期情境(c/p/yp)分流；pTNM SCC 另受 grade 與部位影響。",
+    fields:[
+      {k:"StagingMode",label:"分期情境 Staging mode",opts:[["cTNM","Clinical (cTNM)"],["pTNM","Pathological (pTNM)"],["ypTNM","Post-neoadjuvant (ypTNM)"]]},
+      {k:"Histology",label:"組織型 Histology",opts:[["squamous","Squamous cell (ESCC)"],["adenocarcinoma","Adenocarcinoma (EAC)"]]},
+      {k:"Grade",label:"分化 Grade",opts:[["G1","G1 well diff."],["G2","G2 moderate"],["G3","G3 poor"],["GX","GX"]]},
+      {k:"Location",label:"部位 Primary site",opts:[["lower","Lower thoracic"],["middle","Middle thoracic"],["upper","Upper thoracic"]]},
+      {k:"T",label:"T category",opts:Object.keys(ESO_T).map(c=>[c,c])},
+      {k:"N",label:"N category",opts:Object.keys(ESO_N).map(c=>[c,c])},
+      {k:"M",label:"M category",opts:Object.keys(ESO_M).map(c=>[c,c])}
+    ], Tdef:ESO_T,Ndef:ESO_N,Mdef:ESO_M, source:ESO.source, url:ESO.url},
+  thy:{title:"甲狀腺癌 Thyroid (DTC)", note:"AJCC 8th 分化型甲狀腺癌 · 年齡(<55 / ≥55)是分期軸；<55 最高只到 Stage II。",
+    fields:[
+      {k:"Age",label:"診斷年齡 Age",opts:[["under55","< 55 years"],["over55","≥ 55 years"]]},
+      {k:"T",label:"T category",opts:Object.keys(THY_T).map(c=>[c,c])},
+      {k:"N",label:"N category",opts:Object.keys(THY_N).map(c=>[c,c])},
+      {k:"M",label:"M category",opts:Object.keys(THY_M).map(c=>[c,c])}
+    ], Tdef:THY_T,Ndef:THY_N,Mdef:THY_M, source:THY.source, url:THY.url}
+};
+
+/* ===== stagers (logic reused) ===== */
+function stageEso(v){
+  const {StagingMode:mode,Histology:histology,Grade:grade,Location:location,T:t,N:n,M:m}=v;
+  const cards=[]; const histLabel=histology==="adenocarcinoma"?"Adenocarcinoma (EAC)":"Squamous cell (ESCC)";
+  let nccn;
+  if(m==="M1"){ nccn=histology==="adenocarcinoma"
+    ?"<b>Advanced EAC</b>: doublet chemo + immunotherapy (pembrolizumab/nivolumab) if PD-L1 CPS ≥5. Check HER2 (trastuzumab) & CLDN18.2 (zolbetuximab)."
+    :"<b>Advanced ESCC</b>: doublet chemo + immunotherapy, or chemo-free dual checkpoint (nivolumab + ipilimumab; NCCN Cat 1, CheckMate 648)."; }
+  else if(histology==="adenocarcinoma"){ nccn="<b>Localized EAC</b>: perioperative FLOT ± immunotherapy preferred; preop CRT (CROSS) + surgery acceptable."; }
+  else if(location==="upper"&&mode!=="ypTNM"){ nccn="<b>Upper/cervical ESCC</b>: organ preservation — definitive chemoradiotherapy without surgery."; }
+  else { nccn="<b>Localized ESCC</b>: preop chemoradiation then surgery is standard; definitive CRT a viable alternative."; }
+  const gradeShown=mode==="pTNM"?grade:"not used in cTNM/ypTNM";
+  const locText=(histology==="squamous"&&mode==="pTNM")?` · location ${cap(location)}`:"";
+  cards.push({accent:"amber",title:`Subtype & mode · ${mode}`,html:`<b>${histLabel}</b> · grade <b>${gradeShown}</b>${locText}. SCC and adeno follow distinct pTNM cohorts.<div class="nccn"><span class="nccn-h">NCCN treatment pathway</span>${nccn}</div>`});
+  let rows,tableName;
+  if(mode==="ypTNM"){rows=ESO.ypTNM;tableName="ypTNM (postneoadjuvant, unified)";}
+  else if(mode==="cTNM"){rows=histology==="squamous"?ESO.cTNM_SCC:ESO.cTNM_EAC;tableName=`cTNM (${histology==="squamous"?"SCC":"adeno"})`;}
+  else{rows=histology==="squamous"?ESO.pTNM_SCC:ESO.pTNM_EAC;tableName=`pTNM (${histology==="squamous"?"SCC":"adeno"})`;}
+  const row=resolveEsoGroup(rows,{t,n,m,grade,location});
+  return {stage: row?("Stage "+row.stage):"Stage —", cite:row?row.cite:null, tableName, cards,
+    detail: row?null:"這組 T/N/M(±grade/部位)無法對到單一分期組——請補齊 substage 或對照 AJCC 正本。"};
+}
+function stageThy(v){
+  const {Age:age,T:t,N:n,M:m}=v;
+  const cards=[{accent:"accent",title:"Age-based staging",html:`Age <b>${age==="under55"?"< 55":"≥ 55"}</b>. 分化型甲狀腺癌 <55 歲最高只到 Stage II（即使 M1）。`}];
+  const row=resolveGroup(THY.rows,{age,t,n,m});
+  return {stage: row?("Stage "+row.stage):"Stage —", cite:row?row.cite:null, tableName:"DTC stage groups (age-stratified)", cards,
+    detail: row?null:"這組輸入無法對到單一 DTC 分期組（如泛用 T4，T4a/T4b 分期不同）——請指定 substage。"};
+}
+
+/* ===== UI ===== */
+let CUR="eso"; const state={eso:{},thy:{}};
+function sev(stage){ if(!stage||stage.includes("—"))return"none"; if(/IV/.test(stage))return"high"; if(/III/.test(stage))return"high"; if(/(Stage|Grade) ?II/.test(stage))return"mid"; return"low"; }
+function fs(d){ const el=document.documentElement; let v=parseFloat(getComputedStyle(el).getPropertyValue('--fs'))||17; v=Math.max(14,Math.min(22,v+d)); el.style.setProperty('--fs',v+'px'); }
+function show(which){ CUR=which; document.getElementById('tab-eso').classList.toggle('on',which==="eso"); document.getElementById('tab-thy').classList.toggle('on',which==="thy"); renderForm(); render(); }
+function renderForm(){
+  const c=CFG[CUR]; document.getElementById('fTitle').textContent=c.title; document.getElementById('fNote').textContent=c.note;
+  const st=state[CUR];
+  document.getElementById('form').innerHTML=c.fields.map(f=>{
+    if(!(f.k in st)) st[f.k]=f.opts[0][0];
+    return `<div class="fld"><label>${esc(f.label)}</label><select data-k="${f.k}">`+
+      f.opts.map(o=>`<option value="${o[0]}" ${st[f.k]===o[0]?"selected":""}>${esc(o[1])}</option>`).join("")+`</select></div>`;
+  }).join("");
+  document.querySelectorAll('#form select').forEach(s=>s.addEventListener('change',e=>{ st[e.target.dataset.k]=e.target.value; render(); }));
+}
+function render(){
+  const c=CFG[CUR], v=state[CUR];
+  const res = CUR==="eso"?stageEso(v):stageThy(v);
+  const s=res.stage, sc=sev(s);
+  const defRow=(code,def)=>code&&def[code]?`<div class="dr"><div class="dc">${esc(code)}</div><div>${esc(def[code])}</div></div>`:"";
+  let html=`<div class="badge sev-${sc}"><span class="stg">${esc(s)}</span>`+
+    (res.cite?`<span class="via">← ${esc(res.cite)}</span>`:(res.detail?`<span class="via">${esc(res.detail)}</span>`:""))+`</div>`;
+  html+=res.cards.map(cd=>`<div class="acard ${cd.accent==='amber'?'amber':cd.accent==='green'?'green':''}"><span class="t">${esc(cd.title)}</span>${cd.html}</div>`).join("");
+  html+=`<div class="defs"><div style="font-weight:800;color:var(--head);font-size:.9rem">Selected criteria</div>`+
+    defRow(v.T,c.Tdef)+defRow(v.N,c.Ndef)+defRow(v.M,c.Mdef)+`</div>`;
+  html+=`<div class="prov"><span class="vchip">✓ VERIFIED</span> Source: <a href="${esc(c.url)}" target="_blank" rel="noopener">${esc(c.source)}</a>`+
+    (res.tableName?` · Table: <b>${esc(res.tableName)}</b>`:"")+`. Decision support — confirm against AJCC before clinical use.</div>`;
+  document.getElementById('result').innerHTML=html;
+}
+document.getElementById('foot').textContent="沿用 Cancer Staging Hub 已 verified 規則資料 · 單檔離線可用 · "+new Date().getFullYear();
+renderForm(); render();
+</script>
+</body></html>

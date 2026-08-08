@@ -1,0 +1,2018 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Interactive Cancer Staging Hub</title>
+<!-- No external resources: fully offline, no network calls, no API. -->
+<style>
+/* ============================================================
+   Design tokens — edit here to re-theme the whole app.
+   ============================================================ */
+:root{
+  color-scheme: light;
+  /* Google Finance / Material light theme. */
+  --bg:        #ffffff;
+  --panel:     #ffffff;
+  --panel-2:   #f1f3f4;
+  --card:      #ffffff;
+  --card-hover:#f8f9fa;
+  --border:    #dadce0;
+  --border-soft:#e8eaed;
+  --text:      #202124;
+  --text-dim:  #5f6368;
+  --text-faint:#80868b;
+  --accent:      #1a73e8;
+  --accent-strong:#1967d2;
+  --accent-weak: #e8f0fe;
+  --accent-line: #aecbfa;
+  --amber:  #e8710a;
+  --indigo: #1a73e8;
+  --pink:   #a142f4;
+  --rose:   #c5221f;
+  --green:  #137333;
+  /* stage-severity scale (Material hues) */
+  --sev-low: #137333;  /* 0 / I  green  */
+  --sev-2:   #1a73e8;  /* II     blue   */
+  --sev-3:   #e8710a;  /* III    amber  */
+  --sev-4:   #c5221f;  /* IV     red    */
+  --radius: 8px;
+  --radius-sm: 8px;
+  --shadow: 0 1px 2px 0 rgba(60,64,67,.30), 0 1px 3px 1px rgba(60,64,67,.15);
+}
+
+/* Alternate theme: clinical teal. Toggle sets [data-theme="teal"] on <html>. */
+:root[data-theme="teal"]{
+  --bg:#f5f7fa; --panel:#ffffff; --panel-2:#eef1f5; --card:#ffffff; --card-hover:#f3f5f8;
+  --border:#dde2e8; --border-soft:#eaedf1;
+  --text:#11151b; --text-dim:#566070; --text-faint:#8a93a0;
+  --accent:#0d7d8a; --accent-strong:#0a626d; --accent-weak:#e4f1f3; --accent-line:#bcdfe3;
+  --amber:#9a6700; --indigo:#3b5bdb; --pink:#c2185b; --rose:#b3261e; --green:#18794e;
+  --sev-low:#18794e; --sev-2:#0d7d8a; --sev-3:#9a6700; --sev-4:#b3261e;
+  --radius:14px; --radius-sm:10px;
+  --shadow:0 1px 3px rgba(16,24,40,.08), 0 8px 24px rgba(16,24,40,.05);
+}
+
+*{ box-sizing:border-box; }
+html,body{ height:100%; }
+body{
+  margin:0;
+  background:var(--bg);
+  color:var(--text);
+  font-family:'Google Sans','Roboto',system-ui,-apple-system,'Segoe UI',Arial,sans-serif;
+  font-size:14px;
+  line-height:1.5;
+  -webkit-font-smoothing:antialiased;
+}
+::selection{ background:var(--accent-weak); }
+
+/* scrollbars */
+::-webkit-scrollbar{ width:8px; height:8px; }
+::-webkit-scrollbar-thumb{ background:#c7ccd3; border-radius:99px; }
+::-webkit-scrollbar-thumb:hover{ background:#aeb4bd; }
+::-webkit-scrollbar-track{ background:transparent; }
+
+h1,h2,h3,h4{ margin:0; font-weight:700; color:var(--text); }
+button{ font-family:inherit; cursor:pointer; }
+small{ font-size:11px; }
+b,strong{ color:var(--text); font-weight:600; }
+
+/* ---------- layout shell ---------- */
+.shell{ display:flex; flex-direction:column; height:100vh; }
+.topbar{
+  display:flex; align-items:center; gap:16px;
+  padding:12px 20px; border-bottom:1px solid var(--border);
+  background:var(--panel); flex-shrink:0;
+}
+.brand{ display:flex; align-items:center; gap:10px; font-weight:800; letter-spacing:-.01em; }
+.brand .dot{ width:10px; height:10px; border-radius:99px; background:var(--accent); box-shadow:0 0 0 4px var(--accent-weak); }
+.brand small{ color:var(--text-faint); font-weight:500; }
+.search{ flex:1; max-width:520px; position:relative; }
+.search input{
+  width:100%; background:var(--panel-2); border:1px solid transparent;
+  color:var(--text); border-radius:99px; padding:10px 16px 10px 40px; font-size:14px; outline:none; transition:.15s;
+}
+.search input:hover{ background:#eceef0; }
+.search input:focus{ background:#fff; border-color:var(--border); box-shadow:var(--shadow); }
+.search svg{ position:absolute; left:13px; top:50%; transform:translateY(-50%); color:var(--text-faint); }
+.search .clear{ position:absolute; right:8px; top:50%; transform:translateY(-50%); background:none; border:none; color:var(--text-faint); padding:4px; display:none; }
+.menu-btn{ display:none; background:var(--card); border:1px solid var(--border); border-radius:10px; color:var(--text); padding:8px 10px; }
+.theme-btn{ display:inline-flex; align-items:center; gap:7px; background:var(--card); border:1px solid var(--border); border-radius:99px; padding:7px 13px; font-size:12px; font-weight:600; color:var(--text-dim); flex-shrink:0; }
+.theme-btn:hover{ background:var(--card-hover); }
+.theme-btn .swatch{ width:12px; height:12px; border-radius:50%; background:var(--accent); }
+
+.body{ flex:1; display:flex; min-height:0; }
+
+/* ---------- sidebar ---------- */
+.sidebar{
+  width:264px; flex-shrink:0; border-right:1px solid var(--border);
+  background:var(--panel); overflow-y:auto; padding:18px 14px;
+}
+.progress{ background:var(--card); border:1px solid var(--border); border-radius:var(--radius); padding:14px; margin-bottom:18px; }
+.progress .row{ display:flex; justify-content:space-between; align-items:baseline; margin-bottom:8px; }
+.progress .label{ font-size:11px; text-transform:uppercase; letter-spacing:.08em; color:var(--text-dim); }
+.progress .pct{ font-size:20px; font-weight:800; color:var(--accent); }
+.bar{ height:6px; background:var(--bg); border-radius:99px; overflow:hidden; }
+.bar > span{ display:block; height:100%; background:var(--accent); border-radius:99px; transition:width .35s ease; }
+
+.nav-group{ margin-bottom:16px; }
+.nav-group > .head{ display:flex; justify-content:space-between; align-items:center; padding:0 6px 8px; font-size:11px; text-transform:uppercase; letter-spacing:.08em; color:var(--text-faint); font-weight:700; }
+.nav-group .count{ font-variant-numeric:tabular-nums; color:var(--text-faint); }
+.nav-list{ list-style:none; margin:0; padding:0; display:flex; flex-direction:column; gap:3px; }
+.nav-item{
+  width:100%; text-align:left; background:none; border:none; color:var(--text-dim);
+  display:flex; align-items:center; justify-content:space-between; gap:8px;
+  padding:8px 14px; border-radius:99px; font-size:13px; transition:.15s;
+}
+.nav-item:hover{ background:var(--card); color:var(--text); }
+.nav-item.active{ background:var(--accent-weak); color:var(--accent); font-weight:600; }
+.nav-item .name{ display:flex; align-items:center; gap:9px; }
+.tag-dot{ width:7px; height:7px; border-radius:99px; flex-shrink:0; }
+.nav-item .mark{ font-size:12px; color:var(--text-faint); }
+.nav-item.active .mark{ color:var(--accent); }
+
+/* ---------- main ---------- */
+.main{ flex:1; overflow-y:auto; padding:22px 24px; min-width:0; }
+.profile-head{ background:var(--card); border:1px solid var(--border); border-radius:var(--radius); padding:20px; margin-bottom:18px; box-shadow:var(--shadow); }
+.profile-head .eyebrow{ font-size:11px; text-transform:uppercase; letter-spacing:.1em; color:var(--accent); font-weight:700; }
+.profile-head h2{ font-size:22px; margin:6px 0 8px; letter-spacing:-.02em; }
+.profile-head p{ color:var(--text-dim); margin:0 0 16px; max-width:70ch; }
+.meta-grid{ display:grid; grid-template-columns:1fr 1fr; gap:12px; }
+.meta{ background:var(--panel-2); border:1px solid var(--border-soft); border-radius:var(--radius-sm); padding:11px 13px; }
+.meta .k{ font-size:10px; text-transform:uppercase; letter-spacing:.08em; color:var(--text-faint); margin-bottom:3px; }
+.meta .v{ font-size:13px; color:var(--text); }
+.head-actions{ display:flex; justify-content:flex-end; margin-top:14px; }
+
+.tabs{ display:flex; gap:4px; border-bottom:1px solid var(--border); margin-bottom:18px; }
+.tab{ background:none; border:none; color:var(--text-dim); padding:10px 14px; font-size:13px; font-weight:600; border-bottom:2px solid transparent; margin-bottom:-1px; }
+.tab:hover{ color:var(--text); }
+.tab.active{ color:var(--accent); border-bottom-color:var(--accent); }
+
+/* reference tables */
+.tbl-card{ background:var(--card); border:1px solid var(--border); border-radius:var(--radius); overflow:hidden; margin-bottom:14px; }
+.tbl-card .cap{ padding:11px 16px; border-bottom:1px solid var(--border-soft); font-size:11px; text-transform:uppercase; letter-spacing:.08em; color:var(--text-dim); font-weight:700; }
+table{ width:100%; border-collapse:collapse; font-size:13px; }
+thead th{ text-align:left; padding:9px 16px; font-size:10px; text-transform:uppercase; letter-spacing:.06em; color:var(--text-faint); border-bottom:1px solid var(--border-soft); font-weight:700; }
+tbody td{ padding:11px 16px; border-top:1px solid var(--border-soft); color:var(--text-dim); vertical-align:top; }
+tbody td.code{ color:var(--accent); font-weight:700; white-space:nowrap; width:90px; }
+tbody tr:hover{ background:var(--panel-2); }
+
+/* calculator — chip inputs */
+.calc-grid{ display:flex; flex-direction:column; gap:13px; margin-bottom:16px; }
+.field{ display:flex; flex-direction:column; gap:7px; transition:opacity .2s; }
+.field.dim{ opacity:.45; }
+.field.mode{ background:var(--panel-2); border:1px solid var(--border); border-radius:var(--radius-sm); padding:12px 14px; }
+.field label{ font-size:10px; text-transform:uppercase; letter-spacing:.07em; color:var(--text-dim); font-weight:700; }
+.chips{ display:flex; flex-wrap:wrap; gap:6px; }
+.chip-opt{ background:var(--card); border:1px solid var(--border); color:var(--text-dim); border-radius:8px; padding:7px 13px; font-size:13px; font-weight:600; transition:.12s; }
+.chip-opt:hover:not(:disabled){ border-color:var(--accent-line); color:var(--text); }
+.chip-opt.sel{ background:var(--accent-weak); border-color:var(--accent); color:var(--accent-strong); }
+.chip-opt:focus-visible{ outline:2px solid var(--accent); outline-offset:1px; }
+.chip-opt:disabled{ opacity:.4; cursor:not-allowed; }
+.field.mode .chip-opt{ padding:9px 16px; font-size:13.5px; }
+/* parent + substage cluster (e.g. T1 · T1a · T1b) */
+.chip-group{ display:inline-flex; align-items:center; gap:4px; padding:3px 4px; background:var(--panel-2); border:1px solid var(--border-soft); border-radius:10px; }
+.chip-opt.sub{ padding:5px 9px; font-size:12px; }
+
+/* result extras */
+.summary{ font-size:13px; color:var(--text-dim); margin-bottom:11px; }
+.summary b{ color:var(--text); font-variant-numeric:tabular-nums; }
+.ladder{ display:flex; gap:4px; margin-top:12px; width:100%; }
+.ladder.hidden{ display:none; }
+.ladder .rung{ flex:1; text-align:center; font-size:11px; font-weight:700; padding:5px 4px; border-radius:6px; background:var(--panel-2); color:var(--text-faint); border:1px solid var(--border-soft); }
+.ladder .rung.on{ color:#fff; }
+.ladder .rung.on.s-low{ background:var(--sev-low); border-color:var(--sev-low); }
+.ladder .rung.on.s-2{ background:var(--sev-2); border-color:var(--sev-2); }
+.ladder .rung.on.s-3{ background:var(--sev-3); border-color:var(--sev-3); }
+.ladder .rung.on.s-4{ background:var(--sev-4); border-color:var(--sev-4); }
+.draft-banner{ background:#fdf3e0; border:1px solid #f0dcb0; color:#7a5a17; border-radius:var(--radius-sm); padding:10px 14px; font-size:12px; margin-bottom:14px; display:flex; gap:8px; align-items:center; }
+.draft-banner svg{ color:var(--amber); flex-shrink:0; }
+.draft-banner.hidden{ display:none; }
+.cal-footer{ margin-top:14px; font-size:11px; color:var(--text-faint); display:flex; justify-content:space-between; flex-wrap:wrap; gap:6px; }
+.cal-footer a{ color:var(--accent-strong); text-decoration:none; }
+.cal-footer a:hover{ text-decoration:underline; }
+.head-badge{ display:inline-flex; align-items:center; gap:5px; font-size:10px; font-weight:700; text-transform:uppercase; letter-spacing:.06em; padding:3px 9px; border-radius:99px; border:1px solid; margin-left:10px; vertical-align:middle; }
+.head-badge.verified{ color:var(--green); background:#e7f4ee; border-color:#bfe3d0; }
+.head-badge.draft{ color:var(--amber); background:#fdf3e0; border-color:#f0dcb0; }
+.btn:disabled{ opacity:.45; cursor:not-allowed; }
+
+@media print{
+  .sidebar,.notebook,.topbar,.tabs,.result .actions,.notice,.draft-banner,.no-calc,.search-results,#refPane{ display:none !important; }
+  body,.shell,.body,.main,#dashboard,#calcPane{ display:block !important; height:auto !important; overflow:visible !important; background:#fff !important; }
+  .result{ border:1px solid #888; box-shadow:none; }
+}
+
+.breakdown{ display:grid; grid-template-columns:repeat(3,1fr); gap:10px; margin-bottom:18px; }
+.bk{ background:var(--card); border:1px solid var(--border); border-radius:var(--radius-sm); padding:12px; }
+.bk.wide{ grid-column:1/-1; }
+.bk .bk-h{ font-size:10px; text-transform:uppercase; letter-spacing:.07em; font-weight:700; margin-bottom:5px; display:block; }
+.bk p{ margin:0; color:var(--text-dim); font-size:12px; line-height:1.55; }
+.bk-accent{ color:var(--accent); }
+.bk-amber{ color:var(--amber); }
+.bk-rose{ color:var(--rose); }
+.bk-indigo{ color:var(--indigo); }
+.bk-pink{ color:var(--pink); }
+.nccn{ background:var(--panel-2); border:1px solid var(--border-soft); border-radius:8px; padding:9px 11px; margin-top:9px; font-size:12px; color:var(--text-dim); }
+.nccn .nccn-h{ display:block; font-size:10px; text-transform:uppercase; letter-spacing:.06em; color:var(--accent); font-weight:700; margin-bottom:4px; }
+
+.result{ background:var(--card); border:1px solid var(--border); border-radius:var(--radius); padding:18px 20px; display:flex; align-items:center; justify-content:space-between; gap:18px; flex-wrap:wrap; margin-bottom:16px; box-shadow:var(--shadow); }
+.result .stage-val{ font-size:30px; font-weight:800; letter-spacing:-.02em; color:var(--text); font-variant-numeric:tabular-nums; }
+.result .stage-val.sev-low{ color:var(--sev-low); }
+.result .stage-val.sev-2{ color:var(--sev-2); }
+.result .stage-val.sev-3{ color:var(--sev-3); }
+.result .stage-val.sev-4{ color:var(--sev-4); }
+.result .stage-detail{ color:var(--text-dim); font-size:12.5px; margin-top:4px; max-width:60ch; }
+.result .actions{ display:flex; gap:8px; }
+.status-chip{ display:inline-flex; align-items:center; gap:5px; font-size:10px; font-weight:700; text-transform:uppercase; letter-spacing:.06em; padding:3px 9px; border-radius:99px; border:1px solid; margin-bottom:9px; }
+.status-chip.verified{ color:var(--green); background:#e7f4ee; border-color:#bfe3d0; }
+.status-chip.draft{ color:var(--amber); background:#fdf3e0; border-color:#f0dcb0; }
+.status-chip.hidden{ display:none; }
+
+.notice{ background:#fdf6e8; border:1px solid #f0dcb0; border-radius:var(--radius-sm); padding:13px 15px; display:flex; gap:10px; }
+.notice svg{ color:var(--amber); flex-shrink:0; margin-top:1px; }
+.notice p{ margin:0; font-size:12px; color:#7a5a17; line-height:1.55; }
+.notice b{ color:var(--amber); text-transform:uppercase; letter-spacing:.03em; font-size:11px; }
+
+/* buttons */
+.btn{ display:inline-flex; align-items:center; gap:7px; border-radius:var(--radius-sm); padding:9px 14px; font-size:13px; font-weight:600; border:1px solid var(--border); background:var(--card); color:var(--text); transition:.15s; }
+.btn:hover{ background:var(--card-hover); border-color:#33384180; }
+.btn-primary{ background:var(--accent-strong); border-color:transparent; color:#ffffff; }
+.btn-primary:hover{ filter:brightness(1.08); background:var(--accent-strong); }
+.btn-sm{ padding:7px 11px; font-size:12px; }
+
+/* ---------- notebook ---------- */
+.notebook{ width:344px; flex-shrink:0; border-left:1px solid var(--border); background:var(--panel); display:flex; flex-direction:column; }
+.nb-head{ padding:16px 18px; border-bottom:1px solid var(--border); display:flex; align-items:center; justify-content:space-between; }
+.nb-head h3{ font-size:14px; }
+.nb-head .sub{ font-size:11px; color:var(--text-faint); }
+.nb-editor{ padding:16px 18px; border-bottom:1px solid var(--border); }
+.tag-row{ display:flex; gap:6px; margin-bottom:10px; }
+.tag-btn{ flex:1; background:var(--bg); border:1px solid var(--border); color:var(--text-dim); border-radius:8px; padding:6px; font-size:11px; font-weight:600; transition:.15s; }
+.tag-btn.active.t-case{ background:var(--accent-weak); border-color:var(--accent-line); color:var(--accent); }
+.tag-btn.active.t-observation{ background:rgba(224,164,74,.12); border-color:rgba(224,164,74,.35); color:var(--amber); }
+.tag-btn.active.t-draft{ background:rgba(139,140,240,.12); border-color:rgba(139,140,240,.35); color:var(--indigo); }
+.nb-editor textarea{ width:100%; background:var(--bg); border:1px solid var(--border); color:var(--text); border-radius:var(--radius-sm); padding:10px 12px; font-size:13px; resize:vertical; min-height:64px; outline:none; font-family:inherit; }
+.nb-editor textarea:focus{ border-color:var(--accent-line); }
+.nb-list{ flex:1; overflow-y:auto; padding:14px 18px; display:flex; flex-direction:column; gap:10px; }
+.nb-empty{ text-align:center; color:var(--text-faint); font-size:12px; padding:30px 10px; font-style:italic; }
+.note{ background:var(--card); border:1px solid var(--border); border-radius:var(--radius-sm); padding:11px 12px; position:relative; }
+.note:hover{ border-color:#33384180; }
+.note .del{ position:absolute; top:8px; right:8px; background:none; border:none; color:var(--text-faint); padding:3px; opacity:0; transition:.15s; }
+.note:hover .del{ opacity:1; }
+.note .del:hover{ color:var(--rose); }
+.note .ntag{ display:inline-block; font-size:9px; font-weight:700; text-transform:uppercase; letter-spacing:.05em; padding:2px 7px; border-radius:6px; border:1px solid; }
+.note .ntitle{ font-weight:700; font-size:12.5px; display:flex; align-items:center; gap:6px; margin-bottom:4px; }
+.note .nparams{ font-size:11px; color:var(--text-faint); margin:0 0 8px; }
+.note .nstage{ font-weight:700; color:var(--accent); background:var(--accent-weak); border:1px solid var(--accent-line); padding:2px 8px; border-radius:6px; font-size:12px; }
+.note .nfoot{ display:flex; justify-content:space-between; align-items:center; padding-top:8px; border-top:1px solid var(--border-soft); margin-top:8px; font-size:10px; color:var(--text-faint); font-variant-numeric:tabular-nums; }
+.note .ntext{ white-space:pre-wrap; font-size:13px; color:var(--text-dim); margin:8px 0 0; }
+.nb-foot{ padding:12px 18px; border-top:1px solid var(--border); display:flex; gap:8px; }
+.nb-foot .btn{ flex:1; justify-content:center; }
+
+/* search results */
+.search-results{ display:none; }
+.sr-head{ display:flex; align-items:center; justify-content:space-between; margin-bottom:14px; }
+.sr-head h2{ font-size:18px; }
+.sr-count{ font-size:12px; color:var(--text-dim); }
+.sr-group{ background:var(--card); border:1px solid var(--border); border-radius:var(--radius); padding:16px; margin-bottom:12px; }
+.sr-group > h4{ display:flex; justify-content:space-between; align-items:center; font-size:12px; text-transform:uppercase; letter-spacing:.05em; padding-bottom:10px; border-bottom:1px solid var(--border-soft); margin-bottom:12px; }
+.sr-group > h4 .fw{ font-size:10px; color:var(--text-faint); font-weight:500; }
+.sr-item{ background:var(--panel-2); border:1px solid var(--border-soft); border-radius:var(--radius-sm); padding:11px 13px; display:flex; gap:12px; align-items:flex-start; justify-content:space-between; margin-bottom:8px; }
+.sr-item .codeline{ display:flex; align-items:center; gap:8px; margin-bottom:4px; }
+.sr-item .c{ font-weight:700; color:var(--accent); }
+.sr-item .t{ font-size:9px; text-transform:uppercase; letter-spacing:.05em; color:var(--text-faint); border:1px solid var(--border); border-radius:5px; padding:1px 6px; }
+.sr-item p{ margin:0; font-size:12px; color:var(--text-dim); }
+.sr-empty{ text-align:center; padding:40px; color:var(--text-faint); font-style:italic; }
+mark{ background:var(--accent-weak); color:var(--accent); border-radius:3px; padding:0 2px; }
+
+.no-calc{ text-align:center; color:var(--text-faint); font-size:13px; padding:30px; border:1px dashed var(--border); border-radius:var(--radius); grid-column:1/-1; }
+.hidden{ display:none !important; }
+
+/* ---------- toasts ---------- */
+.toasts{ position:fixed; top:18px; right:18px; z-index:60; display:flex; flex-direction:column; gap:10px; max-width:340px; }
+.toast{ background:var(--panel-2); border:1px solid var(--border); border-radius:var(--radius-sm); padding:11px 14px; display:flex; align-items:center; gap:9px; font-size:13px; font-weight:500; box-shadow:var(--shadow); transform:translateX(8px); opacity:0; transition:.3s; }
+.toast.show{ transform:translateX(0); opacity:1; }
+.toast.success{ border-color:rgba(79,194,126,.4); color:var(--green); }
+.toast.error{ border-color:rgba(224,114,106,.4); color:var(--rose); }
+.toast.info{ border-color:rgba(139,140,240,.4); color:var(--indigo); }
+
+/* ---------- mobile drawer ---------- */
+.drawer{ position:fixed; inset:0; z-index:50; display:none; }
+.drawer.open{ display:block; }
+.drawer .scrim{ position:absolute; inset:0; background:rgba(0,0,0,.6); }
+.drawer .panel{ position:absolute; inset:0 auto 0 0; width:300px; max-width:84vw; background:var(--panel); border-right:1px solid var(--border); padding:18px; overflow-y:auto; }
+.drawer .panel .x{ background:var(--card); border:1px solid var(--border); color:var(--text); border-radius:8px; padding:6px 9px; }
+
+@media(max-width:1100px){
+  .notebook{ display:none; }
+}
+@media(max-width:820px){
+  .sidebar{ display:none; }
+  .menu-btn{ display:inline-flex; }
+  .calc-grid,.breakdown{ grid-template-columns:1fr; }
+  .meta-grid{ grid-template-columns:1fr; }
+  .main{ padding:16px; }
+}
+</style>
+</head>
+<body>
+<div class="shell">
+
+  <!-- top bar -->
+  <header class="topbar">
+    <button class="menu-btn" onclick="UI.toggleDrawer()" aria-label="Menu">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 6h16M4 12h16M4 18h16"/></svg>
+    </button>
+    <div class="brand">
+      <span class="dot"></span>
+      <span>Staging Hub <small>· AJCC 8th reference</small></span>
+    </div>
+    <div class="search">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg>
+      <input id="globalSearch" type="text" placeholder="Search codes, criteria, biomarkers…" oninput="Search.handle()" autocomplete="off">
+      <button class="clear" id="searchClear" onclick="Search.clear()" aria-label="Clear">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 6l12 12M18 6L6 18"/></svg>
+      </button>
+    </div>
+    <button class="theme-btn" id="themeBtn" onclick="UI.toggleTheme()" title="Switch theme">
+      <span class="swatch"></span><span id="themeLabel">Blue</span>
+    </button>
+  </header>
+
+  <div class="body">
+
+    <!-- sidebar -->
+    <aside class="sidebar">
+      <div class="progress">
+        <div class="row">
+          <span class="label">Review progress</span>
+          <span class="pct" id="progressPct">0%</span>
+        </div>
+        <div class="bar"><span id="progressBar" style="width:0%"></span></div>
+      </div>
+      <div id="navGroups"></div>
+    </aside>
+
+    <!-- main -->
+    <main class="main">
+      <!-- dashboard -->
+      <section id="dashboard">
+        <div class="profile-head">
+          <div class="eyebrow" id="cCategory">CANCER MODEL</div>
+          <h2><span id="cName">—</span><span class="head-badge draft" id="cVerified">Draft</span></h2>
+          <p id="cDesc"></p>
+          <div class="meta-grid">
+            <div class="meta"><div class="k">Framework</div><div class="v" id="cFramework"></div></div>
+            <div class="meta"><div class="k">Key biomarkers</div><div class="v" id="cBiomarkers"></div></div>
+          </div>
+          <div class="head-actions">
+            <button class="btn btn-sm" id="reviewBtn" onclick="App.toggleReviewed()">
+              <span class="tag-dot" id="reviewDot" style="background:var(--text-faint)"></span>
+              <span id="reviewLabel">Mark reviewed</span>
+            </button>
+          </div>
+        </div>
+
+        <div class="tabs">
+          <button class="tab" id="tabRefBtn" onclick="UI.tab('ref')">Staging reference</button>
+          <button class="tab" id="tabCalcBtn" onclick="UI.tab('calc')">Stage calculator</button>
+        </div>
+
+        <!-- reference pane -->
+        <div id="refPane">
+          <div id="tablesWrap"></div>
+        </div>
+
+        <!-- calculator pane -->
+        <div id="calcPane" class="hidden">
+          <div class="draft-banner hidden" id="draftBanner">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 9v4m0 4h.01M10.3 3.9 1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0z"/></svg>
+            <span><b>Unverified module.</b> This cancer's staging logic has not been checked against a source — saving is disabled. Use the verified esophageal module as the reference.</span>
+          </div>
+          <div class="calc-grid" id="calcInputs"></div>
+          <div class="breakdown hidden" id="breakdownWrap"><div id="breakdownList" style="display:contents"></div></div>
+          <div class="result">
+            <div style="flex:1; min-width:0;">
+              <span class="status-chip draft hidden" id="statusChip"></span>
+              <div class="summary" id="stageSummary"></div>
+              <div class="stage-val" id="stageValue">Stage —</div>
+              <div class="stage-detail" id="stageDetail">Choose calculator parameters to compute a stage.</div>
+              <div class="ladder hidden" id="ladder"></div>
+            </div>
+            <div class="actions">
+              <button class="btn btn-sm" onclick="App.resetCalc()">New patient</button>
+              <button class="btn btn-sm" onclick="App.copyResult()">Copy</button>
+              <button class="btn btn-primary btn-sm" id="saveStageBtn" onclick="App.saveStaging()">Save to notes</button>
+            </div>
+          </div>
+          <div class="cal-footer" id="calFooter"></div>
+          <div class="notice">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 9v4m0 4h.01M10.3 3.9 1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0z"/></svg>
+            <p><b>Educational use only — not for patient care.</b> This tool uses simplified, partly approximate staging logic and is not a validated implementation of the AJCC 8th Edition. Always confirm against the official AJCC manual and current NCCN guidelines.</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- search results -->
+      <section id="searchResults" class="search-results">
+        <div class="sr-head">
+          <h2>Search results</h2>
+          <span class="sr-count" id="searchCount"></span>
+        </div>
+        <div id="searchList"></div>
+      </section>
+    </main>
+
+    <!-- notebook -->
+    <aside class="notebook">
+      <div class="nb-head">
+        <div>
+          <h3>Case log</h3>
+          <div class="sub">Verified stagings &amp; notes · saved in this browser</div>
+        </div>
+      </div>
+      <div class="nb-editor">
+        <div class="tag-row">
+          <button class="tag-btn t-case" id="tag-case" onclick="Notes.setTag('case')">Case</button>
+          <button class="tag-btn t-observation" id="tag-observation" onclick="Notes.setTag('observation')">Observation</button>
+          <button class="tag-btn t-draft" id="tag-draft" onclick="Notes.setTag('draft')">Draft</button>
+        </div>
+        <textarea id="noteInput" placeholder="Write a quick clinical remark…"></textarea>
+        <button class="btn btn-sm" style="width:100%; justify-content:center; margin-top:9px;" onclick="Notes.saveQuick()">Save note</button>
+      </div>
+      <div class="nb-list" id="notesList">
+        <div class="nb-empty" id="notesEmpty">No notes yet. Save a staging result or write a remark.</div>
+      </div>
+      <div class="nb-foot">
+        <button class="btn btn-sm" onclick="Notes.export()">Export</button>
+        <button class="btn btn-sm" onclick="Notes.clearAll()">Clear all</button>
+      </div>
+    </aside>
+
+  </div>
+</div>
+
+<!-- mobile drawer -->
+<div class="drawer" id="drawer">
+  <div class="scrim" onclick="UI.toggleDrawer()"></div>
+  <div class="panel">
+    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px;">
+      <strong>Select cancer model</strong>
+      <button class="x" onclick="UI.toggleDrawer()">Close</button>
+    </div>
+    <div id="drawerNav"></div>
+  </div>
+</div>
+
+<div class="toasts" id="toasts"></div>
+
+<script>
+/* ================================================================
+   DATA — AJCC 8th reference tables + declarative calculator fields.
+   Staging logic lives in STAGERS (pure functions) further below.
+   ================================================================ */
+const CANCERS = [
+  {
+    id:"esophageal", name:"Esophageal Cancer", category:"solid",
+    desc:"Staging splits into distinct Squamous Cell and Adenocarcinoma protocols, classified by wall-layer invasion depth, differentiation grade, and primary tumor location.",
+    framework:"AJCC TNM 8th Edition", biomarkers:"Anatomical site, histology subtype, grade (G1–G3)",
+    stager:"esophageal",
+    meta:{ edition:"AJCC 8th", verified:true, sourceId:"rice2017", verifiedDate:"2026-06-17", verifiedBy:"manual review", verifiedAgainst:"primary" },
+    tables:{
+      T:[
+        {code:"T0",desc:"No evidence of primary tumor (e.g. complete response after neoadjuvant therapy)."},
+        {code:"Tis",desc:"High-grade dysplasia (malignant cells confined to the basement membrane)."},
+        {code:"T1",desc:"Tumor invades the lamina propria, muscularis mucosae, or submucosa."},
+        {code:"T1a",desc:"Tumor invades the lamina propria or muscularis mucosae."},
+        {code:"T1b",desc:"Tumor invades the submucosa."},
+        {code:"T2",desc:"Tumor invades the muscularis propria (deep muscle wall layer)."},
+        {code:"T3",desc:"Tumor invades the adventitia (outer fibrous layer)."},
+        {code:"T4",desc:"Tumor invades adjacent structures (pleura, pericardium, aorta, trachea, etc.)."},
+        {code:"T4a",desc:"Resectable invasion: pleura, pericardium, or diaphragm."},
+        {code:"T4b",desc:"Unresectable invasion: major structures such as the aorta or trachea."}
+      ],
+      N:[
+        {code:"N0",desc:"No regional lymph node metastasis."},
+        {code:"N1",desc:"Metastasis in 1 to 2 regional lymph nodes."},
+        {code:"N2",desc:"Metastasis in 3 to 6 regional lymph nodes."},
+        {code:"N3",desc:"Metastasis in 7 or more regional lymph nodes."}
+      ],
+      M:[
+        {code:"M0",desc:"No distant metastasis."},
+        {code:"M1",desc:"Distant metastasis (liver, lungs, bones, etc.)."}
+      ]
+    },
+    fields:[
+      {key:"StagingMode",label:"Staging mode",opts:[["cTNM","Clinical (cTNM)"],["pTNM","Pathological (pTNM)"],["ypTNM","Post-neoadjuvant (ypTNM)"]]},
+      {key:"Histology",label:"Histology subtype",opts:[["squamous","Squamous cell (ESCC)"],["adenocarcinoma","Adenocarcinoma (EAC)"]]},
+      {key:"Grade",label:"Histologic grade",opts:[["G1","G1 — well differentiated"],["G2","G2 — moderately diff."],["G3","G3 — poorly diff."],["GX","GX — cannot be assessed"]]},
+      {key:"Location",label:"Primary site",opts:[["lower","Lower thoracic"],["middle","Middle thoracic"],["upper","Upper thoracic"]]},
+      {key:"T",label:"T category",src:"T"},{key:"N",label:"N category",src:"N"},{key:"M",label:"M category",src:"M",short:true}
+    ]
+  },
+  {
+    id:"breast", name:"Breast Cancer", category:"solid",
+    desc:"AJCC 8th Pathological Prognostic Stage: histologic grade and ER, PR, HER2 status are folded into anatomical TNM (post-surgical, no neoadjuvant). ER and PR are entered separately.",
+    framework:"AJCC TNM 8th Edition", biomarkers:"ER, PR, HER2, histologic grade (G1–G3)",
+    stager:"breast",
+    meta:{ edition:"AJCC 8th", verified:true, sourceId:"nccn_breast", verifiedDate:"2026-06-17", verifiedBy:"NCCN PDF review", verifiedAgainst:"primary" },
+    tables:{
+      T:[
+        {code:"Tis",desc:"Carcinoma in situ (DCIS, or Paget disease of the nipple with no invasion)."},
+        {code:"T1",desc:"Tumor 2.0 cm or less in greatest dimension."},
+        {code:"T2",desc:"Tumor greater than 2.0 cm but not more than 5.0 cm."},
+        {code:"T3",desc:"Tumor greater than 5.0 cm."},
+        {code:"T4",desc:"Any size with direct extension to chest wall and/or skin (ulceration / nodules)."}
+      ],
+      N:[
+        {code:"N0",desc:"No regional lymph node metastasis (pN0)."},
+        {code:"N1",desc:"Metastasis in 1–3 axillary nodes (pN1, macrometastasis). Micrometastases (N1mi) are not modelled separately here."},
+        {code:"N2",desc:"Metastasis in 4–9 axillary nodes, or clinically detected internal mammary nodes (pN2)."},
+        {code:"N3",desc:"Metastasis in ≥10 axillary nodes, infraclavicular, supraclavicular, or internal-mammary + axillary nodes (pN3)."}
+      ],
+      M:[{code:"M0",desc:"No clinical or radiographic distant metastasis."},{code:"M1",desc:"Distant metastasis (lungs, bones, liver, brain)."}]
+    },
+    fields:[
+      {key:"Grade",label:"Histologic grade",opts:[["G1","G1 — low grade"],["G2","G2 — intermediate"],["G3","G3 — high grade"]]},
+      {key:"Her2",label:"HER2 status",opts:[["negative","HER2 negative"],["positive","HER2 positive / amplified"]]},
+      {key:"Er",label:"ER (estrogen receptor)",opts:[["positive","ER positive (≥1%)"],["negative","ER negative (<1%)"]]},
+      {key:"Pr",label:"PR (progesterone receptor)",opts:[["positive","PR positive (≥1%)"],["negative","PR negative (<1%)"]]},
+      {key:"T",label:"T category",src:"T"},{key:"N",label:"N category",src:"N"},{key:"M",label:"M category",src:"M",short:true}
+    ]
+  },
+  {
+    id:"prostate", name:"Prostate Cancer", category:"solid",
+    desc:"Anatomical TNM combined with serum PSA and Gleason Grade Groups (1–5) to determine prognostic risk staging.",
+    framework:"AJCC TNM 8th Edition", biomarkers:"Serum PSA, Gleason / Grade Group 1–5",
+    stager:"prostate",
+    meta:{ edition:"AJCC 8th", verified:true, sourceId:"ajcc8_prostate", verifiedDate:"2026-06-17", verifiedBy:"web review", verifiedAgainst:"secondary" },
+    tables:{
+      T:[
+        {code:"T1",desc:"Clinically inapparent tumor, not palpable or visible by imaging."},
+        {code:"T2",desc:"Tumor confined within the prostate capsule."},
+        {code:"T2a",desc:"Tumor involves one-half of one lobe or less."},
+        {code:"T2b",desc:"Tumor involves more than one-half of one lobe but not both lobes."},
+        {code:"T2c",desc:"Tumor involves both lobes."},
+        {code:"T3",desc:"Tumor extends through the capsule (extraprostatic extension)."},
+        {code:"T4",desc:"Tumor fixed or invades adjacent structures (bladder, rectum, levator muscles)."}
+      ],
+      N:[{code:"N0",desc:"No regional lymph node metastasis."},{code:"N1",desc:"Metastasis in regional lymph nodes."}],
+      M:[{code:"M0",desc:"No distant metastasis."},{code:"M1",desc:"Distant metastasis (non-regional nodes, bones, viscera)."}]
+    },
+    fields:[
+      {key:"Psa",label:"Serum PSA",opts:[["low","PSA < 10 ng/mL"],["medium","PSA 10–20 ng/mL"],["high","PSA ≥ 20 ng/mL"]]},
+      {key:"Gleason",label:"Grade Group",opts:[["GG1","GG1 (Gleason ≤ 6)"],["GG2","GG2 (3+4=7)"],["GG3","GG3 (4+3=7)"],["GG4","GG4 (Gleason 8)"],["GG5","GG5 (Gleason 9–10)"]]},
+      {key:"T",label:"T category",src:"T"},{key:"N",label:"N category",src:"N"},{key:"M",label:"M category",src:"M",short:true}
+    ]
+  },
+  {
+    id:"thyroid", name:"Thyroid Cancer", category:"solid",
+    desc:"Uses age at diagnosis as a biological staging factor: patients under 55 cannot exceed Stage II, even with distant metastasis.",
+    framework:"AJCC TNM 8th (Differentiated)", biomarkers:"Age at diagnosis (<55 vs ≥55), histology type",
+    stager:"thyroid",
+    meta:{ edition:"AJCC 8th", verified:true, sourceId:"ajcc8_dtc", verifiedDate:"2026-06-17", verifiedBy:"web review", verifiedAgainst:"secondary" },
+    tables:{
+      T:[
+        {code:"T1",desc:"Tumor ≤ 2 cm, limited to the thyroid."},
+        {code:"T1a",desc:"Tumor ≤ 1 cm, limited to the thyroid."},
+        {code:"T1b",desc:"Tumor > 1 cm but ≤ 2 cm, limited to the thyroid."},
+        {code:"T2",desc:"Tumor > 2 cm but ≤ 4 cm, limited to the thyroid."},
+        {code:"T3",desc:"Tumor > 4 cm limited to thyroid, or gross extrathyroidal extension to strap muscles."},
+        {code:"T3a",desc:"Tumor > 4 cm, limited to the thyroid."},
+        {code:"T3b",desc:"Gross extrathyroidal extension invading strap muscles (any tumor size)."},
+        {code:"T4",desc:"Advanced disease (subdivided into T4a / T4b)."},
+        {code:"T4a",desc:"Gross ETE invading subcutaneous tissue, larynx, trachea, esophagus, or recurrent laryngeal nerve."},
+        {code:"T4b",desc:"Gross ETE invading prevertebral fascia, or encasing carotid artery or mediastinal vessels."}
+      ],
+      N:[
+        {code:"N0",desc:"No regional lymph node metastasis."},
+        {code:"N1",desc:"Regional lymph node metastasis."},
+        {code:"N1a",desc:"Metastasis to level VI/VII (pretracheal, paratracheal, prelaryngeal, or upper mediastinal nodes)."},
+        {code:"N1b",desc:"Metastasis to lateral cervical (levels I–V) or retropharyngeal nodes."}
+      ],
+      M:[{code:"M0",desc:"No distant metastasis."},{code:"M1",desc:"Distant metastasis (lungs, bones, etc.)."}]
+    },
+    fields:[
+      {key:"Age",label:"Age at diagnosis",opts:[["under55","Under 55 years"],["over55","55 years or older"]]},
+      {key:"T",label:"T category",src:"T"},{key:"N",label:"N category",src:"N"},{key:"M",label:"M category",src:"M",short:true}
+    ]
+  },
+  {
+    id:"melanoma", name:"Melanoma", category:"solid",
+    desc:"AJCC 8th cutaneous melanoma. The T category is derived from Breslow thickness and ulceration; clinical (cTNM) and pathological (pTNM) staging differ — pathological resolves the four stage III subgroups.",
+    framework:"AJCC TNM 8th Edition", biomarkers:"Breslow thickness, ulceration, nodal subcategory",
+    stager:"melanoma",
+    meta:{ edition:"AJCC 8th", verified:true, sourceId:"nccn_melanoma", verifiedDate:"2026-06-17", verifiedBy:"NCCN PDF review", verifiedAgainst:"primary" },
+    tables:{
+      T:[
+        {code:"Tis",desc:"Melanoma in situ."},
+        {code:"T1a",desc:"≤ 0.8 mm thick, without ulceration."},
+        {code:"T1b",desc:"< 0.8 mm with ulceration, or 0.8–1.0 mm with or without ulceration."},
+        {code:"T2a",desc:"> 1.0–2.0 mm, without ulceration."},
+        {code:"T2b",desc:"> 1.0–2.0 mm, with ulceration."},
+        {code:"T3a",desc:"> 2.0–4.0 mm, without ulceration."},
+        {code:"T3b",desc:"> 2.0–4.0 mm, with ulceration."},
+        {code:"T4a",desc:"> 4.0 mm, without ulceration."},
+        {code:"T4b",desc:"> 4.0 mm, with ulceration."}
+      ],
+      N:[
+        {code:"N0",desc:"No regional metastases detected."},
+        {code:"N1",desc:"One tumor-involved node, or in-transit/satellite/microsatellite metastasis with no involved nodes."},
+        {code:"N1a",desc:"One clinically occult node (detected by SLN biopsy)."},
+        {code:"N1b",desc:"One clinically detected node."},
+        {code:"N1c",desc:"No regional node disease, but in-transit/satellite/microsatellite metastasis present."},
+        {code:"N2",desc:"Two or three involved nodes, or in-transit/satellite/microsatellite with one involved node."},
+        {code:"N2a",desc:"Two or three clinically occult nodes."},
+        {code:"N2b",desc:"Two or three nodes, at least one clinically detected."},
+        {code:"N2c",desc:"One node (occult or detected) plus in-transit/satellite/microsatellite metastasis."},
+        {code:"N3",desc:"Four or more involved nodes, or matted nodes, or in-transit/satellite/microsatellite with ≥2 involved nodes."},
+        {code:"N3a",desc:"Four or more clinically occult nodes."},
+        {code:"N3b",desc:"Four or more, at least one clinically detected, or any matted nodes."},
+        {code:"N3c",desc:"Two or more occult/detected and/or matted nodes with in-transit/satellite/microsatellite metastasis."}
+      ],
+      M:[{code:"M0",desc:"No evidence of distant metastasis."},{code:"M1",desc:"Distant metastasis (skin/soft tissue, lung, non-CNS viscera, or CNS)."}]
+    },
+    fields:[
+      {key:"StagingMode",label:"Staging mode",opts:[["clinical","Clinical (cTNM)"],["pathological","Pathological (pTNM)"]]},
+      {key:"Breslow",label:"Breslow thickness",opts:[["in-situ","In situ (Tis)"],["le08","≤ 0.8 mm"],["08to1",">0.8–1.0 mm"],["1to2",">1–2 mm"],["2to4",">2–4 mm"],["gt4","> 4 mm"]]},
+      {key:"Ulceration",label:"Ulceration",opts:[["no","Absent"],["yes","Present"]]},
+      {key:"N",label:"N category",src:"N"},{key:"M",label:"M category",src:"M",short:true}
+    ]
+  },
+  {
+    id:"lung", name:"Lung Cancer (NSCLC)", category:"solid",
+    desc:"AJCC 9th Edition NSCLC. The 9th edition subdivides N2 into N2a (single station) and N2b (multiple stations) and M1c into M1c1/M1c2. Pick the T and N substages for a precise group.",
+    framework:"AJCC TNM 9th Edition", biomarkers:"EGFR, ALK, PD-L1, ROS1",
+    stager:"lung",
+    meta:{ edition:"AJCC 9th", verified:true, sourceId:"nccn_nscl", verifiedDate:"2026-06-18", verifiedBy:"NCCN PDF review", verifiedAgainst:"primary" },
+    tables:{
+      T:[
+        {code:"TX",desc:"Primary tumor cannot be assessed, or proven by malignant cytology but not visualized."},
+        {code:"Tis",desc:"Carcinoma in situ."},
+        {code:"T1mi",desc:"Minimally invasive adenocarcinoma (≤ 3 cm, invasive component ≤ 5 mm)."},
+        {code:"T1",desc:"Tumor ≤ 3 cm, surrounded by lung/visceral pleura, no main-bronchus involvement."},
+        {code:"T1a",desc:"≤ 1 cm."},
+        {code:"T1b",desc:"> 1 to 2 cm."},
+        {code:"T1c",desc:"> 2 to 3 cm."},
+        {code:"T2",desc:"> 3 to 5 cm, or main bronchus / visceral pleura / atelectasis."},
+        {code:"T2a",desc:"> 3 to 4 cm."},
+        {code:"T2b",desc:"> 4 to 5 cm."},
+        {code:"T3",desc:"> 5 to 7 cm, or invades chest wall / phrenic nerve / parietal pericardium, or separate nodule(s) in the same lobe."},
+        {code:"T4",desc:"> 7 cm, or invades diaphragm/mediastinum/heart/great vessels/trachea/carina/esophagus, or nodule(s) in a different ipsilateral lobe."}
+      ],
+      N:[
+        {code:"N0",desc:"No regional lymph node metastasis."},
+        {code:"N1",desc:"Ipsilateral peribronchial and/or ipsilateral hilar/intrapulmonary nodes."},
+        {code:"N2a",desc:"Metastasis in a single ipsilateral mediastinal or subcarinal nodal station."},
+        {code:"N2b",desc:"Metastasis in multiple ipsilateral mediastinal/subcarinal nodal stations."},
+        {code:"N3",desc:"Contralateral mediastinal/hilar, or ipsilateral/contralateral scalene or supraclavicular nodes."}
+      ],
+      M:[
+        {code:"M0",desc:"No distant metastasis."},
+        {code:"M1a",desc:"Contralateral-lobe nodule(s); pleural/pericardial nodules or malignant effusion."},
+        {code:"M1b",desc:"Single extrathoracic metastasis in a single organ."},
+        {code:"M1c1",desc:"Multiple extrathoracic metastases in a single organ."},
+        {code:"M1c2",desc:"Multiple extrathoracic metastases in multiple organs."}
+      ]
+    },
+    fields:[{key:"T",label:"T category",src:"T"},{key:"N",label:"N category",src:"N"},{key:"M",label:"M category",src:"M",short:true}]
+  },
+  {
+    id:"colorectal", name:"Colorectal Cancer", category:"solid",
+    desc:"AJCC 8th colon/rectal staging by depth of bowel-wall invasion, nodal burden (N1a/b/c grouped; N2a/N2b distinct), and metastatic spread (M1a/b/c).",
+    framework:"AJCC TNM 8th Edition", biomarkers:"MSI/MMR status, KRAS, NRAS, BRAF",
+    stager:"colorectal",
+    meta:{ edition:"AJCC 8th", verified:true, sourceId:"nccn_colorectal", verifiedDate:"2026-06-18", verifiedBy:"NCCN PDF review", verifiedAgainst:"primary" },
+    tables:{
+      T:[
+        {code:"Tis",desc:"Carcinoma in situ: intraepithelial or invasion of lamina propria."},
+        {code:"T1",desc:"Tumor invades the submucosa."},
+        {code:"T2",desc:"Tumor invades the muscularis propria."},
+        {code:"T3",desc:"Tumor invades through muscularis propria into subserosal tissue."},
+        {code:"T4a",desc:"Tumor penetrates the visceral peritoneum."},
+        {code:"T4b",desc:"Tumor directly invades or adheres to other organs/structures."}
+      ],
+      N:[
+        {code:"N0",desc:"No regional lymph node metastasis."},
+        {code:"N1",desc:"Metastasis in 1–3 regional nodes (N1a/N1b), or tumor deposits without positive nodes (N1c) — these stage identically."},
+        {code:"N2a",desc:"Metastasis in 4–6 regional lymph nodes."},
+        {code:"N2b",desc:"Metastasis in 7 or more regional lymph nodes."}
+      ],
+      M:[
+        {code:"M0",desc:"No distant metastasis."},
+        {code:"M1a",desc:"Metastasis to one site/organ (e.g. liver, lung) without peritoneal involvement."},
+        {code:"M1b",desc:"Metastasis to two or more sites/organs without peritoneal involvement."},
+        {code:"M1c",desc:"Metastasis to the peritoneal surface, with or without other organ involvement."}
+      ]
+    },
+    fields:[{key:"T",label:"T category",src:"T"},{key:"N",label:"N category",src:"N"},{key:"M",label:"M category",src:"M",short:true}]
+  },
+  {
+    id:"thymic", name:"Thymic Carcinoma", category:"solid",
+    desc:"Staged by surgical-pathological assessment of mediastinal organ encroachment. More aggressive than thymomas.",
+    framework:"AJCC TNM 8th Edition", biomarkers:"Histologic grade, Masaoka-Koga classification",
+    stager:"thymic",
+    meta:{ edition:"AJCC 8th", verified:true, sourceId:"itmig_ajcc8", verifiedDate:"2026-07-03", verifiedBy:"IASLC/ITMIG open review", verifiedAgainst:"secondary" },
+    tables:{
+      T:[
+        {code:"T1a",desc:"Tumor limited to thymus/mediastinal fat; no pleural involvement."},
+        {code:"T1b",desc:"Tumor invades mediastinal pleura."},
+        {code:"T2",desc:"Tumor directly invades the pericardium."},
+        {code:"T3",desc:"Tumor invades lung, brachiocephalic vein, SVC, chest wall, or phrenic nerve."},
+        {code:"T4",desc:"Tumor invades aorta, pulmonary artery, myocardium, trachea, or esophagus."}
+      ],
+      N:[
+        {code:"N0",desc:"No regional lymph node metastasis."},
+        {code:"N1",desc:"Metastasis to anterior (mediastinal) nodes."},
+        {code:"N2",desc:"Metastasis to deep intrathoracic or cervical nodes."}
+      ],
+      M:[
+        {code:"M0",desc:"No pleural, pericardial, or distant metastasis."},
+        {code:"M1a",desc:"Pleural or pericardial metastatic nodules."},
+        {code:"M1b",desc:"Distant metastasis to other parenchymal organs."}
+      ]
+    },
+    fields:[{key:"T",label:"T category",src:"T"},{key:"N",label:"N category",src:"N"},{key:"M",label:"M category",src:"M",short:true}]
+  },
+  {
+    id:"lymphoma", name:"Lymphomas (Hodgkin & Non-Hodgkin)", category:"hematologic",
+    desc:"Lugano (modified Ann Arbor) stage. The A/B suffix applies to Hodgkin only; for NHL, report the subtype prognostic index (IPI/FLIPI/MIPI/MALT-IPI).",
+    framework:"Lugano 2014", biomarkers:"PET-CT Deauville score; NHL: subtype prognostic index",
+    stager:"lymphoma",
+    meta:{ edition:"Lugano 2014", verified:true, sourceId:"lugano2014", verifiedDate:"2026-07-03", verifiedBy:"Cheson JCO 2014 + MSD/NCI PDQ cross-check", verifiedAgainst:"secondary" },
+    tables:{
+      "Lymphoma Type":[
+        {code:"Hodgkin (HL)",desc:"Hodgkin lymphoma — the A/B symptom suffix IS applied (it guides early-stage HL treatment)."},
+        {code:"Non-Hodgkin (NHL)",desc:"Non-Hodgkin lymphoma — the A/B suffix is NOT applied (Lugano); report the subtype prognostic index instead."}
+      ],
+      "Staging Criteria":[
+        {code:"Stage I",desc:"One node or a group of adjacent nodes (I); or a single extranodal lesion without nodal involvement (IE)."},
+        {code:"Stage II",desc:"Two or more nodal groups on the same side of the diaphragm (II); or limited contiguous extranodal involvement (IIE). 'II bulky' is recorded separately."},
+        {code:"Stage III",desc:"Nodes on both sides of the diaphragm; or nodes above the diaphragm with splenic involvement."},
+        {code:"Stage IV",desc:"Diffuse or disseminated involvement of one or more extralymphatic organs (± nodal involvement)."}
+      ],
+      "Symptomatic Modifiers":[
+        {code:"Category A",desc:"No B-symptoms."},
+        {code:"Category B",desc:"B-symptoms: fever >38°C, drenching night sweats, and/or unexplained weight loss >10% over 6 months. (Applied to HL only.)"}
+      ]
+    },
+    fields:[
+      {key:"Type",label:"Lymphoma type",src:"Lymphoma Type"},
+      {key:"Lugano",label:"Nodal involvement",src:"Staging Criteria"},
+      {key:"Modifier",label:"B-symptoms (HL only)",src:"Symptomatic Modifiers"}
+    ]
+  },
+  {
+    id:"leukemia", name:"Leukemias (Acute & Chronic)", category:"hematologic",
+    desc:"Does not use solid-tumor staging; classified by cytogenetics, mutation panels, and blast percentages.",
+    framework:"WHO & FAB Classifications", biomarkers:"Ph chromosome, BCR-ABL, NPM1, FLT3-ITD",
+    stager:"none",
+    tables:{
+      "Classification Factors":[
+        {code:"AML",desc:"Myeloblasts ≥ 20% in marrow or blood (or defining genetic anomalies)."},
+        {code:"ALL",desc:"Clonal lymphoid progenitors in marrow; staged by B- or T-cell lineage."},
+        {code:"CLL",desc:"Rai (0–IV) or Binet (A–C) systems based on lymphocytosis, nodes, organomegaly, cytopenias."},
+        {code:"CML",desc:"Chronic (<10% blasts), accelerated (10–19%), or blast crisis (≥20%)."}
+      ]
+    },
+    fields:[]
+  },
+  {
+    id:"myeloma", name:"Multiple Myeloma", category:"hematologic",
+    desc:"Staged biochemically by cell proliferation and structural protein secretion in blood.",
+    framework:"Revised ISS (R-ISS)", biomarkers:"β2-microglobulin, albumin, LDH, cytogenetics",
+    stager:"none",
+    tables:{
+      "Staging Stages":[
+        {code:"R-ISS I",desc:"β2-microglobulin < 3.5 mg/L, albumin ≥ 3.5 g/dL, standard-risk cytogenetics, normal LDH."},
+        {code:"R-ISS II",desc:"Neither Stage I nor Stage III criteria."},
+        {code:"R-ISS III",desc:"β2-microglobulin ≥ 5.5 mg/L plus high-risk cytogenetics [t(4;14), t(14;16), del(17p)] or elevated LDH."}
+      ]
+    },
+    fields:[]
+  },
+  {
+    id:"brain", name:"Brain & Spinal Cord Cancers", category:"cns",
+    desc:"Primary CNS tumors rarely metastasize outside the CNS; TNM does not apply. Classified by WHO cell grade.",
+    framework:"WHO Grading (1–4)", biomarkers:"IDH1/2 mutation, 1p/19q codeletion, MGMT methylation",
+    stager:"cns",
+    tables:{
+      "WHO Tumour Grade":[
+        {code:"Grade I",desc:"Low proliferative potential, discrete, often curable with complete resection."},
+        {code:"Grade II",desc:"Infiltrative, tend to recur; low mitotic activity, can progress to higher grades."},
+        {code:"Grade III",desc:"Histologically malignant with cellular atypia and visible mitotic activity."},
+        {code:"Grade IV",desc:"Highly malignant, necrotizing, brisk mitoses and microvascular proliferation."}
+      ]
+    },
+    fields:[{key:"Grade",label:"WHO histological grade",src:"WHO Tumour Grade"}]
+  },
+  {
+    id:"wilms", name:"Wilms Tumor (Kidney)", category:"pediatric",
+    desc:"Staged surgically and histologically; Stage V is reserved for bilateral renal involvement.",
+    framework:"NWTS / COG", biomarkers:"1p and 16q LOH",
+    stager:"wilms",
+    tables:{
+      "Pediatric Stage":[
+        {code:"Stage I",desc:"Tumor limited to the kidney and completely excised."},
+        {code:"Stage II",desc:"Tumor extends beyond the kidney but is completely excised."},
+        {code:"Stage III",desc:"Residual non-hematogenous tumor confined to the abdomen (rupture, nodes, peritoneal implants)."},
+        {code:"Stage IV",desc:"Hematogenous metastases (lung, liver, bone, brain)."},
+        {code:"Stage V",desc:"Bilateral renal involvement at diagnosis."}
+      ]
+    },
+    fields:[{key:"Wilms",label:"COG / NWTS stage",src:"Pediatric Stage"}]
+  }
+];
+
+const CATEGORIES = [
+  {id:"solid",       title:"Solid Tumors (TNM)", color:"var(--accent)"},
+  {id:"hematologic", title:"Hematologic (Liquid)", color:"var(--amber)"},
+  {id:"cns",         title:"CNS Tumors",          color:"var(--indigo)"},
+  {id:"pediatric",   title:"Pediatric",           color:"var(--pink)"}
+];
+
+/* ================================================================
+   UTILITIES
+   ================================================================ */
+const $ = id => document.getElementById(id);
+const cap = s => s ? s.charAt(0).toUpperCase() + s.slice(1) : s;
+const clip = (s,n) => s.length > n ? s.slice(0,n).trimEnd() + "…" : s;
+function escapeHtml(str){
+  return String(str==null?"":str)
+    .replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;")
+    .replace(/"/g,"&quot;").replace(/'/g,"&#39;");
+}
+const NOT_SUPPORTED = {
+  stage:"Stage —",
+  detail:"This combination is not represented in the simplified staging table. Verify against the full AJCC criteria."
+};
+const findCancer = id => CANCERS.find(c => c.id === id);
+
+/* ================================================================
+   STAGING ENGINES — pure functions: values object in, result out.
+   Logic ported verbatim from the audited reference implementation.
+   Each returns { stage, detail, cards? }.
+   ================================================================ */
+/* ----------------------------------------------------------------
+   SOURCED STAGE-GROUP TABLES (the "rule is data + cited" model).
+   Each row: {stage, T?, N?, M?, grade?, location?, cite}. An omitted
+   field means "any". The resolver returns the FIRST matching row, so
+   rows are ordered most-advanced/most-specific first. If nothing
+   matches, the tool shows the criteria instead of guessing a stage.
+
+   ⚠ STATUS: DRAFT — drafted from best knowledge of AJCC 8th, NOT yet
+   verified row-by-row against the manual. Not for clinical use until
+   each table below is checked off. See the verification checklist.
+   ---------------------------------------------------------------- */
+const T1any = ["T1","T1a","T1b"];
+const ESO = {
+  source: "Rice et al., J Thorac Oncol 2017;12:36–42 (IASLC/AJCC 8th, Figs 4–6)",
+  verified: true,
+  cTNM_SCC: [
+    {stage:"IVB", M:["M1"],                                           cite:"cSCC: M1"},
+    {stage:"0",   T:["Tis"], N:["N0"], M:["M0"],                      cite:"cSCC: Tis N0"},
+    {stage:"IVA", N:["N3"], M:["M0"],                                 cite:"cSCC: any T N3"},
+    {stage:"IVA", T:["T4","T4a","T4b"], N:["N0","N1","N2"], M:["M0"], cite:"cSCC: T4 N0–2"},
+    {stage:"III", T:["T3"], N:["N1"], M:["M0"],                       cite:"cSCC: T3 N1"},
+    {stage:"III", T:[...T1any,"T2","T3"], N:["N2"], M:["M0"],         cite:"cSCC: T1–3 N2"},
+    {stage:"II",  T:["T2"], N:["N0","N1"], M:["M0"],                  cite:"cSCC: T2 N0–1"},
+    {stage:"II",  T:["T3"], N:["N0"], M:["M0"],                       cite:"cSCC: T3 N0"},
+    {stage:"I",   T:[...T1any], N:["N0","N1"], M:["M0"],              cite:"cSCC: T1 N0–1"}
+  ],
+  cTNM_EAC: [
+    {stage:"IVB", M:["M1"],                                           cite:"cEAC: M1"},
+    {stage:"0",   T:["Tis"], N:["N0"], M:["M0"],                      cite:"cEAC: Tis N0"},
+    {stage:"IVA", N:["N3"], M:["M0"],                                 cite:"cEAC: any T N3"},
+    {stage:"IVA", T:["T4b"], N:["N0","N1","N2"], M:["M0"],            cite:"cEAC: T4b N0–2"},
+    {stage:"IVA", T:[...T1any,"T2","T3","T4a"], N:["N2"], M:["M0"],   cite:"cEAC: T1–4a N2"},
+    {stage:"III", T:["T3","T4a"], N:["N0","N1"], M:["M0"],            cite:"cEAC: T3/T4a N0–1"},
+    {stage:"III", T:["T2"], N:["N1"], M:["M0"],                       cite:"cEAC: T2 N1"},
+    {stage:"IIB", T:["T2"], N:["N0"], M:["M0"],                       cite:"cEAC: T2 N0"},
+    {stage:"IIA", T:[...T1any], N:["N1"], M:["M0"],                   cite:"cEAC: T1 N1"},
+    {stage:"I",   T:[...T1any], N:["N0"], M:["M0"],                   cite:"cEAC: T1 N0"}
+  ],
+  ypTNM: [ // common to both histologies after neoadjuvant therapy
+    {stage:"IVB",  M:["M1"],                                          cite:"yp: M1"},
+    {stage:"IVA",  N:["N3"], M:["M0"],                                cite:"yp: any T N3"},
+    {stage:"IVA",  T:["T4b"], N:["N0","N1","N2"], M:["M0"],           cite:"yp: T4b N0–2"},
+    {stage:"IVA",  T:["T4a"], N:["N1","N2"], M:["M0"],                cite:"yp: T4a N1–2"},
+    {stage:"IIIB", T:["T4a"], N:["N0"], M:["M0"],                     cite:"yp: T4a N0"},
+    {stage:"IIIB", T:["T3"], N:["N1"], M:["M0"],                      cite:"yp: T3 N1"},
+    {stage:"IIIB", T:["T0","Tis",...T1any,"T2","T3"], N:["N2"], M:["M0"],  cite:"yp Fig5: T0–2/T3 N2"},
+    {stage:"IIIA", T:["T0","Tis",...T1any,"T2"], N:["N1"], M:["M0"],       cite:"yp Fig5: T0–2 N1"},
+    {stage:"II",   T:["T3"], N:["N0"], M:["M0"],                          cite:"yp Fig5: T3 N0"},
+    {stage:"I",    T:["T0","Tis",...T1any,"T2"], N:["N0"], M:["M0"],       cite:"yp Fig5: T0–2 N0"}
+  ],
+  pTNM_SCC: [ // grade- AND location-dependent (high-risk rows to verify)
+    {stage:"IVB",  M:["M1"],                                          cite:"pSCC: M1"},
+    {stage:"0",    T:["Tis"], N:["N0"], M:["M0"],                     cite:"pSCC: Tis N0"},
+    {stage:"IVA",  N:["N3"], M:["M0"],                                cite:"pSCC: any T N3"},
+    {stage:"IVA",  T:["T4b"], N:["N0","N1","N2"], M:["M0"],           cite:"pSCC: T4b N0–2"},
+    {stage:"IVA",  T:["T4a"], N:["N2"], M:["M0"],                     cite:"pSCC: T4a N2"},
+    {stage:"IIIB", T:["T4a"], N:["N0","N1"], M:["M0"],                cite:"pSCC: T4a N0–1"},
+    {stage:"IIIB", T:["T3"], N:["N1","N2"], M:["M0"],                 cite:"pSCC: T3 N1–2"},
+    {stage:"IIIB", T:["T2"], N:["N2"], M:["M0"],                      cite:"pSCC: T2 N2"},
+    {stage:"IIIA", T:["T2"], N:["N1"], M:["M0"],                      cite:"pSCC: T2 N1"},
+    {stage:"IIIA", T:[...T1any], N:["N2"], M:["M0"],                  cite:"pSCC: T1 N2"},
+    {stage:"IIB",  T:[...T1any], N:["N1"], M:["M0"],                  cite:"pSCC: T1 N1"},
+    {stage:"IIB",  T:["T3"], N:["N0"], location:["upper","middle"], grade:["G2","G3"], M:["M0"], cite:"pSCC Fig4B: T3N0 U/M G2–3"},
+    {stage:"IIA",  T:["T3"], N:["N0"], location:["lower"], M:["M0"],                    cite:"pSCC Fig4B: T3N0 lower (any G)"},
+    {stage:"IIA",  T:["T3"], N:["N0"], location:["upper","middle"], grade:["G1"], M:["M0"], cite:"pSCC Fig4B: T3N0 U/M G1"},
+    {stage:"IIA",  T:["T2"], N:["N0"], grade:["G2","G3"], M:["M0"],   cite:"pSCC: T2 N0 G2–3"},
+    {stage:"IB",   T:["T2"], N:["N0"], grade:["G1"], M:["M0"],        cite:"pSCC: T2 N0 G1"},
+    {stage:"IB",   T:["T1b"], N:["N0"], M:["M0"],                     cite:"pSCC: T1b N0"},
+    {stage:"IB",   T:["T1a"], N:["N0"], grade:["G2","G3"], M:["M0"],  cite:"pSCC: T1a N0 G2–3"},
+    {stage:"IA",   T:["T1a"], N:["N0"], grade:["G1"], M:["M0"],       cite:"pSCC: T1a N0 G1"}
+  ],
+  pTNM_EAC: [ // grade-dependent
+    {stage:"IVB",  M:["M1"],                                          cite:"pEAC: M1"},
+    {stage:"0",    T:["Tis"], N:["N0"], M:["M0"],                     cite:"pEAC: Tis N0"},
+    {stage:"IVA",  N:["N3"], M:["M0"],                                cite:"pEAC: any T N3"},
+    {stage:"IVA",  T:["T4b"], N:["N0","N1","N2"], M:["M0"],           cite:"pEAC: T4b N0–2"},
+    {stage:"IVA",  T:["T4a"], N:["N2"], M:["M0"],                     cite:"pEAC: T4a N2"},
+    {stage:"IIIB", T:["T4a"], N:["N0","N1"], M:["M0"],                cite:"pEAC: T4a N0–1"},
+    {stage:"IIIB", T:["T3"], N:["N1","N2"], M:["M0"],                 cite:"pEAC: T3 N1–2"},
+    {stage:"IIIB", T:["T2"], N:["N2"], M:["M0"],                      cite:"pEAC: T2 N2"},
+    {stage:"IIIA", T:["T2"], N:["N1"], M:["M0"],                      cite:"pEAC: T2 N1"},
+    {stage:"IIIA", T:[...T1any], N:["N2"], M:["M0"],                  cite:"pEAC: T1 N2"},
+    {stage:"IIB",  T:["T3"], N:["N0"], M:["M0"],                      cite:"pEAC: T3 N0"},
+    {stage:"IIB",  T:[...T1any], N:["N1"], M:["M0"],                  cite:"pEAC: T1 N1"},
+    {stage:"IIA",  T:["T2"], N:["N0"], grade:["G3"], M:["M0"],        cite:"pEAC: T2 N0 G3"},
+    {stage:"IC",   T:["T2"], N:["N0"], grade:["G1","G2"], M:["M0"],   cite:"pEAC: T2 N0 G1–2"},
+    {stage:"IC",   T:[...T1any], N:["N0"], grade:["G3"], M:["M0"],    cite:"pEAC: T1 N0 G3"},
+    {stage:"IB",   T:["T1b"], N:["N0"], grade:["G1","G2"], M:["M0"],  cite:"pEAC: T1b N0 G1–2"},
+    {stage:"IB",   T:["T1a"], N:["N0"], grade:["G2"], M:["M0"],       cite:"pEAC: T1a N0 G2"},
+    {stage:"IA",   T:["T1a"], N:["N0"], grade:["G1"], M:["M0"],       cite:"pEAC: T1a N0 G1"}
+  ]
+};
+
+/* ----------------------------------------------------------------
+   SOURCES — central provenance registry. Each staging module's meta
+   references a source id; the result panel and badge render a linked
+   footnote. `kind` distinguishes a primary citation (the AJCC manual
+   or the defining paper) from secondary corroboration (review
+   articles / curated tables) — never blur the two on a clinical tool.
+   ---------------------------------------------------------------- */
+const SOURCES = {
+  rice2017: {
+    title: "Rice et al., J Thorac Oncol 2017;12:36–42 (IASLC/AJCC 8th)",
+    url: "https://doi.org/10.1016/j.jtho.2016.10.016",
+    edition: "AJCC 8th", kind: "primary"
+  },
+  ajcc8_dtc: {
+    title: "AJCC Cancer Staging Manual, 8th Ed. — Differentiated Thyroid Carcinoma",
+    url: "https://link.springer.com/article/10.1245/s10434-019-07490-w",
+    edition: "AJCC 8th", kind: "secondary"
+  },
+  ajcc8_prostate: {
+    title: "AJCC Cancer Staging Manual, 8th Ed. — Prostate prognostic stage groups",
+    url: "https://emedicine.medscape.com/article/2007051-overview",
+    edition: "AJCC 8th", kind: "secondary"
+  },
+  nccn_melanoma: {
+    title: "NCCN Guidelines, Cutaneous Melanoma v2.2026 (ST-2–ST-4) — AJCC 8th tables, used with ACS permission",
+    url: "https://www.nccn.org/guidelines/",
+    edition: "AJCC 8th", kind: "primary"
+  },
+  nccn_breast: {
+    title: "NCCN Guidelines, Invasive Breast Cancer v4.2026 (ST-9–ST-11) — AJCC 8th Pathological Prognostic Stage, used with ACS permission",
+    url: "https://www.nccn.org/guidelines/",
+    edition: "AJCC 8th", kind: "primary"
+  },
+  nccn_nscl: {
+    title: "NCCN Guidelines, NSCLC v6.2026 (ST-5) — AJCC 9th Edition prognostic groups, used with ACS permission",
+    url: "https://www.nccn.org/guidelines/",
+    edition: "AJCC 9th", kind: "primary"
+  },
+  nccn_colorectal: {
+    title: "NCCN Guidelines, Colon Cancer v2.2026 (ST-2, Table 2) — AJCC 8th prognostic groups, used with ACS permission",
+    url: "https://www.nccn.org/guidelines/",
+    edition: "AJCC 8th", kind: "primary"
+  },
+  itmig_ajcc8: {
+    title: "IASLC/ITMIG Thymic Epithelial Tumours Staging (AJCC/UICC 8th) — TNM tables reproduced in open review (PMC10817025)",
+    url: "https://pmc.ncbi.nlm.nih.gov/articles/PMC10817025/",
+    edition: "AJCC 8th", kind: "secondary"
+  },
+  lugano2014: {
+    title: "Cheson BD et al., Lugano classification, J Clin Oncol 2014;32:3059 (A/B = HL-only, cross-checked vs MSD Manual & NCI PDQ)",
+    url: "https://ascopubs.org/doi/10.1200/JCO.2013.54.8800",
+    edition: "Lugano 2014", kind: "secondary"
+  }
+};
+
+// Return the first stage-group row whose constraints all match ctx.
+// Generic: every row key except the reserved ones is treated as a
+// constraint and matched against ctx[key] (array => includes, else ===).
+// This supports any staging axis (T/N/M, grade, location, age, psa,
+// gleason, er, pr, her2, …) without editing the resolver per cancer.
+const RESERVED_ROW_KEYS = new Set(["stage", "cite", "src", "locus"]);
+function resolveGroup(rows, ctx){
+  return rows.find(row =>
+    Object.keys(row).every(k => {
+      if (RESERVED_ROW_KEYS.has(k)) return true;
+      // rows use T/N/M (uppercase) but ctx uses t/n/m; lowercase to match.
+      const val = ctx[k.toLowerCase()];
+      return Array.isArray(row[k]) ? row[k].includes(val) : row[k] === val;
+    })
+  ) || null;
+}
+
+/* Thyroid (differentiated, DTC) AJCC 8th stage groups — age is a staging axis.
+   VERIFIED 2026-06-17 row-by-row against the AJCC 8th DTC stage-grouping table
+   (age cutoff 55; N1 no longer upstages; T3 split into T3a/T3b, both Stage II
+   in ≥55). All 8 rows below confirmed. Note: NX is treated like N0 for the
+   Stage I (≥55) row, matching the manual; the tool's N field offers no NX. */
+const THY = {
+  source: "AJCC Cancer Staging Manual, 8th Edition — Differentiated Thyroid Carcinoma (papillary/follicular)",
+  verified: true,
+  rows: [
+    // age < 55: only Stage I (M0) or Stage II (M1)
+    {stage:"II", age:["under55"], M:["M1"], cite:"DTC <55: any T, any N, M1"},
+    {stage:"I",  age:["under55"], M:["M0"], cite:"DTC <55: any T, any N, M0"},
+    // age >= 55
+    {stage:"IVB", age:["over55"], M:["M1"], cite:"DTC ≥55: any T/N, M1"},
+    {stage:"IVA", age:["over55"], T:["T4b"], M:["M0"], cite:"DTC ≥55: T4b, any N"},
+    {stage:"III", age:["over55"], T:["T4a"], M:["M0"], cite:"DTC ≥55: T4a, any N"},
+    {stage:"II",  age:["over55"], T:["T3","T3a","T3b"], M:["M0"], cite:"DTC ≥55: T3a/T3b, any N"},
+    {stage:"II",  age:["over55"], T:["T1","T1a","T1b","T2"], N:["N1","N1a","N1b"], M:["M0"], cite:"DTC ≥55: T1–2, N1"},
+    {stage:"I",   age:["over55"], T:["T1","T1a","T1b","T2"], N:["N0","NX"], M:["M0"], cite:"DTC ≥55: T1–2, N0/NX"}
+  ]
+};
+
+// Generic substage-aware resolver. A generic parent T (e.g. esophageal
+// T1/T4, or prostate T2) has an unknown substage; resolve only when ALL
+// of its substages agree on the same stage, otherwise return null so the
+// tool asks for the substage instead of guessing.
+const ESO_SUBSTAGES      = { T1: ["T1a","T1b"], T4: ["T4a","T4b"] };
+const PROSTATE_SUBSTAGES = { T2: ["T2a","T2b","T2c"] };
+function resolveWithSubstages(rows, ctx, subMap){
+  const direct = resolveGroup(rows, ctx);
+  if (direct) return direct;
+  const subs = subMap[ctx.t];
+  if (subs){
+    const hits = subs.map(t => resolveGroup(rows, {...ctx, t}));
+    if (hits.every(h => h) && hits.every(h => h.stage === hits[0].stage))
+      return {...hits[0], cite: hits[0].cite + " (substages agree)"};
+  }
+  return null;
+}
+// Back-compat alias for the esophageal call site.
+const resolveEsoGroup = (rows, ctx) => resolveWithSubstages(rows, ctx, ESO_SUBSTAGES);
+
+/* Prostate AJCC 8th prognostic stage groups (acinar adenocarcinoma).
+   Axes: T (with T2a/T2b/T2c substages), N, M, PSA bucket, Grade Group.
+   PSA buckets map to AJCC: low = <10, medium = ≥10 to <20, high = ≥20 ng/mL.
+   T1 is treated as a single unit (T1a–c not separated for grouping).
+   VERIFIED 2026-06-17 against AJCC 8th prostate prognostic stage groups
+   (ISUP Grade Groups; PSA≥20 → IIIA; T3–T4 N0 → IIIB; GG5 → IIIC; T4 no
+   longer Stage IV). Rows ordered most-advanced/most-specific first. */
+const PROSTATE = {
+  rows: [
+    {stage:"IVB",  M:["M1"],                                                          cite:"any T/N, M1"},
+    {stage:"IVA",  N:["N1"], M:["M0"],                                                 cite:"any T, N1, M0"},
+    {stage:"IIIC", N:["N0"], M:["M0"], gleason:["GG5"],                                cite:"any T, N0, M0, Grade Group 5"},
+    {stage:"IIIB", T:["T3","T4"], N:["N0"], M:["M0"], gleason:["GG1","GG2","GG3","GG4"], cite:"T3–T4, N0, M0, GG1–4"},
+    {stage:"IIIA", T:["T1","T2a","T2b","T2c"], N:["N0"], M:["M0"], psa:["high"], gleason:["GG1","GG2","GG3","GG4"], cite:"T1–T2, N0, M0, PSA ≥20, GG1–4"},
+    {stage:"IIC",  T:["T1","T2a","T2b","T2c"], N:["N0"], M:["M0"], psa:["low","medium"], gleason:["GG3","GG4"],      cite:"T1–T2, N0, M0, PSA <20, GG3–4"},
+    {stage:"IIB",  T:["T1","T2a","T2b","T2c"], N:["N0"], M:["M0"], psa:["low","medium"], gleason:["GG2"],            cite:"T1–T2, N0, M0, PSA <20, GG2"},
+    {stage:"IIA",  T:["T2b","T2c"],            N:["N0"], M:["M0"], psa:["low","medium"], gleason:["GG1"],            cite:"T2b–T2c, N0, M0, PSA <20, GG1"},
+    {stage:"IIA",  T:["T1","T2a"],             N:["N0"], M:["M0"], psa:["medium"],       gleason:["GG1"],            cite:"T1–T2a, N0, M0, PSA 10–<20, GG1"},
+    {stage:"I",    T:["T1","T2a"],             N:["N0"], M:["M0"], psa:["low"],          gleason:["GG1"],            cite:"T1–T2a, N0, M0, PSA <10, GG1"}
+  ]
+};
+
+/* Cutaneous melanoma AJCC 8th. The T category is DERIVED from Breslow
+   thickness + ulceration (so T is always a concrete substage — no
+   substage ambiguity). Clinical (cTNM) collapses all node-positive
+   disease into a single Stage III; pathological (pTNM) resolves the
+   four substages IIIA–IIID via the T×N matrix.
+   VERIFIED 2026-06-17 against NCCN Melanoma v2.2026 ST-2…ST-4 (AJCC 8th,
+   reproduced with ACS permission). Rows ordered most-advanced first. */
+function melanomaT(breslow, ulc){
+  const u = ulc === "yes";
+  switch (breslow){
+    case "in-situ": return "Tis";
+    case "le08":    return u ? "T1b" : "T1a";   // ≤0.8 mm
+    case "08to1":   return "T1b";               // >0.8–1.0 mm (a/b both T1b)
+    case "1to2":    return u ? "T2b" : "T2a";
+    case "2to4":    return u ? "T3b" : "T3a";
+    case "gt4":     return u ? "T4b" : "T4a";
+    default:        return null;
+  }
+}
+const MEL_N_POS = ["N1a","N1b","N1c","N2a","N2b","N2c","N3a","N3b","N3c"]; // any N≥1 (pathological subcats)
+const MELANOMA = {
+  cTNM: [ // clinical: single Stage III for any node-positive disease
+    {stage:"IV",  M:["M1"],                                                                      cite:"cTNM: any T/N, M1"},
+    {stage:"III", N:["N1","N2","N3", ...MEL_N_POS], M:["M0"],                                     cite:"cTNM: any T/Tis, ≥N1, M0"},
+    {stage:"0",   T:["Tis"],          N:["N0"], M:["M0"],                                         cite:"cTNM: Tis N0"},
+    {stage:"IIC", T:["T4b"],          N:["N0"], M:["M0"],                                         cite:"cTNM: T4b N0"},
+    {stage:"IIB", T:["T3b","T4a"],    N:["N0"], M:["M0"],                                         cite:"cTNM: T3b/T4a N0"},
+    {stage:"IIA", T:["T2b","T3a"],    N:["N0"], M:["M0"],                                         cite:"cTNM: T2b/T3a N0"},
+    {stage:"IB",  T:["T1b","T2a"],    N:["N0"], M:["M0"],                                         cite:"cTNM: T1b/T2a N0"},
+    {stage:"IA",  T:["T1a"],          N:["N0"], M:["M0"],                                         cite:"cTNM: T1a N0"}
+  ],
+  pTNM: [ // pathological: T×N matrix → IIIA–IIID (T0 unknown-primary rows omitted, not enterable)
+    {stage:"IV",   M:["M1"],                                                                      cite:"pTNM: any T/N, M1"},
+    {stage:"IIID", T:["T4b"],                       N:["N3a","N3b","N3c"],            M:["M0"],    cite:"pTNM: T4b, N3a/b/c"},
+    {stage:"IIIC", T:["T3b","T4a"],                 N:MEL_N_POS,                      M:["M0"],    cite:"pTNM: T3b/T4a, any N≥1"},
+    {stage:"IIIC", T:["T4b"],                       N:["N1a","N1b","N1c","N2a","N2b","N2c"], M:["M0"], cite:"pTNM: T4b, N1a–N2c"},
+    {stage:"IIIC", T:["T1a","T1b","T2a","T2b","T3a"], N:["N2c","N3a","N3b","N3c"],   M:["M0"],    cite:"pTNM: T1a–T3a, N2c/N3a/b/c"},
+    {stage:"IIIB", T:["T1a","T1b","T2a"],           N:["N1b","N1c","N2b"],            M:["M0"],    cite:"pTNM: T1a/b/T2a, N1b/c/N2b"},
+    {stage:"IIIB", T:["T2b","T3a"],                 N:["N1a","N1b","N1c","N2a","N2b"], M:["M0"],   cite:"pTNM: T2b/T3a, N1a–N2b"},
+    {stage:"IIIA", T:["T1a","T1b","T2a"],           N:["N1a","N2a"],                  M:["M0"],    cite:"pTNM: T1a/b/T2a, N1a/N2a"},
+    {stage:"0",    T:["Tis"],                       N:["N0"],                         M:["M0"],    cite:"pTNM: Tis N0"},
+    {stage:"IIC",  T:["T4b"],                       N:["N0"],                         M:["M0"],    cite:"pTNM: T4b N0"},
+    {stage:"IIB",  T:["T3b","T4a"],                 N:["N0"],                         M:["M0"],    cite:"pTNM: T3b/T4a N0"},
+    {stage:"IIA",  T:["T2b","T3a"],                 N:["N0"],                         M:["M0"],    cite:"pTNM: T2b/T3a N0"},
+    {stage:"IB",   T:["T2a"],                       N:["N0"],                         M:["M0"],    cite:"pTNM: T2a N0"},
+    {stage:"IA",   T:["T1a","T1b"],                 N:["N0"],                         M:["M0"],    cite:"pTNM: T1a/T1b N0"}
+  ]
+};
+
+/* Breast AJCC 8th PATHOLOGICAL Prognostic Stage (post-surgery, no neoadjuvant).
+   Each anatomical TNM group carries a 24-cell matrix indexed by
+   grade (G1,G2,G3) × HER2 (+,−) × ER (+,−) × PR (+,−), in that nesting order.
+   TRANSCRIBED + VERIFIED 2026-06-17 from NCCN Invasive Breast Cancer v4.2026
+   Table 4 (ST-9…ST-11; AJCC 8th, reproduced with ACS permission).
+   Genomic (Oncotype DX <11) downstaging in Table 5 is NOT modelled (no input). */
+const BREAST_GROUPS = {
+  A: "T1 N0 · T0/T1 N1mi",
+  B: "T0/T1 N1 · T2 N0",
+  C: "T2 N1 · T3 N0",
+  D: "T0–T2 N2 · T3 N1/N2",
+  E: "T4 · any T N3"
+};
+// index order: [G1,G2,G3] each [HER2+,HER2−] each [ER+,ER−] each [PR+,PR−]
+const BREAST = {
+  A: ["IA","IA","IA","IA", "IA","IA","IA","IA",   // G1
+      "IA","IA","IA","IA", "IA","IA","IA","IB",   // G2
+      "IA","IA","IA","IA", "IA","IA","IA","IB"],  // G3
+  B: ["IA","IB","IB","IIA", "IA","IB","IB","IIA", // G1
+      "IA","IB","IB","IIA", "IA","IIA","IIA","IIA",// G2
+      "IA","IIA","IIA","IIA","IB","IIA","IIA","IIA"],// G3
+  C: ["IA","IA","IIB","IIB", "IA","IA","IIB","IIB",  // G1
+      "IB","IB","IIB","IIB", "IB","IB","IIB","IIB",  // G2
+      "IB","IB","IIB","IIB", "IIA","IIB","IIB","IIIA"],// G3
+  D: ["IB","IB","IIIA","IIIA", "IB","IB","IIIA","IIIA",   // G1
+      "IB","IB","IIIA","IIIA", "IB","IIIA","IIIA","IIIB", // G2
+      "IIA","IIIA","IIIA","IIIA","IIB","IIIA","IIIA","IIIC"],// G3
+  E: ["IIIA","IIIA","IIIB","IIIB", "IIIA","IIIA","IIIB","IIIB", // G1
+      "IIIA","IIIA","IIIB","IIIB", "IIIA","IIIB","IIIB","IIIC", // G2
+      "IIIB","IIIB","IIIB","IIIB", "IIIB","IIIB","IIIC","IIIC"] // G3
+};
+// Map the tool's (T,N) to the AJCC Table-4 anatomical group. M1 handled by the stager.
+function breastGroup(t, n){
+  if (t === "Tis" && n === "N0") return "Tis";
+  if (n === "N3") return "E";        // any T, N3
+  if (t === "T4") return "E";
+  if (t === "T1") return n === "N0" ? "A" : n === "N1" ? "B" : n === "N2" ? "D" : null;
+  if (t === "T2") return n === "N0" ? "B" : n === "N1" ? "C" : n === "N2" ? "D" : null;
+  if (t === "T3") return n === "N0" ? "C" : (n === "N1" || n === "N2") ? "D" : null;
+  return null; // e.g. Tis with N1/N2 (in-situ with nodes) — not a valid prognostic group
+}
+
+/* NSCLC AJCC 9th Edition prognostic groups. New in 9th: N2a (single
+   mediastinal/subcarinal station) vs N2b (multiple stations); M1c1/M1c2.
+   Generic T1 (T1mi/T1a/T1b/T1c) and T2 (T2a/T2b) resolve only when the
+   substages agree, else the tool asks for the substage.
+   VERIFIED 2026-06-18 against NCCN NSCLC v6.2026 Table 2 (ST-5; AJCC 9th,
+   reproduced with ACS permission). Rows ordered most-advanced first. */
+const LUNG_SUBSTAGES = { T1: ["T1mi","T1a","T1b","T1c"], T2: ["T2a","T2b"] };
+const LUNG = [
+  {stage:"IVB",  M:["M1c1","M1c2"],                                            cite:"any T/N, M1c1–c2"},
+  {stage:"IVA",  M:["M1a","M1b"],                                              cite:"any T/N, M1a–b"},
+  {stage:"IIIC", T:["T3","T4"], N:["N3"], M:["M0"],                            cite:"T3/T4 N3 M0"},
+  {stage:"IIIB", T:["T1mi","T1a","T1b","T1c","T2a","T2b"], N:["N3"], M:["M0"], cite:"T1–T2 N3 M0"},
+  {stage:"IIIB", T:["T2a","T2b","T3"], N:["N2b"], M:["M0"],                    cite:"T2–T3 N2b M0"},
+  {stage:"IIIB", T:["T4"], N:["N2a","N2b"], M:["M0"],                          cite:"T4 N2a–N2b M0"},
+  {stage:"IIIA", T:["T1mi","T1a","T1b","T1c"], N:["N2b"], M:["M0"],            cite:"T1 N2b M0"},
+  {stage:"IIIA", T:["T2a","T2b","T3"], N:["N2a"], M:["M0"],                    cite:"T2–T3 N2a M0"},
+  {stage:"IIIA", T:["T3","T4"], N:["N1"], M:["M0"],                            cite:"T3–T4 N1 M0"},
+  {stage:"IIIA", T:["T4"], N:["N0"], M:["M0"],                                 cite:"T4 N0 M0"},
+  {stage:"IIB",  T:["T1mi","T1a","T1b","T1c"], N:["N2a"], M:["M0"],            cite:"T1 N2a M0"},
+  {stage:"IIB",  T:["T2a","T2b"], N:["N1"], M:["M0"],                          cite:"T2a–T2b N1 M0"},
+  {stage:"IIB",  T:["T3"], N:["N0"], M:["M0"],                                 cite:"T3 N0 M0"},
+  {stage:"IIA",  T:["T2b"], N:["N0"], M:["M0"],                                cite:"T2b N0 M0"},
+  {stage:"IIA",  T:["T1mi","T1a","T1b","T1c"], N:["N1"], M:["M0"],             cite:"T1 N1 M0"},
+  {stage:"IB",   T:["T2a"], N:["N0"], M:["M0"],                                cite:"T2a N0 M0"},
+  {stage:"IA3",  T:["T1c"], N:["N0"], M:["M0"],                                cite:"T1c N0 M0"},
+  {stage:"IA2",  T:["T1b"], N:["N0"], M:["M0"],                                cite:"T1b N0 M0"},
+  {stage:"IA1",  T:["T1mi","T1a"], N:["N0"], M:["M0"],                         cite:"T1mi/T1a N0 M0"},
+  {stage:"0",    T:["Tis"], N:["N0"], M:["M0"],                                cite:"Tis N0 M0"},
+  {stage:"Occult carcinoma", T:["TX"], N:["N0"], M:["M0"],                     cite:"TX N0 M0"}
+];
+
+/* Colon/rectal AJCC 8th prognostic groups. N1 (a/b/c) stage identically and
+   are a single input here; N2a vs N2b and M1a/b/c are distinct.
+   VERIFIED 2026-06-18 against NCCN Colon Cancer v2.2026 Table 2 (ST-2; AJCC
+   8th, reproduced with ACS permission). Rows ordered most-advanced first. */
+const COLORECTAL = [
+  {stage:"IVC",  M:["M1c"],                                       cite:"any T/N, M1c"},
+  {stage:"IVB",  M:["M1b"],                                       cite:"any T/N, M1b"},
+  {stage:"IVA",  M:["M1a"],                                       cite:"any T/N, M1a"},
+  {stage:"IIIC", T:["T4a"], N:["N2a"], M:["M0"],                  cite:"T4a N2a M0"},
+  {stage:"IIIC", T:["T3","T4a"], N:["N2b"], M:["M0"],             cite:"T3–T4a N2b M0"},
+  {stage:"IIIC", T:["T4b"], N:["N1","N2a","N2b"], M:["M0"],       cite:"T4b N1–N2 M0"},
+  {stage:"IIIB", T:["T3","T4a"], N:["N1"], M:["M0"],              cite:"T3–T4a N1/N1c M0"},
+  {stage:"IIIB", T:["T2","T3"], N:["N2a"], M:["M0"],              cite:"T2–T3 N2a M0"},
+  {stage:"IIIB", T:["T1","T2"], N:["N2b"], M:["M0"],              cite:"T1–T2 N2b M0"},
+  {stage:"IIIA", T:["T1","T2"], N:["N1"], M:["M0"],               cite:"T1–T2 N1/N1c M0"},
+  {stage:"IIIA", T:["T1"], N:["N2a"], M:["M0"],                   cite:"T1 N2a M0"},
+  {stage:"IIC",  T:["T4b"], N:["N0"], M:["M0"],                   cite:"T4b N0 M0"},
+  {stage:"IIB",  T:["T4a"], N:["N0"], M:["M0"],                   cite:"T4a N0 M0"},
+  {stage:"IIA",  T:["T3"], N:["N0"], M:["M0"],                    cite:"T3 N0 M0"},
+  {stage:"I",    T:["T1","T2"], N:["N0"], M:["M0"],               cite:"T1/T2 N0 M0"},
+  {stage:"0",    T:["Tis"], N:["N0"], M:["M0"],                   cite:"Tis N0 M0"}
+];
+
+/* Thymic epithelial tumours — IASLC/ITMIG AJCC/UICC 8th stage groups.
+   VERIFIED 2026-07-03 row-by-row against an extractable open source
+   (PMC10817025, reproducing the 8th-ed TNM tables). First-match order:
+   M1b→IVB, N2→IVB, M1a→IVA, N1 M0→IVA, then T-driven III/II/I. */
+const THYMIC = [
+  {stage:"IVB", M:["M1b"],                             cite:"any T/N, M1b"},
+  {stage:"IVB", N:["N2"],                              cite:"any T, N2 (M0/M1a)"},
+  {stage:"IVA", M:["M1a"],                             cite:"any T/N, M1a"},
+  {stage:"IVA", N:["N1"], M:["M0"],                    cite:"any T, N1 M0"},
+  {stage:"IIIB", T:["T4"], N:["N0"], M:["M0"],         cite:"T4 N0 M0"},
+  {stage:"IIIA", T:["T3"], N:["N0"], M:["M0"],         cite:"T3 N0 M0"},
+  {stage:"II",   T:["T2"], N:["N0"], M:["M0"],         cite:"T2 N0 M0"},
+  {stage:"I",    T:["T1a","T1b"], N:["N0"], M:["M0"],  cite:"T1 N0 M0"}
+];
+
+const STAGERS = {
+  esophageal(v){
+    const {StagingMode:mode, Histology:histology, Grade:grade, Location:location, T:t, N:n, M:m} = v;
+    const cards = [];
+    const histLabel = histology === "adenocarcinoma" ? "Adenocarcinoma (EAC)" : "Squamous cell (ESCC)";
+    let nccn;
+    if (m === "M1"){
+      nccn = histology === "adenocarcinoma"
+        ? "<b>Advanced EAC</b>: doublet chemotherapy + immunotherapy (pembrolizumab/nivolumab) if PD-L1 CPS ≥ 5. Check HER2 (add trastuzumab) and CLDN18.2 (add zolbetuximab)."
+        : "<b>Advanced ESCC</b>: doublet chemotherapy + immunotherapy, or chemo-free dual checkpoint blockade (nivolumab + ipilimumab), a preferred NCCN Category 1 option (CheckMate 648).";
+    } else {
+      if (histology === "adenocarcinoma"){
+        nccn = "<b>Localized EAC</b>: perioperative FLOT ± peri-operative immunotherapy is the preferred standard; preoperative CRT (CROSS) + surgery is an acceptable alternative.";
+      } else if (location === "upper" && mode !== "ypTNM"){
+        nccn = "<b>Upper/cervical ESCC</b>: proximity to the tracheobronchial tree favors organ preservation — definitive chemoradiotherapy without surgery is recommended.";
+      } else {
+        nccn = "<b>Localized ESCC</b>: preoperative chemoradiation then surgery remains the standard; ESCC is highly radiosensitive, so definitive CRT is a viable alternative.";
+      }
+    }
+    const gradeShown = mode === "pTNM" ? grade : "not used in cTNM/ypTNM";
+    const locText = (histology === "squamous" && mode === "pTNM") ? ` · location ${cap(location)}` : "";
+    cards.push({accent:"amber", title:`Subtype & mode: ${mode}`,
+      html:`Subtype <b>${histLabel}</b> · grade <b>${gradeShown}</b>${locText}. Squamous and adenocarcinoma follow distinct pTNM cohorts.<div class="nccn"><span class="nccn-h">NCCN treatment pathway</span>${nccn}</div>`});
+
+    // Choose the published table for this mode + histology, then look up.
+    let rows, tableName;
+    if (mode === "ypTNM"){ rows = ESO.ypTNM; tableName = "ypTNM (postneoadjuvant, unified)"; }
+    else if (mode === "cTNM"){
+      rows = histology === "squamous" ? ESO.cTNM_SCC : ESO.cTNM_EAC;
+      tableName = `cTNM (clinical, ${histology === "squamous" ? "SCC" : "adeno"})`;
+    } else {
+      rows = histology === "squamous" ? ESO.pTNM_SCC : ESO.pTNM_EAC;
+      tableName = `pTNM (pathologic, ${histology === "squamous" ? "SCC" : "adeno"})`;
+    }
+
+    const row = resolveEsoGroup(rows, {t, n, m, grade, location});
+    const status = ESO.verified
+      ? `<b style="color:var(--green)">✓ Verified</b> against ${escapeHtml(ESO.source)}. (Decision support — confirm before clinical use.)`
+      : `<b>DRAFT — unverified; not for clinical use</b> until checked against the source.`;
+    cards.push({accent: ESO.verified ? "accent" : "amber", title:"Provenance & status",
+      html:`Source: ${escapeHtml(ESO.source)} · Table: <b>${escapeHtml(tableName)}</b>${row ? ` · Row: ${escapeHtml(row.cite)}` : ""}.<br>${status}`});
+
+    let r;
+    if (row) r = {stage: "Stage " + row.stage, detail: `${tableName}. Mapped from ${row.cite}.`};
+    else {
+      const why = (mode === "pTNM" && grade === "GX")
+        ? "Grade cannot be assessed (GX). The pTNM groups are grade-specific and the primer defines no GX group — consult the full AJCC manual."
+        : (t === "T0" && mode !== "ypTNM")
+        ? "T0 (no evidence of primary tumor) has a defined stage group only in ypTNM, not in clinical or pathologic staging."
+        : "These inputs don’t map to a single group (e.g. a generic T1/T4 where substages differ). Refer to the criteria and the AJCC manual rather than assuming a stage.";
+      r = {stage: "Stage —", detail: why};
+    }
+    r.cards = cards;
+    return r;
+  },
+
+  breast(v){
+    const {Er:er, Pr:pr, Her2:her2, Grade:grade, T:t, N:n, M:m} = v;
+    const subtype = (er === "negative" && pr === "negative" && her2 === "negative") ? "Triple-negative"
+      : her2 === "positive" ? "HER2-positive"
+      : (er === "positive" || pr === "positive") ? "HR-positive / HER2-negative" : "—";
+    const cards = [{accent:"rose", title:"Prognostic biomarker profile",
+      html:`ER <b>${er}</b> · PR <b>${pr}</b> · HER2 <b>${her2}</b> · grade <b>${grade}</b> → <b>${subtype}</b>. AJCC 8th folds these biomarkers into anatomical TNM (Pathological Prognostic Stage).`}];
+
+    if (m === "M1") return {stage:"Stage IV", detail:"AJCC 8th breast: any T, any N, M1 → Stage IV.", cards};
+    const g = breastGroup(t, n);
+    if (g === "Tis") return {stage:"Stage 0", detail:"Tis N0 M0 → Stage 0 (carcinoma in situ).", cards};
+    if (!g) return {stage:"Stage —", detail:"No pathological prognostic group for this T/N (e.g. in-situ disease with nodal involvement). Verify against the AJCC table.", cards};
+    const gi = ["G1","G2","G3"].indexOf(grade);
+    if (gi < 0) return {stage:"Stage —", detail:"Select a histologic grade (G1–G3); the prognostic table is grade-dependent.", cards};
+    const idx = ((gi*2 + (her2 === "positive" ? 0 : 1))*2 + (er === "positive" ? 0 : 1))*2 + (pr === "positive" ? 0 : 1);
+    const stage = BREAST[g][idx];
+    cards.push({accent:"accent", title:`Prognostic group ${g}`, html:`Anatomical group <b>${g}</b> (${escapeHtml(BREAST_GROUPS[g])}). Stage read from the grade × HER2 × ER × PR matrix.`});
+    return {stage:"Stage " + stage, detail:`AJCC 8th breast Pathological Prognostic Stage. Group ${g}, ${grade}, HER2 ${her2}, ER ${er}, PR ${pr}.`, cards};
+  },
+
+  prostate(v){
+    const {Psa:psa, Gleason:gleason, T:t, N:n, M:m} = v;
+    const psaLabel = psa === "low" ? "< 10 ng/mL" : psa === "medium" ? "10–<20 ng/mL" : "≥ 20 ng/mL";
+    const cards = [{accent:"accent", title:"Grade Group & PSA profile",
+      html:`PSA <b>${psaLabel}</b> · Grade Group <b>${gleason}</b>. AJCC 8th uses Grade Group and PSA because differentiation and serum markers predict treatment failure better than T stage alone.`}];
+    const row = resolveWithSubstages(PROSTATE.rows, {t, n, m, psa, gleason}, PROSTATE_SUBSTAGES);
+    if (row) return {stage:"Stage " + row.stage, detail:`AJCC 8th prostate prognostic stage group. Mapped from ${row.cite}.`, cards};
+    return {stage:"Stage —", detail:"These inputs don’t map to a single prognostic group (e.g. a generic T2 where T2a vs T2b/T2c differ at this PSA / Grade Group). Specify the T substage.", cards};
+  },
+
+  melanoma(v){
+    const {StagingMode:mode, Breslow:breslow, Ulceration:ulceration, N:n, M:m} = v;
+    const t = melanomaT(breslow, ulceration);
+    const breslowLabel = {"in-situ":"in situ","le08":"≤0.8 mm","08to1":">0.8–1.0 mm","1to2":">1–2 mm","2to4":">2–4 mm","gt4":">4 mm"}[breslow] || breslow;
+    const modeLabel = mode === "clinical" ? "clinical (cTNM)" : "pathological (pTNM)";
+    const cards = [{accent:"accent", title:"Derived T category",
+      html:`Breslow <b>${breslowLabel}</b> · ulceration <b>${ulceration === "yes" ? "present" : "absent"}</b> → <b>${t || "—"}</b>. Thickness sets the T number; ulceration upgrades the a→b subcategory.`}];
+    const rows = mode === "clinical" ? MELANOMA.cTNM : MELANOMA.pTNM;
+    const row = resolveGroup(rows, {t, n, m});
+    if (row) return {stage:"Stage " + row.stage, detail:`AJCC 8th melanoma ${modeLabel}. Mapped from ${row.cite}.`, cards};
+    return {stage:"Stage —", detail:`No ${modeLabel} stage group for ${t || "this tumor"} with ${n}. In pathological staging, pick the precise N subcategory (N1a/b/c…); in-situ with nodal disease has no pathological group.`, cards};
+  },
+
+  thyroid(v){
+    const {Age:age, T:t, N:n, M:m} = v;
+    const cards = [{accent:"accent", title:"Age-based staging",
+      html:`Age <b>${age === "under55" ? "< 55" : "≥ 55"}</b>. Differentiated thyroid cancer under 55 can only be Stage I or II, regardless of T/N/M.`}];
+    const row = resolveGroup(THY.rows, {age, t, n, m});
+    if (row) return {stage:"Stage " + row.stage, detail:`AJCC 8th (DTC). Mapped from ${row.cite}.`, cards};
+    return {stage:"Stage —", detail:"These inputs don’t map to a single DTC group (e.g. a generic T4 where T4a/T4b differ). Specify the substage or verify against the AJCC manual.", cards};
+  },
+
+  lung(v){
+    const {T:t, N:n, M:m} = v;
+    const row = resolveWithSubstages(LUNG, {t, n, m}, LUNG_SUBSTAGES);
+    if (row){
+      const disp = /^(0|I|V)/.test(row.stage) ? "Stage " + row.stage : row.stage;
+      return {stage: disp, detail:`AJCC 9th Edition NSCLC prognostic group. Mapped from ${row.cite}.`};
+    }
+    return {stage:"Stage —", detail:"A generic T1 or T2 at N0 is ambiguous (substages map to different IA/II groups). Specify the T substage (T1mi/T1a/T1b/T1c or T2a/T2b)."};
+  },
+
+  colorectal(v){
+    const {T:t, N:n, M:m} = v;
+    const row = resolveGroup(COLORECTAL, {t, n, m});
+    if (row) return {stage:"Stage " + row.stage, detail:`AJCC 8th colon/rectal prognostic group. Mapped from ${row.cite}.`};
+    return {stage:"Stage —", detail:"This T/N/M combination is not in the simplified colorectal table. Verify against the AJCC manual."};
+  },
+
+  thymic(v){
+    const {T:t, N:n, M:m} = v;
+    const row = resolveGroup(THYMIC, {t, n, m});
+    if (row) return {stage:"Stage " + row.stage, detail:`IASLC/ITMIG AJCC/UICC 8th thymic stage group. Mapped from ${row.cite}.`};
+    return {stage:"Stage —", detail:"This T/N/M combination is not in the thymic 8th-ed table. Verify against the AJCC 8th manual."};
+  },
+
+  tnmSolid(v){
+    const {T:t, N:n, M:m} = v;
+    // startsWith("M1") catches subdivided codes such as thymic M1a / M1b,
+    // which would otherwise fall through and be under-staged.
+    if (m.startsWith("M1")) return {stage:"Stage IV", detail:`Distant metastasis (${m}). Stage IV regardless of regional parameters.`};
+    if (t === "Tis" && n === "N0" && m === "M0") return {stage:"Stage 0", detail:"Pre-invasive carcinoma in situ (Tis). No invasion, no nodal spread."};
+    if (n === "N3") return {stage:"Stage IVA", detail:"Advanced nodal disease (N3). Resectability may be heavily restricted."};
+    if (n === "N2") return {stage:"Stage III", detail:"Regional metastasis (N2). Multiple regional nodes involved."};
+    if (n === "N1") return {stage:"Stage IIB / III", detail:"Nodes involved (N1). IIB up to III depending on primary invasion depth."};
+    if (t === "T1" || t === "T1a" || t === "T1b") return {stage:"Stage IA / IB", detail:"Localized tumor limited to mucosal/submucosal layers. Highly resectable."};
+    if (t === "T2") return {stage:"Stage IIA", detail:"Invasion into the muscularis propria."};
+    if (t === "T3") return {stage:"Stage IIB", detail:"Tumor invades outer connective tissue / adventitia. No lymphatic spread."};
+    if (t === "T4" || t === "T4a" || t === "T4b") return {stage:"Stage IIIA / IIIB", detail:"Direct invasion of adjacent anatomical structures."};
+    return {...NOT_SUPPORTED};
+  },
+
+  lymphoma(v, cancer){
+    const {Type:type, Lugano:criteria, Modifier:modifier} = v;
+    if (!criteria) return {stage:"Stage —", detail:"Select the nodal-involvement (Lugano) stage."};
+    const isHL = type === "Hodgkin (HL)";
+    const nodeRef = cancer.tables["Staging Criteria"].find(r => r.code === criteria);
+    const cards = [{accent:"accent", title:`Nodal status · ${criteria}`, html: escapeHtml(nodeRef ? nodeRef.desc : "")}];
+    if (isHL){
+      const sympRef = cancer.tables["Symptomatic Modifiers"].find(r => r.code === modifier);
+      const suffix = modifier === "Category B" ? "B" : "A";
+      cards.push({accent:"amber", title:`Symptoms · ${modifier || "Category A"}`, html: escapeHtml(sympRef ? sympRef.desc : "No B-symptoms.")});
+      return {
+        stage: `${criteria}${suffix}`,
+        detail: `Hodgkin lymphoma — Lugano ${criteria}, Category ${suffix}. The A/B suffix guides early-stage HL treatment.`,
+        cards
+      };
+    }
+    // Non-Hodgkin (or type not yet chosen): Lugano stage WITHOUT the A/B suffix.
+    cards.push({accent:"amber", title:"NHL — use the subtype prognostic index (not A/B)",
+      html:"Per Lugano the A/B suffix is <b>not</b> applied to NHL. Report the subtype index: DLBCL &rarr; IPI / NCCN-IPI · FL &rarr; FLIPI-1/2 · MCL &rarr; MIPI(b) · MZL &rarr; MALT-IPI. B-symptoms are noted clinically, not as a stage suffix."});
+    return {
+      stage: `${criteria}`,
+      detail: type ? `Non-Hodgkin lymphoma — Lugano ${criteria}. No A/B suffix for NHL; use the subtype prognostic index.`
+                   : `Lugano ${criteria}. Select HL vs NHL — the A/B suffix applies to Hodgkin only.`,
+      cards
+    };
+  },
+
+  cns(v, cancer){
+    const grade = v.Grade;
+    const ref = cancer.tables["WHO Tumour Grade"].find(r => r.code === grade);
+    const detailMap = {
+      "Grade I":"Benign histology, low growth potential; surgical cure typical.",
+      "Grade II":"Slow growth but infiltrative; can transform to high-grade tumors.",
+      "Grade III":"Histologically malignant, mitotic anomalies, high recurrence risk.",
+      "Grade IV":"Highly malignant (e.g. glioblastoma); microvascular proliferation and necrosis."
+    };
+    return {
+      stage:`WHO ${grade}`,
+      detail: detailMap[grade] || "",
+      cards:[{accent:"indigo", title:`Histological profile · ${grade}`, html: escapeHtml(ref ? ref.desc : "")}]
+    };
+  },
+
+  wilms(v, cancer){
+    const stage = v.Wilms;
+    const ref = cancer.tables["Pediatric Stage"].find(r => r.code === stage);
+    return {
+      stage,
+      detail: stage === "Stage V"
+        ? "Reserved for synchronous bilateral renal tumors at diagnosis; nephron-sparing approach."
+        : "COG pathological criteria evaluated; surgical margins and tissue limits verified.",
+      cards:[{accent:"pink", title:`COG parameters · ${stage}`, html: escapeHtml(ref ? ref.desc : "")}]
+    };
+  },
+
+  none(){
+    return {stage:"Not applicable", detail:"Liquid malignancies are classified by blast cells and biochemistry — see the reference panel.", noBreakdown:true};
+  }
+};
+
+/* ================================================================
+   APP STATE
+   ================================================================ */
+const State = {
+  activeId: "esophageal",
+  tab: "calc",
+  reviewed: new Set(),
+  notes: [],
+  noteTag: "case"
+};
+
+/* ================================================================
+   APP — selection, profile, calculator, persistence
+   ================================================================ */
+const App = {
+  active(){ return findCancer(State.activeId); },
+
+  select(id){
+    State.activeId = id;
+    this.loadProfile();
+    Nav.render();
+    $("drawer").classList.remove("open");
+    if ($("globalSearch").value) Search.clear();
+  },
+
+  loadProfile(){
+    const c = this.active();
+    if (!c) return;
+    $("cName").textContent = c.name;
+    $("cDesc").textContent = c.desc;
+    $("cCategory").textContent = c.category.toUpperCase() + " CANCER MODEL";
+    $("cFramework").textContent = c.framework;
+    $("cBiomarkers").textContent = c.biomarkers;
+
+    const verified = this.isVerified(c);
+    const badge = $("cVerified");
+    badge.className = "head-badge " + (verified ? "verified" : "draft");
+    badge.textContent = verified ? "✓ Verified" : "Draft";
+    const edition = (c.meta && c.meta.edition) || "AJCC 8th Edition";
+    $("calFooter").innerHTML = `<span>${this.sourceLine(c)}</span><span>${escapeHtml(edition)}</span>`;
+
+    this.renderReviewBtn();
+    this.renderTables(c);
+    this.renderInputs(c);
+  },
+
+  renderReviewBtn(){
+    const reviewed = State.reviewed.has(State.activeId);
+    $("reviewDot").style.background = reviewed ? "var(--accent)" : "var(--text-faint)";
+    $("reviewLabel").textContent = reviewed ? "Reviewed" : "Mark reviewed";
+  },
+
+  toggleReviewed(){
+    if (State.reviewed.has(State.activeId)){ State.reviewed.delete(State.activeId); Toast.show("Removed from reviewed.", "info"); }
+    else { State.reviewed.add(State.activeId); Toast.show("Marked as reviewed.", "success"); }
+    Store.save(); this.renderReviewBtn(); Nav.render(); Nav.updateProgress();
+  },
+
+  renderTables(c){
+    $("tablesWrap").innerHTML = Object.entries(c.tables).map(([title, rows]) => `
+      <div class="tbl-card">
+        <div class="cap">${escapeHtml(title)} parameters</div>
+        <table>
+          <thead><tr><th>Code</th><th>Definition &amp; criteria</th></tr></thead>
+          <tbody>
+            ${rows.map(r => `<tr><td class="code">${escapeHtml(r.code)}</td><td>${escapeHtml(r.desc)}</td></tr>`).join("")}
+          </tbody>
+        </table>
+      </div>`).join("");
+  },
+
+  // live value store for the active calculator (replaces reading DOM selects)
+  calc: {},
+
+  chipBtn(key, code, desc, sub){
+    return `<button type="button" class="chip-opt${sub ? " sub" : ""} ${this.calc[key]===code ? "sel" : ""}" data-key="${key}" data-val="${escapeHtml(code)}"${desc ? ` title="${escapeHtml(desc)}"` : ""}>${escapeHtml(code)}</button>`;
+  },
+
+  // a field becomes a labelled row of tappable chips; substages (e.g. T1a/T1b)
+  // are clustered under their parent (T1) when the parent code also exists.
+  fieldHtml(c, f){
+    const cls = f.key === "StagingMode" ? "field mode" : "field";
+    let chips;
+    if (f.opts){
+      chips = f.opts.map(([val, label]) =>
+        `<button type="button" class="chip-opt ${this.calc[f.key]===val ? "sel" : ""}" data-key="${f.key}" data-val="${escapeHtml(val)}">${escapeHtml(label)}</button>`).join("");
+    } else {
+      const rows = c.tables[f.src] || [];
+      const codes = rows.map(r => r.code);
+      const parentOf = code => { const m = code.match(/^([A-Za-z]*\d+)[a-z]$/); return m && codes.includes(m[1]) ? m[1] : null; };
+      const out = []; let i = 0;
+      while (i < rows.length){
+        const kids = []; let j = i + 1;
+        while (j < rows.length && parentOf(rows[j].code) === rows[i].code){ kids.push(rows[j]); j++; }
+        if (kids.length){
+          out.push(`<span class="chip-group">${this.chipBtn(f.key, rows[i].code, rows[i].desc)}${kids.map(k => this.chipBtn(f.key, k.code, k.desc, true)).join("")}</span>`);
+          i = j;
+        } else { out.push(this.chipBtn(f.key, rows[i].code, rows[i].desc)); i++; }
+      }
+      chips = out.join("");
+    }
+    return `<div class="${cls}" id="field-${f.key}"><label>${escapeHtml(f.label)}</label><div class="chips">${chips}</div></div>`;
+  },
+
+  renderInputs(c){
+    const wrap = $("calcInputs");
+    $("breakdownWrap").classList.add("hidden");
+    $("breakdownList").innerHTML = "";
+    this.calc = {};
+
+    if (!c.fields.length){
+      wrap.innerHTML = `<div class="no-calc">No stage calculator for this model — it is classified by cytogenetics/biochemistry. See the reference panel.</div>`;
+      const res = STAGERS[c.stager]();
+      $("stageValue").textContent = res.stage;
+      $("stageDetail").textContent = res.detail;
+      $("stageValue").dataset.empty = "1";
+      $("stageSummary").textContent = "";
+      this.paintStage(""); this.renderLadder(""); this.setStatusChip(c, false);
+      $("draftBanner").classList.add("hidden");
+      $("saveStageBtn").disabled = true;
+      return;
+    }
+
+    // opts fields default to their first value; src fields start empty (required)
+    c.fields.forEach(f => { this.calc[f.key] = f.opts ? f.opts[0][0] : ""; });
+    wrap.innerHTML = c.fields.map(f => this.fieldHtml(c, f)).join("");
+
+    wrap.querySelectorAll(".chip-opt").forEach(btn => btn.addEventListener("click", () => {
+      if (btn.disabled) return;
+      const key = btn.dataset.key;
+      App.calc[key] = btn.dataset.val;
+      // clear selection across the WHOLE field (chips may be nested in groups)
+      $("field-" + key).querySelectorAll(".chip-opt").forEach(b => b.classList.toggle("sel", b === btn));
+      App.compute();
+    }));
+    this.compute();
+  },
+
+  resetCalc(){
+    this.renderInputs(this.active());
+    Toast.show("Calculator cleared for a new patient.", "info");
+  },
+
+  gather(){ return {...this.calc}; },
+
+  isComplete(c, v){
+    // src-based selects carry a "Select…" placeholder and are required
+    return c.fields.every(f => f.opts ? true : !!v[f.key]);
+  },
+
+  // Severity class for instant visual triage (checked most-severe first).
+  severityClass(stage){
+    const s = stage || "";
+    if (s.includes("—") || /applicable/i.test(s)) return "";
+    if (s.includes("IV")) return "sev-4";
+    if (s.includes("III")) return "sev-3";
+    if (s.includes("II")) return "sev-2";
+    if (s.includes("Stage I") || s.includes("Grade I") || s.includes("Stage 0")) return "sev-low";
+    return "";
+  },
+  paintStage(stage){
+    const el = $("stageValue");
+    el.classList.remove("sev-low","sev-2","sev-3","sev-4");
+    const cls = this.severityClass(stage);
+    if (cls) el.classList.add(cls);
+  },
+  setStatusChip(c, show){
+    const chip = $("statusChip");
+    if (!show){ chip.classList.add("hidden"); return; }
+    const verified = this.isVerified(c);
+    chip.classList.remove("hidden","verified","draft");
+    chip.classList.add(verified ? "verified" : "draft");
+    chip.textContent = verified ? "✓ Verified vs source" : "Draft — unverified";
+  },
+
+  isVerified(c){ return !!(c.meta && c.meta.verified); },
+
+  // A linked, primary/secondary-labelled provenance line built from
+  // the module's meta + the SOURCES registry. Returns plain text when
+  // the module is unverified.
+  sourceLine(c){
+    if (!c.meta || !c.meta.verified) return "Not yet verified against a primary source.";
+    const s = SOURCES[c.meta.sourceId];
+    const link = s && s.url
+      ? `<a href="${s.url}" target="_blank" rel="noopener">${escapeHtml(s.title)}</a>`
+      : escapeHtml((s && s.title) || c.meta.sourceId || "");
+    const kind = c.meta.verifiedAgainst === "primary" ? "primary source" : "secondary source";
+    return `Source: ${link} · verified vs ${kind} ${escapeHtml(c.meta.verifiedDate || "")}`;
+  },
+
+  summaryLine(c, v, res){
+    const parts = c.fields.filter(f => v[f.key]).map(f => escapeHtml(v[f.key]));
+    return `<b>${parts.join(" · ")}</b> &rarr; <b>${escapeHtml(res.stage)}</b>`;
+  },
+
+  ladderIndex(s){
+    if (s.includes("IV")) return 4;
+    if (s.includes("III")) return 3;
+    if (s.includes("II")) return 2;
+    if (s.includes("Stage 0") || s.includes("Grade 0")) return 0;
+    if (s.includes("Stage I") || s.includes("Grade I")) return 1;
+    return -1;
+  },
+  renderLadder(stage){
+    const el = $("ladder");
+    const idx = this.ladderIndex(stage || "");
+    if (idx < 0){ el.classList.add("hidden"); el.innerHTML = ""; return; }
+    const sev = (this.severityClass(stage) || "sev-low").replace("sev-", "s-");
+    el.classList.remove("hidden");
+    el.innerHTML = ["0","I","II","III","IV"].map((r, i) =>
+      `<div class="rung ${i === idx ? "on " + sev : ""}">${r}</div>`).join("");
+  },
+
+  compute(){
+    const c = this.active();
+    const v = this.gather();
+
+    if (c.stager === "esophageal") this.applyEsophagealVisibility(v);
+    const verified = this.isVerified(c);
+    this.setStatusChip(c, true);
+    $("draftBanner").classList.toggle("hidden", verified);
+
+    if (!this.isComplete(c, v)){
+      $("breakdownWrap").classList.add("hidden");
+      $("breakdownList").innerHTML = "";
+      $("stageSummary").textContent = "";
+      $("stageValue").textContent = "Stage —";
+      $("stageDetail").textContent = "Select the required fields above to compute a stage.";
+      $("stageValue").dataset.empty = "1";
+      this.paintStage(""); this.renderLadder("");
+      $("saveStageBtn").disabled = true;
+      return;
+    }
+
+    const res = STAGERS[c.stager](v, c) || {...NOT_SUPPORTED};
+    $("stageValue").textContent = res.stage;
+    $("stageDetail").textContent = res.detail;
+    $("stageValue").dataset.empty = res.stage === "Stage —" ? "1" : "";
+    $("stageSummary").innerHTML = this.summaryLine(c, v, res);
+    this.paintStage(res.stage); this.renderLadder(res.stage);
+    $("saveStageBtn").disabled = !verified || res.stage === "Stage —";
+    this.renderBreakdown(c, v, res);
+  },
+
+  renderBreakdown(c, v, res){
+    const items = [];
+    if (!res.noBreakdown){
+      ["T","N","M"].forEach(k => {
+        const f = c.fields.find(f => f.key === k);
+        if (f && v[k]){
+          const ref = (c.tables[k] || []).find(r => r.code === v[k]);
+          if (ref) items.push({accent:"accent", title:`${k} · ${v[k]}`, html: escapeHtml(ref.desc)});
+        }
+      });
+    }
+    (res.cards || []).forEach(card => items.push(card));
+
+    if (!items.length){ $("breakdownWrap").classList.add("hidden"); $("breakdownList").innerHTML = ""; return; }
+    $("breakdownWrap").classList.remove("hidden");
+    $("breakdownList").innerHTML = items.map(it => {
+      const wide = it.title && (it.title.includes(":") || (it.html && it.html.length > 120)) ? " wide" : "";
+      return `<div class="bk${wide}"><span class="bk-h bk-${it.accent||'accent'}">${escapeHtml(it.title)}</span><p>${it.html}</p></div>`;
+    }).join("");
+  },
+
+  applyEsophagealVisibility(v){
+    const set = (key, dim) => {
+      const wrap = $("field-" + key);
+      if (!wrap) return;
+      wrap.classList.toggle("dim", dim);
+      wrap.querySelectorAll(".chip-opt").forEach(b => b.disabled = dim);
+    };
+    if (v.StagingMode === "ypTNM"){ set("Histology", true);  set("Grade", true);  set("Location", true); }
+    else if (v.StagingMode === "cTNM"){ set("Histology", false); set("Grade", true);  set("Location", true); }
+    else { set("Histology", false); set("Grade", false); set("Location", v.Histology !== "squamous"); }
+  },
+
+  paramSummary(c, v){
+    return c.fields.filter(f => v[f.key]).map(f => v[f.key]).join(" · ");
+  },
+
+  saveStaging(){
+    const c = this.active();
+    if (!c.fields.length){ Toast.show("No calculator for this model.", "error"); return; }
+    if (!this.isVerified(c)){ Toast.show("Unverified module — verify against a source before saving.", "error"); return; }
+    const v = this.gather(c);
+    if (!this.isComplete(c, v)){ Toast.show("Select all fields first.", "error"); return; }
+    const stage = $("stageValue").textContent;
+    if ($("stageValue").dataset.empty === "1"){ Toast.show("No valid stage to save.", "error"); return; }
+    State.notes.push({
+      id: Notes.makeId(), kind:"staging", cancerName:c.name, framework:c.framework,
+      staging: stage, params: this.paramSummary(c, v), time: Notes.now()
+    });
+    Store.save(); Notes.render(); Toast.show("Staging saved to notes.", "success");
+  },
+
+  copyResult(){
+    if ($("stageValue").dataset.empty === "1"){ Toast.show("Compute a stage first.", "error"); return; }
+    const text = `${this.active().name}\nStage: ${$("stageValue").textContent}\n${$("stageDetail").textContent}`;
+    const done = () => Toast.show("Result copied.", "success");
+    if (navigator.clipboard?.writeText) navigator.clipboard.writeText(text).then(done).catch(() => Notes.fallbackCopy(text, done));
+    else Notes.fallbackCopy(text, done);
+  }
+};
+
+/* ================================================================
+   NAVIGATION
+   ================================================================ */
+const Nav = {
+  render(){
+    const dotColor = cat => CATEGORIES.find(c => c.id === cat).color;
+    $("navGroups").innerHTML = CATEGORIES.map(cat => {
+      const items = CANCERS.filter(c => c.category === cat.id);
+      if (!items.length) return "";
+      return `
+        <div class="nav-group">
+          <div class="head"><span>${cat.title}</span><span class="count">${String(items.length).padStart(2,"0")}</span></div>
+          <ul class="nav-list">
+            ${items.map(c => `
+              <li><button class="nav-item ${State.activeId===c.id?"active":""}" onclick="App.select('${c.id}')">
+                <span class="name"><span class="tag-dot" style="background:${dotColor(c.category)}"></span>${escapeHtml(c.name)}</span>
+                <span class="mark">${State.reviewed.has(c.id)?"✓":"→"}</span>
+              </button></li>`).join("")}
+          </ul>
+        </div>`;
+    }).join("");
+    this.renderDrawer();
+  },
+
+  renderDrawer(){
+    $("drawerNav").innerHTML = CATEGORIES.map(cat => {
+      const items = CANCERS.filter(c => c.category === cat.id);
+      if (!items.length) return "";
+      return `
+        <div class="nav-group">
+          <div class="head" style="color:${cat.color}"><span>${cat.title}</span><span class="count">${items.length}</span></div>
+          <ul class="nav-list">
+            ${items.map(c => `<li><button class="nav-item ${State.activeId===c.id?"active":""}" onclick="App.select('${c.id}'); UI.toggleDrawer()">
+              <span class="name"><span class="tag-dot" style="background:${cat.color}"></span>${escapeHtml(c.name)}</span></button></li>`).join("")}
+          </ul>
+        </div>`;
+    }).join("");
+  },
+
+  updateProgress(){
+    const pct = CANCERS.length ? Math.round(State.reviewed.size / CANCERS.length * 100) : 0;
+    $("progressPct").textContent = pct + "%";
+    $("progressBar").style.width = pct + "%";
+  }
+};
+
+/* ================================================================
+   UI — tabs, drawer
+   ================================================================ */
+const UI = {
+  tab(which){
+    State.tab = which;
+    const ref = which === "ref";
+    $("tabRefBtn").classList.toggle("active", ref);
+    $("tabCalcBtn").classList.toggle("active", !ref);
+    $("refPane").classList.toggle("hidden", !ref);
+    $("calcPane").classList.toggle("hidden", ref);
+  },
+  toggleDrawer(){ $("drawer").classList.toggle("open"); },
+
+  setTheme(t){
+    const theme = t === "teal" ? "teal" : "google";
+    document.documentElement.dataset.theme = theme;
+    $("themeLabel").textContent = theme === "teal" ? "Teal" : "Blue";
+    try { localStorage.setItem("staging_theme", theme); } catch(e){}
+  },
+  toggleTheme(){
+    const cur = document.documentElement.dataset.theme === "teal" ? "teal" : "google";
+    this.setTheme(cur === "teal" ? "google" : "teal");
+  }
+};
+
+/* ================================================================
+   SEARCH
+   ================================================================ */
+const Search = {
+  handle(){
+    const q = $("globalSearch").value.trim().toLowerCase();
+    if (!q){ this.clear(); return; }
+    $("searchClear").style.display = "block";
+    $("dashboard").classList.add("hidden");
+    $("searchResults").style.display = "block";
+
+    let total = 0;
+    const groups = CANCERS.map(c => {
+      const matches = [];
+      if (c.name.toLowerCase().includes(q) || c.desc.toLowerCase().includes(q) || c.framework.toLowerCase().includes(q))
+        matches.push({type:"Profile", code:c.framework, desc:c.desc});
+      Object.entries(c.tables).forEach(([title, rows]) => rows.forEach(r => {
+        if (r.code.toLowerCase().includes(q) || r.desc.toLowerCase().includes(q) || title.toLowerCase().includes(q))
+          matches.push({type:title, code:r.code, desc:r.desc});
+      }));
+      if (!matches.length) return "";
+      total += matches.length;
+      return `
+        <div class="sr-group">
+          <h4><span>${escapeHtml(c.name)}</span><span class="fw">${escapeHtml(c.framework)}</span></h4>
+          ${matches.map(m => `
+            <div class="sr-item">
+              <div>
+                <div class="codeline"><span class="c">${this.hl(m.code, q)}</span><span class="t">${escapeHtml(m.type)}</span></div>
+                <p>${this.hl(m.desc, q)}</p>
+              </div>
+              <button class="btn btn-sm" onclick="App.select('${c.id}')">Open</button>
+            </div>`).join("")}
+        </div>`;
+    }).join("");
+
+    $("searchCount").textContent = `${total} match${total===1?"":"es"}`;
+    $("searchList").innerHTML = total ? groups
+      : `<div class="sr-empty">No matches for "${escapeHtml(q)}". Try "PSA", "Breslow", "DCIS", "Tis", "Gleason", "N3".</div>`;
+  },
+  hl(source, q){
+    const s = String(source||"");
+    const i = s.toLowerCase().indexOf(q);
+    if (i < 0) return escapeHtml(s);
+    return escapeHtml(s.slice(0,i)) + "<mark>" + escapeHtml(s.slice(i, i+q.length)) + "</mark>" + escapeHtml(s.slice(i+q.length));
+  },
+  clear(){
+    $("globalSearch").value = "";
+    $("searchClear").style.display = "none";
+    $("searchResults").style.display = "none";
+    $("dashboard").classList.remove("hidden");
+  }
+};
+
+/* ================================================================
+   NOTES
+   ================================================================ */
+const Notes = {
+  makeId(){ return `${Date.now()}-${Math.random().toString(36).slice(2,8)}`; },
+  now(){ return new Date().toLocaleTimeString([], {hour:"2-digit", minute:"2-digit"}); },
+
+  setTag(tag){
+    State.noteTag = tag;
+    ["case","observation","draft"].forEach(t => $("tag-" + t).classList.toggle("active", t === tag));
+  },
+
+  saveQuick(){
+    const text = $("noteInput").value.trim();
+    if (!text){ Toast.show("The note editor is empty.", "error"); return; }
+    State.notes.push({id:this.makeId(), kind:"text", tag:State.noteTag, text, time:this.now()});
+    Store.save(); this.render(); $("noteInput").value = ""; Toast.show("Note saved.", "success");
+  },
+
+  render(){
+    const list = $("notesList");
+    if (!State.notes.length){
+      list.innerHTML = `<div class="nb-empty" id="notesEmpty">No notes yet. Save a staging result or write a remark.</div>`;
+      return;
+    }
+    const tagMeta = {
+      case:        {label:"Case study", c:"var(--accent)", w:"var(--accent-weak)", b:"var(--accent-line)"},
+      observation: {label:"Observation", c:"var(--amber)", w:"rgba(224,164,74,.12)", b:"rgba(224,164,74,.35)"},
+      draft:       {label:"Draft", c:"var(--indigo)", w:"rgba(139,140,240,.12)", b:"rgba(139,140,240,.35)"}
+    };
+    list.innerHTML = State.notes.slice().reverse().map(n => {
+      if (n.kind === "staging"){
+        return `<div class="note">
+          <button class="del" onclick="Notes.del('${n.id}')" aria-label="Delete">✕</button>
+          <div class="ntitle"><span class="tag-dot" style="background:var(--accent)"></span>${escapeHtml(n.cancerName)}</div>
+          <p class="nparams">${escapeHtml(n.params)}</p>
+          <div class="nfoot"><span class="nstage">${escapeHtml(n.staging)}</span><span>${escapeHtml(n.time)}</span></div>
+        </div>`;
+      }
+      const m = tagMeta[n.tag] || tagMeta.case;
+      return `<div class="note">
+        <button class="del" onclick="Notes.del('${n.id}')" aria-label="Delete">✕</button>
+        <span class="ntag" style="color:${m.c}; background:${m.w}; border-color:${m.b}">${m.label}</span>
+        <p class="ntext">${escapeHtml(n.text)}</p>
+        <div class="nfoot"><span></span><span>${escapeHtml(n.time)}</span></div>
+      </div>`;
+    }).join("");
+  },
+
+  del(id){
+    State.notes = State.notes.filter(n => String(n.id) !== String(id));
+    Store.save(); this.render(); Toast.show("Note deleted.", "info");
+  },
+
+  clearAll(){
+    if (!confirm("Clear all notes from this notebook?")) return;
+    State.notes = []; Store.save(); this.render(); Toast.show("Notebook cleared.", "info");
+  },
+
+  export(){
+    if (!State.notes.length){ Toast.show("Notebook is empty.", "error"); return; }
+    let md = `## Oncology Staging Session\n\nGenerated: ${new Date().toLocaleString()}\nReviewed: ${State.reviewed.size} of ${CANCERS.length} models\n\n`;
+    State.notes.forEach((n, i) => {
+      if (n.kind === "staging") md += `${i+1}. **${n.cancerName}** — ${n.staging}\n   - Parameters: ${n.params}\n   - ${n.time}\n\n`;
+      else md += `${i+1}. **${(n.tag||"note").toUpperCase()}** (${n.time})\n   - ${n.text}\n\n`;
+    });
+    this.fallbackCopy(md, () => Toast.show("Markdown copied to clipboard.", "success"));
+  },
+
+  fallbackCopy(text, done){
+    const ta = document.createElement("textarea");
+    ta.value = text; ta.style.position = "fixed"; ta.style.left = "-9999px";
+    document.body.appendChild(ta); ta.select();
+    try { document.execCommand("copy"); } catch(e){}
+    document.body.removeChild(ta);
+    if (done) done();
+  }
+};
+
+/* ================================================================
+   TOASTS
+   ================================================================ */
+const Toast = {
+  show(msg, type = "info"){
+    const t = document.createElement("div");
+    t.className = `toast ${type}`;
+    t.textContent = msg;
+    $("toasts").appendChild(t);
+    requestAnimationFrame(() => t.classList.add("show"));
+    setTimeout(() => { t.classList.remove("show"); setTimeout(() => t.remove(), 300); }, 3500);
+  }
+};
+
+/* ================================================================
+   PERSISTENCE
+   ================================================================ */
+const Store = {
+  save(){
+    try {
+      localStorage.setItem("staging_reviewed", JSON.stringify([...State.reviewed]));
+      localStorage.setItem("staging_notes", JSON.stringify(State.notes));
+    } catch(e){}
+  },
+  load(){
+    try { const r = localStorage.getItem("staging_reviewed"); if (r) State.reviewed = new Set(JSON.parse(r)); }
+    catch(e){ State.reviewed = new Set(); }
+    try { const n = localStorage.getItem("staging_notes"); if (n){ const p = JSON.parse(n); State.notes = Array.isArray(p) ? p : []; } }
+    catch(e){ State.notes = []; }
+  }
+};
+
+/* ================================================================
+   BOOT
+   ================================================================ */
+window.addEventListener("DOMContentLoaded", () => {
+  Store.load();
+  let savedTheme = "google";
+  try { savedTheme = localStorage.getItem("staging_theme") || "google"; } catch(e){}
+  UI.setTheme(savedTheme);
+  Nav.render();
+  Nav.updateProgress();
+  Notes.setTag(State.noteTag);
+  Notes.render();
+  UI.tab(State.tab);
+  App.loadProfile();
+  document.addEventListener("keydown", e => {
+    if (e.key === "/" && !/INPUT|TEXTAREA/.test(document.activeElement.tagName)){
+      e.preventDefault(); $("globalSearch").focus();
+    }
+  });
+  Toast.show("Staging Hub loaded.", "success");
+});
+</script>
+</body>
+</html>

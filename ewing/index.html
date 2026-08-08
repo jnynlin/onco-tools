@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Ewing's Sarcoma — Interactive Clinical Dashboard (v2)</title>
+<style>
+  :root{
+    --bg:#f5f7fb; --panel:#fff; --border:#e4e8f2; --text:#1f2733; --muted:#6b7280;
+    --accent:#4f46e5; --accent2:#0ea5e9; --accent-light:#eef2ff;
+    --teal:#0d9488; --amber:#d97706; --rose:#e11d48; --green:#059669;
+    --radius:16px; --shadow:0 1px 2px rgba(16,24,40,.04),0 6px 20px rgba(16,24,40,.06);
+    --font:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Inter,"Noto Sans TC","Helvetica Neue",Arial,sans-serif;
+  }
+  *{box-sizing:border-box} html,body{margin:0;padding:0}
+  body{font-family:var(--font);background:var(--bg);color:var(--text);line-height:1.6;-webkit-font-smoothing:antialiased}
+  a{color:var(--accent);text-decoration:none} a:hover{text-decoration:underline}
+  .app{max-width:1180px;margin:0 auto;padding:0 18px 70px}
+
+  /* hero */
+  .hero{background:linear-gradient(135deg,#4f46e5,#0ea5e9);color:#fff;border-radius:0 0 24px 24px;
+    padding:30px 26px 26px;margin:0 -18px 0;box-shadow:var(--shadow)}
+  .hero .kicker{font-size:12px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;opacity:.85}
+  .hero h1{margin:6px 0 4px;font-size:30px;font-weight:800;letter-spacing:.3px}
+  .hero p{margin:0;font-size:14.5px;opacity:.92;max-width:760px}
+  .hero .badges{display:flex;gap:8px;flex-wrap:wrap;margin-top:14px}
+  .hero .badge{background:rgba(255,255,255,.16);border:1px solid rgba(255,255,255,.25);border-radius:999px;
+    padding:5px 12px;font-size:12px;font-weight:600}
+
+  /* sticky nav */
+  nav.sticky{position:sticky;top:0;z-index:30;background:rgba(245,247,251,.92);backdrop-filter:blur(8px);
+    border-bottom:1px solid var(--border);margin:0 -18px 22px;padding:9px 18px;display:flex;gap:6px;overflow-x:auto}
+  nav.sticky a{font-size:13.5px;font-weight:600;color:var(--muted);padding:7px 13px;border-radius:9px;white-space:nowrap}
+  nav.sticky a:hover{background:var(--accent-light);color:var(--accent);text-decoration:none}
+  nav.sticky a.active{background:var(--accent);color:#fff}
+
+  section.block{scroll-margin-top:60px;margin-bottom:30px}
+  .block > h2{font-size:21px;font-weight:800;margin:0 0 4px;display:flex;align-items:center;gap:9px}
+  .block > .lead{color:var(--muted);font-size:14px;margin:0 0 16px}
+
+  /* stat cards */
+  .stats{display:grid;grid-template-columns:repeat(4,1fr);gap:13px;margin-bottom:20px}
+  .stat{background:var(--panel);border:1px solid var(--border);border-radius:var(--radius);padding:16px;box-shadow:var(--shadow)}
+  .stat .val{font-size:25px;font-weight:800;color:var(--accent)}
+  .stat .label{color:var(--muted);font-size:12px;font-weight:600;margin-top:2px;line-height:1.35}
+  @media(max-width:760px){.stats{grid-template-columns:repeat(2,1fr)}}
+
+  .grid2{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+  @media(max-width:760px){.grid2{grid-template-columns:1fr}}
+  .info{background:var(--panel);border:1px solid var(--border);border-radius:var(--radius);padding:16px 18px;box-shadow:var(--shadow)}
+  .info h3{margin:0 0 8px;font-size:15.5px;font-weight:700;display:flex;align-items:center;gap:8px}
+  .info p,.info li{font-size:13.6px;color:#374151}
+  .info ul{margin:6px 0 0;padding-left:18px} .info li{margin:3px 0}
+  .pill{display:inline-block;font-size:11px;font-weight:700;padding:2px 9px;border-radius:999px;margin-left:6px}
+  .pill.t{background:#ccfbf1;color:#0f766e} .pill.a{background:#fef3c7;color:#92400e} .pill.r{background:#ffe4e6;color:#9f1239}
+
+  /* chemo tables */
+  .tbl-wrap{overflow-x:auto;border:1px solid var(--border);border-radius:var(--radius);box-shadow:var(--shadow);background:#fff}
+  table{width:100%;border-collapse:collapse;font-size:13.4px;min-width:560px}
+  th,td{padding:11px 13px;text-align:left;border-bottom:1px solid var(--border);vertical-align:top}
+  thead th{background:#eef2ff;color:var(--accent);font-weight:700;font-size:12.5px;letter-spacing:.3px}
+  tbody tr:last-child td{border-bottom:none}
+  td .drug{font-weight:700;color:var(--text)} td .dose{color:var(--teal);font-weight:600;white-space:nowrap}
+  .regtag{display:inline-block;font-weight:800;font-size:11px;padding:3px 9px;border-radius:7px}
+  .regtag.vdc{background:#e0e7ff;color:#3730a3} .regtag.ie{background:#cffafe;color:#155e75}
+
+  /* alternating cycle strip */
+  .cyclestrip{display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin:14px 0}
+  .cyc{flex:1 1 64px;min-width:58px;text-align:center;border-radius:10px;padding:9px 4px;font-weight:800;font-size:12px;border:1px solid}
+  .cyc.v{background:#eef2ff;border-color:#c7d2fe;color:#3730a3}
+  .cyc.i{background:#ecfeff;border-color:#a5f3fc;color:#155e75}
+  .cyc small{display:block;font-weight:600;color:var(--muted);font-size:10px;margin-top:2px}
+  .arrow{color:var(--muted);font-weight:800}
+
+  .callout{border-radius:var(--radius);padding:14px 16px;font-size:13.5px;margin:14px 0;border:1px solid}
+  .callout.key{background:#ecfdf5;border-color:#a7f3d0;color:#065f46}
+  .callout.warn{background:#fffbeb;border-color:#fde68a;color:#92400e}
+  .callout b{color:inherit}
+
+  /* treatment explorer (kept from v1) */
+  .controls{display:flex;gap:12px;flex-wrap:wrap;align-items:center;margin-bottom:6px}
+  .search{flex:1 1 300px;position:relative}
+  .search input{width:100%;padding:11px 14px 11px 38px;border:2px solid var(--border);background:#fff;border-radius:11px;font-size:14px;outline:none}
+  .search input:focus{border-color:var(--accent)}
+  .search::before{content:"🔎";position:absolute;left:12px;top:50%;transform:translateY(-50%);opacity:.6}
+  .filter-group{display:flex;gap:7px;flex-wrap:wrap}
+  .chip{padding:7px 13px;background:#fff;border:1.5px solid var(--border);border-radius:999px;cursor:pointer;font-size:12.5px;font-weight:600;user-select:none}
+  .chip:hover{background:var(--accent-light)} .chip.active{background:var(--accent);color:#fff;border-color:var(--accent)}
+  .cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(278px,1fr));gap:13px;margin-top:14px}
+  .card{background:#fff;border:1px solid var(--border);border-radius:var(--radius);padding:15px;transition:transform .12s,box-shadow .12s;position:relative}
+  .card:hover{transform:translateY(-2px);box-shadow:0 10px 26px rgba(16,24,40,.09)}
+  .card-header{display:flex;align-items:flex-start;justify-content:space-between;gap:10px;margin-bottom:7px}
+  .card-title{font-size:15px;font-weight:700;margin:0;line-height:1.25}
+  .status{font-size:10.5px;font-weight:800;padding:4px 9px;border-radius:999px;white-space:nowrap;text-transform:uppercase;letter-spacing:.4px}
+  .status.FDA{background:#dbeafe;color:#1e40af} .status.Investigational{background:#fef3c7;color:#92400e}
+  .status.Off-label{background:#fce7f3;color:#831843} .status.Radiation{background:#d1fae5;color:#065f46}
+  .status.Surgery{background:#e0e7ff;color:#3730a3} .status.StemCell{background:#fee2e2;color:#7f1d1d}
+  .status.Combination{background:#f3e8ff;color:#5b21b6}
+  .card-body{font-size:13px;color:#374151;margin-bottom:9px} .card-body strong{color:var(--text)}
+  .meta{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:7px}
+  .tag{font-size:10.5px;font-weight:600;padding:4px 8px;background:var(--bg);border-radius:8px;color:var(--muted)}
+  .sources a{font-size:11.5px;color:var(--accent);font-weight:600}
+  .no-results{grid-column:1/-1;text-align:center;padding:30px;color:var(--muted);font-weight:500}
+
+  /* timeline (kept) */
+  .timeline{position:relative;margin-top:10px;padding-left:26px}
+  .timeline::before{content:"";position:absolute;left:6px;top:8px;bottom:8px;width:3px;background:linear-gradient(to bottom,var(--accent),var(--accent2));border-radius:4px}
+  .tl-item{position:relative;margin-bottom:16px;padding:13px 15px;background:#fff;border:1px solid var(--border);border-radius:12px;box-shadow:var(--shadow)}
+  .tl-item::before{content:"";position:absolute;left:-23px;top:17px;width:12px;height:12px;border-radius:50%;background:#fff;border:3px solid var(--accent)}
+  .tl-year{font-size:12px;font-weight:800;letter-spacing:.5px;color:var(--accent);text-transform:uppercase}
+  .tl-title{font-size:14.5px;font-weight:700;margin:3px 0} .tl-body{font-size:13.3px;color:#374151}
+  .tl-sources{margin-top:5px;font-size:12px}
+
+  .disclaimer{background:#fff;border:1px solid var(--border);border-left:4px solid var(--amber);border-radius:12px;padding:13px 16px;font-size:12.8px;color:#4b5563;margin-top:8px}
+  .footer{margin-top:26px;text-align:center;color:var(--muted);font-size:12.5px}
+</style>
+</head>
+<body>
+<div class="app">
+
+  <header class="hero">
+    <div class="kicker">Interactive Clinical Dashboard · v2</div>
+    <h1>Ewing's Sarcoma</h1>
+    <p>An educational explorer of the disease, its detailed chemotherapy regimens, the full treatment landscape, and the clinical-trial timeline — built for clinicians and learners.</p>
+    <div class="badges">
+      <span class="badge">🧬 EWSR1-FLI1 driven</span>
+      <span class="badge">💉 VDC/IE backbone</span>
+      <span class="badge">🔬 21 treatments mapped</span>
+      <span class="badge">📅 Trial milestones 1970s→2024</span>
+    </div>
+  </header>
+
+  <nav class="sticky" id="nav">
+    <a href="#overview">Overview</a>
+    <a href="#chemo">Detailed Chemo</a>
+    <a href="#explorer">Treatment Explorer</a>
+    <a href="#trials">Trials &amp; Timeline</a>
+  </nav>
+
+  <!-- ===== OVERVIEW ===== -->
+  <section class="block" id="overview">
+    <h2>🩺 Disease Overview</h2>
+    <p class="lead">The essentials at a glance — what Ewing's sarcoma is, who it affects, and how it's worked up.</p>
+    <div class="stats">
+      <div class="stat"><div class="val">~85%</div><div class="label">carry the EWSR1-FLI1 t(11;22) fusion</div></div>
+      <div class="stat"><div class="val">10–20 yr</div><div class="label">peak age (2nd–3rd decade)</div></div>
+      <div class="stat"><div class="val">~25%</div><div class="label">metastatic at diagnosis (lung/bone/marrow)</div></div>
+      <div class="stat"><div class="val">~70–80% / ~30%</div><div class="label">5-yr survival: localized / metastatic</div></div>
+    </div>
+    <div class="grid2">
+      <div class="info"><h3>🔬 What it is</h3>
+        <p>A small round blue-cell sarcoma of bone and soft tissue, part of the Ewing sarcoma family of tumors (ESFT). Driven by a fusion oncoprotein — most often <b>EWSR1-FLI1</b> from t(11;22)(q24;q12) — which acts as an aberrant transcription factor.</p></div>
+      <div class="info"><h3>📊 Epidemiology</h3>
+        <ul><li>2nd most common bone cancer in children/young adults.</li><li>~200 new US cases/year; slight male predominance; more common in those of European ancestry.</li><li>Peak in adolescence; can occur at any age.</li></ul></div>
+      <div class="info"><h3>📍 Presentation &amp; sites</h3>
+        <ul><li>Localized pain &amp; swelling, sometimes with fever — can mimic infection.</li><li>Common sites: pelvis, femur, chest wall (Askin tumor), other long bones; extraskeletal forms occur.</li><li>Pathologic fracture or a palpable mass may be the first sign.</li></ul></div>
+      <div class="info"><h3>🧪 Diagnosis &amp; staging</h3>
+        <ul><li>Biopsy with IHC (membranous <b>CD99</b>) + molecular confirmation of <b>EWSR1</b> rearrangement (FISH / RT-PCR).</li><li>Staging workup: MRI of primary, chest CT, FDG-PET and/or bone scan, bone-marrow assessment.</li><li>Key risk drivers: presence of metastases, tumor size/volume, primary site (axial/pelvic worse), response to induction.</li></ul></div>
+    </div>
+  </section>
+
+  <!-- ===== DETAILED CHEMO ===== -->
+  <section class="block" id="chemo">
+    <h2>💉 Detailed Chemotherapy</h2>
+    <p class="lead">First-line backbone, dosing, the alternating schedule, interval compression, and relapse options — with sources.</p>
+
+    <div class="info" style="margin-bottom:14px">
+      <h3>1 · First-line backbone: VDC alternating with IE</h3>
+      <p>Five-drug program given as two alternating cycle types, <b>14 cycles</b> total (≈6–9 months), now standardly <b>interval-compressed every 2 weeks</b> with G-CSF support. Standard of care across COG (AEWS0031) and EURO-EWING.</p>
+      <div class="cyclestrip">
+        <div class="cyc v">VDC<small>wk 0</small></div><span class="arrow">→</span>
+        <div class="cyc i">IE<small>wk 2</small></div><span class="arrow">→</span>
+        <div class="cyc v">VDC<small>wk 4</small></div><span class="arrow">→</span>
+        <div class="cyc i">IE<small>wk 6</small></div><span class="arrow">→</span>
+        <div class="cyc v">VDC<small>…</small></div><span class="arrow">→</span>
+        <div class="cyc i">IE<small>×14 total</small></div>
+      </div>
+      <div class="tbl-wrap">
+        <table>
+          <thead><tr><th>Regimen</th><th>Drug</th><th>Representative dose / cycle</th><th>Notes</th></tr></thead>
+          <tbody>
+            <tr><td rowspan="3"><span class="regtag vdc">VDC</span></td><td class="drug">Vincristine</td><td class="dose">2 mg/m² (max 2 mg)</td><td>Microtubule inhibitor; neuropathy.</td></tr>
+            <tr><td class="drug">Doxorubicin</td><td class="dose">75 mg/m²</td><td>Topo-II / anthracycline; <b>cumulative cap</b> (~375 mg/m², then dropped) for cardiotoxicity.</td></tr>
+            <tr><td class="drug">Cyclophosphamide</td><td class="dose">1.2 g/m²</td><td>Alkylator; give with <b>mesna</b> + hydration.</td></tr>
+            <tr><td rowspan="2"><span class="regtag ie">IE</span></td><td class="drug">Ifosfamide</td><td class="dose">9 g/m² (1.8 g/m²×5 d)</td><td>Alkylator; <b>mesna</b> uroprotection; nephro/neurotoxicity.</td></tr>
+            <tr><td class="drug">Etoposide</td><td class="dose">500 mg/m² (100 mg/m²×5 d)</td><td>Topoisomerase-II inhibitor.</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="callout warn">⚠️ <b>Representative doses for education only.</b> Always follow the current COG / EURO-EWING protocol and your institutional guidelines (doses, growth-factor &amp; mesna schedules, cardiac &amp; renal monitoring, and dose caps vary by trial, age, and organ function).</div>
+    </div>
+
+    <div class="grid2">
+      <div class="info"><h3>2 · Interval compression <span class="pill t">level 1</span></h3>
+        <p>Giving VDC/IE <b>every 2 weeks vs every 3 weeks</b> (with G-CSF) improved outcomes without more toxicity:</p>
+        <div class="callout key">📈 5-year EFS <b>73% (q2-week)</b> vs <b>65% (q3-week)</b> — Womer et al., COG <b>AEWS0031</b>, <i>J Clin Oncol</i> 2012.</div>
+        <p style="font-size:12.5px;color:var(--muted)">Local control (surgery and/or radiotherapy) is integrated with chemotherapy after induction.</p>
+      </div>
+      <div class="info"><h3>3 · 2024 trial update <span class="pill a">upfront targeted</span></h3>
+        <p><b>INTER-EWING-1</b> (Cancer Research UK, Sep 2024) — the largest all-ages Ewing trial, three randomizations:</p>
+        <ul><li>Maintenance chemotherapy</li><li>Radiotherapy dose-finding</li><li><b>Regorafenib</b> first-line for metastatic disease — the first targeted drug studied <i>upfront</i> in Ewing sarcoma.</li></ul>
+        <div class="sources"><a href="https://news.cancerresearchuk.org/2024/09/25/inter-ewing-1-groundbreaking-all-ages-ewing-sarcoma-trial/" target="_blank" rel="noopener">Cancer Research UK ↗</a></div>
+      </div>
+      <div class="info"><h3>4 · Recurrent / refractory <span class="pill r">no standard</span></h3>
+        <p>No single standardized 2nd-line regimen; commonly used combinations:</p>
+        <ul><li><b>Topotecan + cyclophosphamide</b></li><li><b>Irinotecan + temozolomide</b> (± vincristine at some centers)</li><li><b>Gemcitabine + docetaxel</b></li><li>High-dose chemo + autologous stem-cell rescue in selected high-risk cases</li></ul>
+      </div>
+      <div class="info"><h3>5 · Relapsed disease consensus (2025)</h3>
+        <ul><li>Local &amp; metastasis-directed therapy (<b>LMDT</b>) individualized in a multidisciplinary setting — curative-intent or palliative depending on burden &amp; prior therapy.</li><li>5-year survival for metastatic relapsed/refractory ES remains <b>~10–20%</b>.</li></ul>
+        <div class="sources"><a href="https://pubmed.ncbi.nlm.nih.gov/40251761/" target="_blank" rel="noopener">Shah et al., Cancer 2025 (PMID 40251761) ↗</a></div>
+      </div>
+    </div>
+    <div class="disclaimer">Chemo content compiled from NCI PDQ (2024), ACS (2026), Medscape, COG AEWS0031 (Womer 2012), HemOnc.org, Cancer Research UK INTER-EWING-1 (2024), and Shah et al. <i>Cancer</i> 2025. Educational resource — not medical advice.</div>
+  </section>
+
+  <!-- ===== TREATMENT EXPLORER ===== -->
+  <section class="block" id="explorer">
+    <h2>🔍 Treatment Explorer</h2>
+    <p class="lead">Search and filter the full landscape — standard, targeted, immunotherapy, cell therapy, and local control.</p>
+    <div class="controls">
+      <div class="search"><input id="search" type="text" placeholder="Search by drug, mechanism, or keyword..." /></div>
+      <div class="filter-group" id="status-filters">
+        <span class="chip active" data-filter="all">All</span>
+        <span class="chip" data-filter="FDA">Approved</span>
+        <span class="chip" data-filter="Combination">Chemo combos</span>
+        <span class="chip" data-filter="Investigational">Investigational</span>
+        <span class="chip" data-filter="Radiation">Radiation</span>
+        <span class="chip" data-filter="Surgery">Surgery</span>
+        <span class="chip" data-filter="StemCell">Stem cell</span>
+      </div>
+    </div>
+    <div class="cards" id="cards"></div>
+  </section>
+
+  <!-- ===== TIMELINE ===== -->
+  <section class="block" id="trials">
+    <h2>📅 Trials &amp; Key Milestones</h2>
+    <p class="lead">How treatment evolved — from the multi-agent era to upfront targeted therapy.</p>
+    <div class="timeline" id="timeline"></div>
+  </section>
+
+  <div class="footer">Educational resource — not medical advice. Sources: NCI · ClinicalTrials.gov · ASCO · PubMed · Cancer Research UK · HemOnc.org.</div>
+</div>
+
+<script>
+const treatments = [
+  {title:"VDC / IE — Vincristine·Doxorubicin·Cyclophosphamide alternating Ifosfamide·Etoposide",status:"Combination",category:"First-line standard",mechanism:["<strong>Vincristine</strong> inhibits microtubule assembly (M-phase arrest).","<strong>Doxorubicin</strong> intercalates DNA + inhibits topoisomerase II.","<strong>Cyclophosphamide</strong> alkylates/cross-links DNA (needs mesna).","<strong>Ifosfamide</strong> nitrogen-mustard alkylator (needs mesna).","<strong>Etoposide</strong> stabilizes topo-II–DNA cleavable complex."],phase:"Standard of care, 14 cycles interval-compressed q2wk (see Detailed Chemo).",links:["https://www.cancer.gov/types/bone/hp/ewing-treatment-pdq","https://pubmed.ncbi.nlm.nih.gov/21979179/"]},
+  {title:"AEWS0031 Interval-Compressed Chemotherapy",status:"Combination",category:"Standard regimen",mechanism:["VDC/IE every 2 weeks vs 3 weeks with G-CSF to limit tumor repopulation."],phase:"COG: 5-yr EFS 73% vs 65% — practice-changing.",links:["https://pubmed.ncbi.nlm.nih.gov/21979179/"]},
+  {title:"Topotecan + Cyclophosphamide",status:"Combination",category:"Recurrent/refractory",mechanism:["<strong>Topotecan</strong> topoisomerase-I inhibitor.","<strong>Cyclophosphamide</strong> alkylator."],phase:"Common 2nd-line for relapsed Ewing's.",links:["https://www.cancer.gov/types/bone/hp/ewing-treatment-pdq"]},
+  {title:"Irinotecan + Temozolomide (± Vincristine)",status:"Combination",category:"Recurrent/refractory",mechanism:["<strong>Irinotecan</strong> topo-I inhibitor.","<strong>Temozolomide</strong> oral alkylator."],phase:"Active salvage combination; outpatient-friendly.",links:["https://pubmed.ncbi.nlm.nih.gov/40251761/"]},
+  {title:"Gemcitabine + Docetaxel",status:"Combination",category:"Recurrent/refractory",mechanism:["<strong>Gemcitabine</strong> antimetabolite.","<strong>Docetaxel</strong> taxane microtubule stabilizer."],phase:"Used in relapsed sarcomas including Ewing's.",links:["https://www.cancer.gov/types/bone/hp/ewing-treatment-pdq"]},
+  {title:"Regorafenib (INTER-EWING-1)",status:"Investigational",category:"Targeted (upfront)",mechanism:["<strong>Multi-kinase inhibitor</strong> (VEGFR, PDGFR, KIT, RET, RAF) — first targeted agent tested first-line in metastatic Ewing's."],phase:"INTER-EWING-1 randomization, 2024.",links:["https://news.cancerresearchuk.org/2024/09/25/inter-ewing-1-groundbreaking-all-ages-ewing-sarcoma-trial/"]},
+  {title:"Pembrolizumab (Keytruda)",status:"Investigational",category:"Immunotherapy",mechanism:["<strong>Anti-PD-1 mAb</strong> restoring T-cell cytotoxicity."],phase:"Phase II in sarcomas; modest single-agent activity.",links:["https://clinicaltrials.gov/ct2/show/NCT02301039","https://pubmed.ncbi.nlm.nih.gov/29414539/"]},
+  {title:"Nivolumab (Opdivo)",status:"Investigational",category:"Immunotherapy",mechanism:["<strong>Anti-PD-1 mAb</strong> releasing T-cell inhibition."],phase:"Phase II pediatric solid tumors incl. Ewing's.",links:["https://clinicaltrials.gov/ct2/show/NCT02304458","https://pubmed.ncbi.nlm.nih.gov/29069002/"]},
+  {title:"Tazemetostat (Tazverik)",status:"FDA",category:"Targeted (epigenetic)",mechanism:["<strong>EZH2 inhibitor</strong> of histone methyltransferase EZH2."],phase:"Approved in EZH2-mutant/synovial sarcoma; under study in Ewing's.",links:["https://pubmed.ncbi.nlm.nih.gov/32840316/"]},
+  {title:"Olaparib (Lynparza)",status:"Investigational",category:"PARP inhibitor",mechanism:["<strong>PARP1/2 inhibitor</strong> — synthetic lethality with DNA-repair defects."],phase:"Phase I/II; combos with topo inhibitors.",links:["https://clinicaltrials.gov/ct2/show/NCT04146051","https://pubmed.ncbi.nlm.nih.gov/30290066/"]},
+  {title:"Anti-IGF-1R (Ganitumab, Figitumumab)",status:"Investigational",category:"Targeted",mechanism:["<strong>Block IGF-1 receptor signaling</strong>, a key Ewing's growth pathway."],phase:"Phase I/II; biomarker-guided selection studied.",links:["https://pubmed.ncbi.nlm.nih.gov/25542889/","https://clinicaltrials.gov/ct2/show/NCT01442059"]},
+  {title:"CAR-T (GD2, HER2, IL-13Rα2)",status:"Investigational",category:"Cell therapy",mechanism:["<strong>Engineered T cells</strong> targeting tumor antigens (GD2/HER2/IL-13Rα2)."],phase:"Phase I/II early feasibility in pediatric sarcoma.",links:["https://clinicaltrials.gov/ct2/show/NCT03635632","https://pubmed.ncbi.nlm.nih.gov/31924487/"]},
+  {title:"Targeting EWSR1-FLI1 (BET/CDK7/9, DDR1)",status:"Investigational",category:"Synthetic lethal",mechanism:["Disrupt the master oncogenic fusion EWSR1-FLI1 and its dependencies."],phase:"Preclinical / early translational probes.",links:["https://pubmed.ncbi.nlm.nih.gov/30126988/"]},
+  {title:"Dinutuximab (anti-GD2) + cytokines/RA",status:"Investigational",category:"Immunotherapy",mechanism:["<strong>Anti-GD2 mAb</strong> vs disialoganglioside GD2 on neuroectodermal tumors."],phase:"Translational exploration based on GD2 expression.",links:["https://pubmed.ncbi.nlm.nih.gov/30565854/","https://clinicaltrials.gov/ct2/show/NCT03907352"]},
+  {title:"Sorafenib / Cediranib (anti-angiogenic TKIs)",status:"Investigational",category:"TKI",mechanism:["<strong>Multi-kinase / VEGFR inhibitors</strong> with anti-angiogenic + direct effects."],phase:"Phase II recurrent Ewing's; some disease stabilization.",links:["https://clinicaltrials.gov/ct2/show/NCT01284471","https://pubmed.ncbi.nlm.nih.gov/23918972/"]},
+  {title:"Trabectedin (Yondelis)",status:"FDA",category:"DNA-damage",mechanism:["<strong>DNA minor-groove binder</strong> blocking transcription factors / repair."],phase:"Approved in soft-tissue sarcoma; off-label Ewing's case series.",links:["https://pubmed.ncbi.nlm.nih.gov/31941940/"]},
+  {title:"High-Dose Chemo + Stem-Cell Rescue (HDCT/ASCT)",status:"StemCell",category:"Consolidation",mechanism:["<strong>Myeloablative conditioning</strong> (e.g., busulfan-melphalan) + autologous stem-cell rescue."],phase:"Selected high-risk; EURO-EWING / COG data.",links:["https://pubmed.ncbi.nlm.nih.gov/28981235/"]},
+  {title:"External Beam / Proton Radiation Therapy",status:"Radiation",category:"Local control",mechanism:["Photon or proton DNA damage for unresectable or margin-positive disease."],phase:"Curative-intent RT integrated with chemotherapy.",links:["https://www.cancer.gov/types/bone/hp/ewing-treatment-pdq"]},
+  {title:"Surgical Resection (limb-sparing)",status:"Surgery",category:"Local control",mechanism:["En-bloc wide-margin resection; reconstruction when feasible."],phase:"Preferred when clear margins achievable; combined with chemo.",links:["https://www.cancer.gov/types/bone/hp/ewing-treatment-pdq","https://pubmed.ncbi.nlm.nih.gov/31751320/"]},
+  {title:"Imatinib (Gleevec)",status:"Off-label",category:"TKI",mechanism:["<strong>KIT/PDGFR/ABL inhibitor</strong> — limited single-agent Ewing's activity."],phase:"Explored in molecularly selected subgroups.",links:["https://pubmed.ncbi.nlm.nih.gov/12750258/"]}
+];
+
+const timeline = [
+  {year:"1970s",title:"Multi-agent chemotherapy era begins",body:"VAC (vincristine, actinomycin-D, cyclophosphamide) and later VDC/IE become the backbone for Ewing's and small round blue-cell tumors.",source:"https://www.cancer.gov/types/bone/hp/ewing-treatment-pdq"},
+  {year:"1980s",title:"INT-0091 trial",body:"Randomized trial establishing VDC/IE-type therapy as standard; lung irradiation studied for pulmonary metastases.",source:"https://pubmed.ncbi.nlm.nih.gov/2422511/"},
+  {year:"1990s",title:"High-dose chemo + autologous transplant",body:"No clear OS benefit confirmed for HDCT consolidation in metastatic disease; subgroup analyses continue in EURO-EWING.",source:"https://pubmed.ncbi.nlm.nih.gov/15701284/"},
+  {year:"2000s",title:"EURO-EWING & molecular profiling",body:"EWSR1 fusion diagnostics standardized; prognostic value of tumor size and metastases confirmed.",source:"https://www.cancer.gov/types/bone/hp/ewing-treatment-pdq"},
+  {year:"2012–13",title:"AEWS0031 interval-compression landmark",body:"COG: 2-week compression beats 3-week VDC/IE on 5-yr EFS (73% vs 65%) — practice-changing.",source:"https://pubmed.ncbi.nlm.nih.gov/21979179/"},
+  {year:"2019",title:"Immunotherapy enters sarcoma trials",body:"Pembrolizumab/nivolumab phase II in advanced sarcoma; antigen-presentation deficits identified in Ewing's biology.",source:"https://clinicaltrials.gov/ct2/show/NCT02301039"},
+  {year:"2020s",title:"EWSR1-FLI1 & synthetic-lethal strategies",body:"EZH2 inhibitors, CAR-T, bispecifics, and fusion-directed probes in early trials.",source:"https://pubmed.ncbi.nlm.nih.gov/32840316/"},
+  {year:"2024",title:"INTER-EWING-1 — upfront targeted therapy",body:"Largest all-ages trial: maintenance, RT dose-finding, and regorafenib as the first targeted drug tested first-line in metastatic Ewing's.",source:"https://news.cancerresearchuk.org/2024/09/25/inter-ewing-1-groundbreaking-all-ages-ewing-sarcoma-trial/"}
+];
+
+function renderCards(items){
+  const c=document.getElementById("cards");
+  if(!items.length){c.innerHTML="<div class='no-results'>No treatments match your filters.</div>";return;}
+  c.innerHTML=items.map(t=>{
+    const del=(t.mechanism||[]).map(m=>`<div style="margin:3px 0">• ${m}</div>`).join("");
+    return `<div class="card"><div class="card-header"><div class="card-title">${t.title}</div><span class="status ${t.status}">${t.status}</span></div>
+      <div class="card-body">${del}</div>
+      <div class="meta"><span class="tag">${t.category}</span>${t.phase?`<span class="tag">${t.phase}</span>`:""}</div>
+      <div class="sources">${(t.links||[]).map((l,i)=>`<a href="${l}" target="_blank" rel="noopener">Source ${i+1} ↗</a>${i<t.links.length-1?" · ":""}`).join("")}</div></div>`;
+  }).join("");
+}
+function renderTimeline(){
+  document.getElementById("timeline").innerHTML=timeline.map(t=>`<div class="tl-item"><div class="tl-year">${t.year}</div><div class="tl-title">${t.title}</div><div class="tl-body">${t.body}</div><div class="tl-sources"><a href="${t.source}" target="_blank" rel="noopener">View source ↗</a></div></div>`).join("");
+}
+let activeFilter="all",query="";
+function applyFilters(){
+  const q=query.trim().toLowerCase();
+  const f=treatments.filter(t=>{
+    const qM=!q||[t.title,t.category,t.phase,...(t.mechanism||[])].some(s=>(s||"").toLowerCase().includes(q));
+    const mM=activeFilter==="all"||t.status===activeFilter;
+    return qM&&mM;});
+  renderCards(f);
+}
+document.getElementById("search").addEventListener("input",e=>{query=e.target.value;applyFilters();});
+document.getElementById("status-filters").addEventListener("click",e=>{
+  const chip=e.target.closest(".chip");if(!chip)return;
+  document.querySelectorAll("#status-filters .chip").forEach(c=>c.classList.remove("active"));
+  chip.classList.add("active");activeFilter=chip.dataset.filter;applyFilters();});
+
+// smooth-scroll + scrollspy
+document.querySelectorAll('nav.sticky a').forEach(a=>a.addEventListener('click',e=>{
+  e.preventDefault();document.querySelector(a.getAttribute('href')).scrollIntoView({behavior:'smooth'});}));
+const navlinks=[...document.querySelectorAll('nav.sticky a')];
+const obs=new IntersectionObserver(es=>{es.forEach(en=>{if(en.isIntersecting){
+  navlinks.forEach(l=>l.classList.toggle('active',l.getAttribute('href')==='#'+en.target.id));}});},{rootMargin:'-45% 0px -50% 0px'});
+document.querySelectorAll('section.block').forEach(s=>obs.observe(s));
+
+renderTimeline();renderCards(treatments);
+</script>
+</body>
+</html>
