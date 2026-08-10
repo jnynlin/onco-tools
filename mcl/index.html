@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>被套細胞淋巴瘤 MCL — 2026 臨床實務總覽</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=Noto+Sans+TC:wght@400;500;700&family=Noto+Serif+TC:wght@600;900&display=swap" rel="stylesheet">
+<style>
+:root{
+  --ink:#0C1F26; --ink-soft:#4A6068; --paper:#EDF1F1; --surface:#FFFFFF;
+  --rule:#C9D5D6; --rule-soft:#E4EAEA;
+  --platinum:#0E6E75; --resist:#9A4B22; --marker:#5A4A86; --amber:#8A6D00;
+  --platinum-bg:#EAF3F3; --resist-bg:#F6EEE9; --marker-bg:#F6F5FA; --test-bg:#F6F2E4;
+  --shadow:0 1px 0 rgba(12,31,38,.06), 0 12px 30px -18px rgba(12,31,38,.35);
+  --serif:"Noto Serif TC",Georgia,serif;
+  --sans:"Noto Sans TC","Helvetica Neue",Arial,sans-serif;
+  --mono:"IBM Plex Mono",monospace;
+  --radius:4px;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{-webkit-text-size-adjust:100%;scroll-behavior:smooth}
+body{font-family:var(--sans);line-height:1.7;color:var(--ink);background:var(--paper);font-size:16px;-webkit-font-smoothing:antialiased}
+.wrap{max-width:1080px;margin:0 auto;padding:0 24px 90px}
+a{color:var(--platinum)}
+
+/* masthead */
+.masthead{padding:54px 0 26px;border-bottom:2px solid var(--ink)}
+.eyebrow{font-family:var(--mono);font-size:11.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--platinum);margin-bottom:10px}
+.masthead h1{font-family:var(--serif);font-weight:900;font-size:clamp(30px,5vw,44px);line-height:1.15}
+.masthead .sub{margin-top:12px;color:var(--ink-soft);font-size:15.5px;max-width:760px}
+.masthead .meta{margin-top:16px;font-family:var(--mono);font-size:11.5px;color:var(--ink-soft);display:flex;gap:22px;flex-wrap:wrap}
+.masthead .meta b{color:var(--ink)}
+
+/* sticky nav */
+nav.toc{position:sticky;top:0;z-index:40;background:rgba(237,241,241,.94);backdrop-filter:blur(8px);border-bottom:1px solid var(--rule);margin:0 -24px;padding:8px 24px;display:flex;gap:4px;overflow-x:auto}
+nav.toc a{font-size:13.5px;font-weight:500;color:var(--ink-soft);padding:6px 12px;border-radius:3px;white-space:nowrap;text-decoration:none}
+nav.toc a:hover{background:var(--platinum-bg);color:var(--platinum)}
+nav.toc a.active{background:var(--platinum);color:#fff}
+
+section{scroll-margin-top:56px;margin-top:44px}
+section>h2{font-family:var(--serif);font-size:26px;font-weight:900;padding-bottom:8px;border-bottom:1px solid var(--rule);margin-bottom:6px}
+section>.lead{color:var(--ink-soft);font-size:14.5px;margin-bottom:18px;max-width:820px}
+h3.sub-h{font-family:var(--serif);font-size:19px;font-weight:600;margin:26px 0 10px}
+
+/* verdict banner */
+.verdict{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:14px;margin:22px 0 4px}
+.v-card{background:var(--surface);border:1px solid var(--rule);border-top:3px solid var(--platinum);border-radius:var(--radius);box-shadow:var(--shadow);padding:15px 16px}
+.v-card .k{font-family:var(--mono);font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--platinum)}
+.v-card .v{font-family:var(--serif);font-size:19px;font-weight:600;line-height:1.35;margin-top:5px}
+.v-card p{font-size:13px;color:var(--ink-soft);margin-top:6px;line-height:1.55}
+
+/* cards */
+.card{background:var(--surface);border:1px solid var(--rule);border-radius:var(--radius);box-shadow:var(--shadow);padding:18px 20px;margin-bottom:14px}
+.card h4{font-family:var(--serif);font-size:17.5px;font-weight:600;display:flex;align-items:baseline;gap:10px;flex-wrap:wrap}
+.card h4 .tr2{font-family:var(--mono);font-size:11px;color:var(--platinum);font-weight:500;letter-spacing:.03em;margin-left:auto}
+.card .rdose{font-family:var(--mono);font-size:12.5px;color:var(--ink-soft);margin:4px 0 6px}
+.card p{font-size:14px;color:var(--ink-soft)}
+.card details{margin-top:8px}
+.card summary{cursor:pointer;font-family:var(--mono);font-size:12px;color:var(--platinum);user-select:none}
+.card details[open] summary{margin-bottom:6px}
+.card details p, .card details li{font-size:13.5px;color:var(--ink-soft)}
+.card details ul{padding-left:20px;margin:4px 0}
+
+/* tables */
+.tbl-wrap{overflow-x:auto;background:var(--surface);border:1px solid var(--rule);border-radius:var(--radius);box-shadow:var(--shadow);margin:12px 0 18px}
+table{border-collapse:collapse;width:100%;font-size:13.5px;min-width:640px}
+th{font-family:var(--mono);font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:var(--ink-soft);text-align:left;padding:10px 14px;border-bottom:2px solid var(--ink);background:var(--surface)}
+td{padding:9px 14px;border-bottom:1px solid var(--rule-soft);vertical-align:top}
+tr:last-child td{border-bottom:none}
+td.num{font-family:var(--mono);font-size:12.5px;white-space:nowrap}
+td b{font-weight:700}
+
+/* badges */
+.tag{display:inline-block;font-family:var(--mono);font-size:10.5px;letter-spacing:.05em;padding:2px 8px;border-radius:2px;vertical-align:middle}
+.tag.std{background:var(--platinum-bg);color:var(--platinum);border:1px solid var(--platinum)}
+.tag.warn{background:var(--resist-bg);color:var(--resist);border:1px solid var(--resist)}
+.tag.new{background:var(--marker-bg);color:var(--marker);border:1px solid var(--marker)}
+.tag.ver{background:var(--test-bg);color:var(--amber);border:1px solid var(--amber)}
+
+/* callouts */
+.callout{border-left:3px solid var(--resist);background:var(--resist-bg);border-radius:0 var(--radius) var(--radius) 0;padding:13px 16px;font-size:14px;margin:14px 0;color:var(--ink)}
+.callout.teal{border-left-color:var(--platinum);background:var(--platinum-bg)}
+.callout b{font-weight:700}
+.callout .mono{font-family:var(--mono);font-size:12.5px}
+
+/* sequencing flow */
+.flow{display:flex;flex-direction:column;gap:0;margin:14px 0}
+.flow .step{background:var(--surface);border:1px solid var(--rule);border-radius:var(--radius);box-shadow:var(--shadow);padding:14px 18px}
+.flow .arrow{text-align:center;color:var(--platinum);font-size:18px;line-height:1.4;font-weight:700}
+.flow .step .st{font-family:var(--mono);font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--platinum)}
+.flow .step h4{font-family:var(--serif);font-size:16.5px;font-weight:600;margin:2px 0 4px}
+.flow .step p{font-size:13.5px;color:var(--ink-soft)}
+
+.foot{margin-top:56px;padding-top:18px;border-top:2px solid var(--ink);font-family:var(--mono);font-size:11.5px;color:var(--ink-soft);line-height:2}
+.foot b{color:var(--ink)}
+.backlink{font-family:var(--mono);font-size:12px}
+@media(max-width:640px){.masthead{padding-top:34px}}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header class="masthead">
+  <p class="eyebrow">Hematologic Oncology · Lymphoma Reference</p>
+  <h1>被套細胞淋巴瘤 MCL<br>2026 臨床實務總覽</h1>
+  <p class="sub">Mantle cell lymphoma 生物學、預後分層、一線與復發治療的 state-of-the-art 教學速查。內容經多來源深研 + 對抗式查證(24 項主張確認、1 項推翻並修正)+ 原始文獻 PMID 逐一核對。</p>
+  <div class="meta">
+    <span><b>依據</b> EHA–EU MCL Network 2025 · NCCN B-Cell v4.2026</span>
+    <span><b>更新</b> 2026-08-10</span>
+    <span><b>查證</b> <span class="tag ver">verified 24 / refuted 1 / corrected</span></span>
+  </div>
+  <p class="backlink" style="margin-top:14px"><a href="../">← 回工具總覽</a></p>
+</header>
+
+<nav class="toc" id="toc">
+  <a href="#tldr">TL;DR</a>
+  <a href="#bio">生物學</a>
+  <a href="#prog">預後分層</a>
+  <a href="#front">一線治療</a>
+  <a href="#tp53">TP53 突變</a>
+  <a href="#rr">復發/難治</a>
+  <a href="#seq">Sequencing</a>
+  <a href="#src">查證軌跡</a>
+</nav>
+
+<!-- ============ TL;DR ============ -->
+<section id="tldr">
+  <h2>TL;DR — 改變實務的五件事</h2>
+  <p class="lead">2026 年 MCL 的五個 practice-changing 結論,每一條都回溯至隨機試驗原始數據。</p>
+  <div class="verdict">
+    <div class="v-card"><span class="k">01 · Frontline fit</span>
+      <div class="v">ASCT 時代結束</div>
+      <p>TRIANGLE 4.5 年:ibrutinib 骨架上加 ASCT <b>無 FFS 增益</b>(82% vs 81%)只加毒性。新標準 = ibrutinib+化免疫→2 年 ibrutinib 維持。</p></div>
+    <div class="v-card"><span class="k">02 · Frontline elderly</span>
+      <div class="v">Acala-BR 為首選</div>
+      <p>ECHO:mPFS 66.4 vs 49.6 mo(HR 0.73)、毒性可控;NCCN v1.2026 起列 preferred。SHINE 有 PFS 無 OS 且毒性較高。</p></div>
+    <div class="v-card"><span class="k">03 · TP53</span>
+      <div class="v">診斷時必測,測到就不走強化化療</div>
+      <p>Nordic:化療+ASCT 下 TP53-mut 中位 OS 僅 1.8 年。一線走 chemo-free 三聯(BOVen CR 88%)。</p></div>
+    <div class="v-card"><span class="k">04 · R/R</span>
+      <div class="v">cBTKi 失敗 → CAR-T</div>
+      <p>Fit 病人首選 CAR-T(brexu-cel 強效/毒性高、liso-cel 溫和)。Pirtobrutinib 是 bridge:post-cBTKi mPFS 僅 5.6 mo。</p></div>
+    <div class="v-card"><span class="k">05 · Emerging</span>
+      <div class="v">Bispecific 到位</div>
+      <p>Glofitamab R/R MCL:ORR 82%/CR 77%、mPFS 18 mo,post-BTKi 仍有效;是 CAR-T 前後的互補武器。</p></div>
+  </div>
+</section>
+
+<!-- ============ 生物學 ============ -->
+<section id="bio">
+  <h2>生物學與亞型</h2>
+  <p class="lead">t(11;14)(q13;q32) → cyclin D1 恆定過表現是原發事件(正常 B 細胞不表現 cyclin D1),但單獨不足以致病;次級事件決定臨床行為。</p>
+
+  <div class="card">
+    <h4>兩種疾病實體 <span class="tr2">WHO 2022 · verified 3-0</span></h4>
+    <div class="tbl-wrap"><table>
+      <tr><th></th><th>Conventional(nodal)MCL</th><th>Leukemic non-nodal MCL(10–20%)</th></tr>
+      <tr><td><b>IGHV</b></td><td>未突變</td><td class="num">突變(GC-experienced)</td></tr>
+      <tr><td><b>SOX11</b></td><td>陽性(幾乎所有 conventional MCL 表現;其他成熟 B 細胞腫瘤不表現 → 高特異診斷標記)</td><td>陰性</td></tr>
+      <tr><td><b>表現</b></td><td>淋巴結為主,基因不穩定</td><td>白血病相+脾腫大,t(11;14) 外少有其他變異,常 indolent(可 watch-and-wait)</td></tr>
+    </table></div>
+    <details><summary>▸ 陷阱與侵襲性生物學</summary>
+      <ul>
+        <li><b>⚠ non-nodal ≠ 低風險保證</b>:TP53 變異在 non-nodal MCL 可達 ~25%(EHA 2025)——indolent 表現不能免除 TP53 檢測。</li>
+        <li><b>侵襲性生物學</b> = blastoid/pleomorphic 型態、複雜核型、17p/TP53 變異(TP53、RB1 以突變或缺失失活)。</li>
+        <li><b>增殖特徵的正確定位(查證修正)</b>:增殖基因表現特徵(Rosenwald 2003)是 Ki-67 預後的生物學基礎,但「最強預測因子」是 2012 年的舊說——Eskelund(Blood 2017, PMID 28819011)多變項分析中<b>只有 TP53 突變</b>保有獨立 OS 意義(HR 6.2),Ki-67>30%、blastoid、MIPI/MIPI-c 皆失顯著。此條在對抗式查證中被 0-3 推翻並已修正。</li>
+      </ul>
+    </details>
+  </div>
+</section>
+
+<!-- ============ 預後 ============ -->
+<section id="prog">
+  <h2>預後分層 — 該測什麼、代表什麼</h2>
+  <p class="lead">診斷最低要求(EHA [IV, A] 等級):Ki-67、TP53 定序(± p53 IHC,≥50% cutoff)、型態(blastoid?)、MIPI-c。</p>
+
+  <div class="tbl-wrap"><table>
+    <tr><th>工具</th><th>定義</th><th>預後分離</th></tr>
+    <tr><td><b>MIPI</b></td><td>年齡、ECOG、LDH、WBC</td><td>經典 3 組</td></tr>
+    <tr><td><b>MIPI-c</b> <span class="tag ver">3-0</span></td><td>MIPI + Ki-67 ≥30%</td><td class="num">4 組,5 年 OS <b>85% → 17%</b>(PMID 26926679)</td></tr>
+    <tr><td>Ki-67 ≥50%</td><td>新興 cutoff</td><td>可能進一步細分</td></tr>
+    <tr><td><b>TP53 突變</b>(定序優先)</td><td>診斷時 ~10%(範圍 5–20%);conventional 10–15%、non-nodal ~25%</td><td class="num">Nordic MCL2/3:PFS HR 6.8;化療+ASCT 下中位 OS <b>1.8 vs 12.7 年</b></td></tr>
+    <tr><td><b>HRD 綜合定義</b> <span class="tag ver">3-0</span></td><td>高風險 MIPI-c <b>或</b> p53 IHC >50%(Leukemia 2023,pooled n=684)</td><td class="num">約 20–23% 病人;中位 FFS 1.1 vs 5.6 年(HR 2.97);中位 OS <b>2.2 vs 13.2 年</b>(HR 3.69);外部驗證 ×2</td></tr>
+  </table></div>
+
+  <div class="callout teal"><b>MRD 科學:</b>European MCL Elderly 系列中,rituximab 維持的效益集中在 induction 結束時 MRD 陰性者(反應持續 HR 0.38;OS HR 0.37),MRD 陽性者效益減弱。EHA 2025 已允許 <b>NGS 分子完全緩解者省略 ASCT</b> [II, A];BOVen 用 MRD 導引停藥——MRD 正從研究走向 treatment-adaptive 工具(NCCN 尚未在試驗外強制)。</div>
+</section>
+
+<!-- ============ 一線 ============ -->
+<section id="front">
+  <h2>一線治療</h2>
+  <p class="lead">依 fitness 與 TP53 狀態三分:年輕 fit(TRIANGLE 路徑)、老年/unfit(ECHO 路徑)、TP53 突變(chemo-free 路徑,見下節)。</p>
+
+  <h3 class="sub-h">年輕 fit(≤65)— TRIANGLE 終結常規 ASCT <span class="tag std">新標準</span></h3>
+  <div class="card">
+    <h4>TRIANGLE 三臂設計與結果 <span class="tr2">NCT02858258 · n=870 · Lancet 2024+2026 · verified 3-0</span></h4>
+    <p class="rdose">A = R-CHOP/R-DHAP+ASCT · A+I = 加 ibrutinib(induction+2 年維持) · I = ibrutinib 臂但無 ASCT</p>
+    <div class="tbl-wrap"><table>
+      <tr><th>比較</th><th>結果</th><th>意義</th></tr>
+      <tr><td>A+I vs A(主要,31 mo f/u)</td><td class="num">3 年 FFS <b>88% vs 72%</b>,HR 0.52,p=0.0008</td><td>ibrutinib 加得有效</td></tr>
+      <tr><td>A vs I</td><td class="num">3 年 FFS 72% vs 86%,p=0.9979</td><td>舊標準打不贏無移植臂</td></tr>
+      <tr><td><b>A+I vs I</b>(4.5 年 f/u,PMID 42134356)</td><td class="num">4 年 FFS <b>82% vs 81%</b>,HR 0.86,p=0.21</td><td><b>ibrutinib 骨架上 ASCT 零增益</b></td></tr>
+      <tr><td>4 年 OS</td><td class="num">A+I 88%(HR 0.59)、I <b>90%</b>(HR 0.57) vs A 81%</td><td>ibrutinib 臂 OS 優勢</td></tr>
+      <tr><td>維持期 gr3-5 血液毒性</td><td class="num">54%(A+I) vs 28%(I)</td><td>ASCT+ibrutinib 毒性翻倍</td></tr>
+    </table></div>
+    <details><summary>▸ 結論與適用註記</summary>
+      <p>EHA 2025 [I, A]:ibrutinib + R-CHOP/R-DHAP(或 R-DHAOx)induction → 2 年 ibrutinib + 3 年 rituximab 維持,<b>不做 ASCT</b>。Lancet 同期社論題目即〈End of transplantation's reign in mantle cell lymphoma〉。ASCT 仍可個案討論(例如 BTKi 維持不可近的環境——台灣給付情境相關)。誘導期 ORR >90%、CR up to 80%。</p>
+    </details>
+  </div>
+
+  <h3 class="sub-h">老年 / 不適移植</h3>
+  <div class="tbl-wrap"><table>
+    <tr><th>試驗</th><th>設計</th><th>療效</th><th>定位</th></tr>
+    <tr><td><b>ECHO</b> <span class="tag std">preferred</span><br><span class="num">JCO 2025 · PMID 40311141</span></td><td>≥65,n=598:acalabrutinib+BR vs BR(+2 年 R 維持)</td><td class="num">mPFS <b>66.4 vs 49.6 mo</b>,HR 0.73,p=0.016;CR 66.6% vs 53.5%;gr≥3 AE 兩臂相近(~89%);OS HR 0.86(NS)</td><td>NCCN v1.2026 起 Category 2A preferred;FDA/EMA 已核</td></tr>
+    <tr><td><b>SHINE</b><br><span class="num">NEJM 2022</span></td><td>≥65,n=523:ibrutinib+BR vs BR</td><td class="num">mPFS <b>80.6 vs 52.9 mo</b>,HR 0.75,p=0.01;OS 無差</td><td>PFS 增益但感染/心臟毒性較高、無 OS → 未成通用標準</td></tr>
+    <tr><td><b>ENRICH</b><br><span class="num">Lancet 2025 · PMID 41052510</span></td><td>≥60,n=397(中位 74 歲):chemo-free ibrutinib-R vs 化免疫</td><td class="num">PFS HR 0.69;vs R-CHOP HR <b>0.37</b>;vs BR HR 0.91(NS);gr≥3 AE 67% vs 70%</td><td>Chemo-free 選項:明確勝 R-CHOP,未勝 BR</td></tr>
+    <tr><td>Acala-R(單臂 ph2)<br><span class="num">ASH 2024 · Jain</span></td><td>n=50,中位 69 歲,chemo-free</td><td class="num">ORR 94%/CR 90%;2 年 PFS 94%/OS 96%</td><td>有前景,非隨機證據,尚非標準</td></tr>
+  </table></div>
+  <div class="callout"><b>選擇邏輯:</b>能耐受化療 → acala-BR;不能 → ibrutinib-R(或 BR+維持);明顯心血管病史避免 ibrutinib(二代 BTKi head-to-head 心房顫動/出血較少)。</div>
+</section>
+
+<!-- ============ TP53 ============ -->
+<section id="tp53">
+  <h2>TP53 突變 MCL — chemo-free 是答案</h2>
+  <p class="lead">2026 年單一最重要不良因子(對抗式查證 3-0)。化免疫 ± ASCT 無效:Nordic MCL2/3 中 TP53-mut 中位 PFS 0.9 年、OS 1.8 年 vs 野生型 >10 年。SHINE/ECHO 中 BTKi+BR 也救不回(SHINE TP53-mut mPFS 28.8 vs 野生型 80.6 mo)。</p>
+
+  <div class="card">
+    <h4>BOVen(zanubrutinib + obinutuzumab + venetoclax) <span class="tr2">NCT03824483 · Blood 2025 · 一線 TP53-mut n=25</span></h4>
+    <p class="rdose">zanu 160 mg BID + obinu + ven ramp→400 mg QD;24 cycles 後 CR+uMRD 停藥(MRD 導引)</p>
+    <p>ORR <b>96%</b>、CR <b>88%</b>;2 年 PFS <b>72%</b>、OS 76%;cycle 13 uMRD 95%(10⁻⁵)。耐受佳(腹瀉 64%、中性球低下 32%)。<b>專家共識推薦為 fit TP53-mut 一線(不分年齡)。</b></p>
+  </div>
+  <div class="card">
+    <h4>SYMPATICO(ibrutinib + venetoclax) <span class="tr2">Lancet Oncol · 隨機 phase 3 = R/R</span></h4>
+    <p>⚠ <b>精確度註記</b>:隨機主體是 <b>R/R</b> 試驗(mPFS 31.9 vs 22.1 mo,HR 0.65,p=0.0052,TP53-mut/wt 獲益一致)。常被引的 TP53-mut 數字(ORR 84%、CR 57%、mPFS 20.9 mo、mOS 47.1 mo)出自<b>跨 cohort 合併分析</b>(含一線 open-label arm),非隨機一線證據。</p>
+  </div>
+  <div class="callout teal"><b>整體證據(2025 統合分析,39 研究/734 TP53-mut):</b>一線 targeted therapy pooled CR 89%、2 年 PFS 62%(勝化免疫);復發時 CAR-T pooled CR 85% 但 2 年 PFS 僅 31%;年輕 fit 病人 CR 後考慮 <b>allo-HSCT</b>(唯一治癒意圖選項)。EHA 2025:TP53-mut 一線 anti-CD20+BTKi+BCL2i [III, B],儘量收案入試驗。</div>
+</section>
+
+<!-- ============ R/R ============ -->
+<section id="rr">
+  <h2>復發 / 難治(R/R)</h2>
+  <p class="lead">隨著 BTKi 進入一線(TRIANGLE/ECHO),「cBTKi 失敗後怎麼走」成為主要臨床問題。BTKi-naive 復發者仍先用二代 covalent BTKi(acala/zanu,心臟安全性優於 ibrutinib;ibrutinib 單藥基準:ORR 68%、mPFS 13.9 mo)。</p>
+
+  <h3 class="sub-h">CAR-T — cBTKi 失敗後 fit 病人首選</h3>
+  <div class="tbl-wrap"><table>
+    <tr><th>產品</th><th>試驗</th><th>療效</th><th>毒性</th></tr>
+    <tr><td><b>Brexucabtagene autoleucel</b>(brexu-cel)</td><td class="num">ZUMA-2(n=68 cBTKi-exposed)</td><td class="num">ORR 91–93%、CR 67–68%;mPFS <b>25.8 mo</b>;mOS <b>46.6 mo</b>;~25% 長期緩解;TP53-mut/blastoid/高 Ki-67 仍有效(TP53-mut 3 年 f/u:mPFS/mOS 未達)</td><td class="num">CRS 91%(gr≥3 15%)<br>ICANS 63%(gr≥3 ~31%)</td></tr>
+    <tr><td><b>Lisocabtagene maraleucel</b>(liso-cel)</td><td class="num">TRANSCEND(n=88)<br>JCO 2024;42:1146</td><td class="num">ORR 83.1%、CR 72.3%;mPFS 15.3 mo;CNS 侵犯亞組 ORR 86%</td><td class="num">CRS 61%(<b>gr≥3 僅 1%</b>)<br>NE 31%(gr≥3 9%)、無 gr5<br>→ 老年/共病首選</td></tr>
+    <tr><td>Brexu-cel <b>BTKi-naive</b> <span class="tag new">2026</span></td><td class="num">ZUMA-2 cohort 3(n=86)<br>Blood 2026 · PMID 41160777</td><td class="num">ORR 91%、CR 73%;12 mo PFS 75%/OS 90%</td><td class="num">gr≥3 TRAE 88%、4 例致死 — 支持高風險病人 BTKi 前提早 CAR-T(選擇性)</td></tr>
+  </table></div>
+  <div class="callout"><b>抗藥警訊:</b>CAR-T 後復發者 51% 帶 TP53 突變;post-CAR-T TP53-mut 預後仍差(2 年 PFS ~31%)—— 這是 2026 年最需要試驗的族群。</div>
+
+  <h3 class="sub-h">Pirtobrutinib(non-covalent BTKi)— bridge 或 CAR-T 不可行時</h3>
+  <div class="card">
+    <h4>BRUIN 最終分析 <span class="tr2">NCT03740529 · FDA 2023 核准 · ASH 2025 final</span></h4>
+    <p class="rdose">200 mg QD(≥2 線後、含 BTKi);可逆結合、不依賴 C481 → cBTKi 抗藥後仍有效</p>
+    <p>Post-cBTKi(n=152):ORR <b>49.3%</b>(CR 15.8%)、<b>mPFS 5.6 mo</b>、mOS 23.9 mo;有反應者 mDOR 21.6 mo。耐受極佳(疲倦 32%、腹瀉 23%,5 年無新訊號)。</p>
+    <details><summary>▸ BTKi-naive 對照(為何定位是 bridge)</summary>
+      <p>cBTKi-naive 亞組(n=14):ORR 85.7%、mPFS 44.6 mo —— 藥本身很有效,但 post-cBTKi 疾病生物學差,反應真實但短。<b>定位:bridge to CAR-T,或 CAR-T 不可行時的 definitive palliation。</b></p>
+    </details>
+  </div>
+
+  <h3 class="sub-h">Bispecific 與其他新武器</h3>
+  <div class="card">
+    <h4>Glofitamab(CD20×CD3) <span class="tr2">NP30179 · ASH 2024 · n=60 · fixed-duration</span></h4>
+    <p class="rdose">Obinutuzumab pretreatment → step-up;固定療程(非用到惡化)</p>
+    <p>ORR <b>82%</b>、CR <b>77%</b>;mPFS 18.0 mo;CR 持續中位 46.5 mo;post-BTKi 仍 CR 71%。CRS 70%(gr3/4 11.7%)、ICANS 全為低度;⚠ 重度前治療族群 gr5 AE 15%(呼吸道感染警覺)。高風險組織學使 CR 降至 65%(vs 93%)。Phase 3 GLOBRYTE 進行中;GLOASIS(+zanu+ven)等組合研究中。</p>
+  </div>
+  <div class="card">
+    <h4>Zilovertamab vedotin(ROR1 ADC) <span class="tr2">waveLINE-006 cohort A · ASH 2024 · n=40</span></h4>
+    <p class="rdose">2.5 mg/kg IV q3w(MMAE payload)</p>
+    <p>重度前治療 post-BTKi:ORR 40% 但 mDOR 僅 3.0 mo、mPFS 3.4 mo;MMAE 類毒性(中性球低下 58%、神經病變 43%)。<b>證明 ROR1 可成藥,單藥尚未 practice-changing</b>;與 nemtabrutinib 組合(cohort C)研究中。</p>
+  </div>
+  <div class="callout teal"><b>Allo-HSCT:</b>年輕 fit 的 TP53-mut 或多次復發者達緩解後,唯一治癒意圖鞏固選項,以典型移植毒性為代價。</div>
+</section>
+
+<!-- ============ Sequencing ============ -->
+<section id="seq">
+  <h2>Sequencing 決策邏輯(2026)</h2>
+  <p class="lead">依「復發時 BTKi 暴露狀態 × fitness × TP53」三軸決定。</p>
+  <div class="flow">
+    <div class="step"><span class="st">Scenario A</span><h4>一線含 BTKi 後復發 · fit</h4>
+      <p>→ <b>CAR-T</b>(年輕強壯 brexu-cel;老年/共病 liso-cel),pirtobrutinib 作 bridge。TP53-mut:CAR-T 越早越好,年輕者討論 allo 鞏固。</p></div>
+    <div class="arrow">▽</div>
+    <div class="step"><span class="st">Scenario B</span><h4>一線含 BTKi 後復發 · CAR-T 不可行</h4>
+      <p>→ pirtobrutinib → glofitamab(或試驗);venetoclax 組合(SYMPATICO 隨機證據:ibru+ven mPFS 31.9 vs 22.1 mo)。</p></div>
+    <div class="arrow">▽</div>
+    <div class="step"><span class="st">Scenario C</span><h4>BTKi-naive 復發(一線只用過化免疫)</h4>
+      <p>→ 二代 covalent BTKi(acala/zanu)± venetoclax;下次失敗再 CAR-T。</p></div>
+    <div class="arrow">▽</div>
+    <div class="step"><span class="st">Scenario D</span><h4>CAR-T 後復發</h4>
+      <p>→ bispecific、pirtobrutinib(若未用)、臨床試驗。最差預後區位、TP53-mut 富集 —— 優先收案。</p></div>
+  </div>
+</section>
+
+<!-- ============ 查證 ============ -->
+<section id="src">
+  <h2>查證軌跡與指引錨點</h2>
+  <p class="lead">本頁數字經三道程序:多來源萃取(逐字引句保留)→ 對抗式三票查證(24 確認/1 推翻已修正)→ 原始文獻 PMID/DOI 人工核對。</p>
+  <div class="tbl-wrap"><table>
+    <tr><th>錨點</th><th>內容</th></tr>
+    <tr><td><b>EHA–EU MCL Network 2025</b></td><td>Dreyling et al.(PMC12541557):fit young ibrutinib-CIT+維持 [I,A];NGS 分子 CR 可免 ASCT [II,A];TP53 診斷時定序 [IV,A];elderly acala-BR preferred;R/R cBTKi 失敗後 CAR-T</td></tr>
+    <tr><td><b>NCCN B-Cell v4.2026</b></td><td>acala+BR 自 v1.2026 列 Category 2A preferred(less aggressive);演算法與 TRIANGLE 路徑一致</td></tr>
+    <tr><td><b>關鍵原始文獻</b></td><td class="num">TRIANGLE:Lancet 2024(S0140-6736(24)00184-3)+ 4.5yr Lancet 2026(PMID 42134356)· SHINE:NEJM 2022 · ECHO:PMID 40311141 · ENRICH:PMID 41052510 · BOVen:Blood 2025(blood.2024025563)· Nordic TP53:Eskelund Blood 2017(PMID 28819011)· HRD:Leukemia 2023(s41375-023-01977-y)· MIPI-c:PMID 26926679 · TRANSCEND:JCO 2024;42:1146 · ZUMA-2 c3:PMID 41160777 · BRUIN final:blood-2025-665 · Pirto FDA:PMID 37624619</td></tr>
+    <tr><td><b>查證修正實例</b></td><td>「增殖特徵=最強預測因子」被 0-3 推翻(2012 舊說,被 Eskelund 2017 TP53 獨立性取代)——本頁已按修正後陳述呈現</td></tr>
+  </table></div>
+</section>
+
+<footer class="foot">
+  <b>教學參考,非處方指令。</b>臨床決策請以現行 NCCN / EHA–EU MCL Network 指引原文與原始文獻為準。<br>
+  Deep-research pipeline:multi-source sweep → adversarial 3-vote verification → manual PMID cross-check · 2026-08-09/10<br>
+  台灣健保給付狀態未標註(MCL 用藥之 NHI 對照為待辦項)。
+</footer>
+
+</div>
+<script>
+// sticky nav active state
+const links=[...document.querySelectorAll('nav.toc a')];
+const secs=links.map(a=>document.querySelector(a.getAttribute('href')));
+const onScroll=()=>{
+  let i=secs.findLastIndex(s=>s&&s.getBoundingClientRect().top<90);
+  links.forEach((a,j)=>a.classList.toggle('active',j===i));
+};
+document.addEventListener('scroll',onScroll,{passive:true});onScroll();
+</script>
+</body>
+</html>
