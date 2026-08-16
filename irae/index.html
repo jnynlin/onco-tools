@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>irAE 器官分級處置速查</title>
+<style>
+:root{
+  --ink:#0C1F26; --ink-soft:#4A6068; --paper:#EDF1F1; --surface:#FFFFFF;
+  --rule:#C9D5D6; --rule-soft:#E4EAEA;
+  --platinum:#0E6E75; --resist:#9A4B22; --marker:#5A4A86; --amber:#8A6D00;
+  --platinum-bg:#EAF3F3; --resist-bg:#F6EEE9; --marker-bg:#F6F5FA; --test-bg:#F6F2E4;
+  --g1:#0E6E75; --g2:#8A6D00; --g3:#9A4B22; --g4:#8F2F2F;
+  --shadow:0 1px 0 rgba(12,31,38,.06), 0 12px 30px -18px rgba(12,31,38,.35);
+  --serif:"Noto Serif TC",Georgia,serif;
+  --sans:"Noto Sans TC","Helvetica Neue",Arial,sans-serif;
+  --mono:"IBM Plex Mono",Menlo,monospace;
+  --radius:4px;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{-webkit-text-size-adjust:100%;scroll-behavior:smooth}
+body{background:var(--paper);color:var(--ink);font-family:var(--sans);
+  font-size:16px;line-height:1.7;-webkit-font-smoothing:antialiased;padding-bottom:70px}
+.masthead{max-width:820px;margin:0 auto;padding:38px 20px 18px;border-bottom:2px solid var(--ink)}
+.eyebrow{font-family:var(--mono);font-size:11.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--platinum);margin-bottom:8px}
+.masthead h1{font-family:var(--serif);font-weight:900;font-size:clamp(26px,5vw,38px);line-height:1.15}
+.masthead .sub{margin-top:8px;color:var(--ink-soft);font-size:14.5px}
+.masthead .meta{margin-top:10px;font-family:var(--mono);font-size:11px;color:var(--ink-soft)}
+.ctrl{position:sticky;top:0;z-index:40;background:rgba(237,241,241,.94);backdrop-filter:blur(8px);
+  border-bottom:1px solid var(--rule)}
+.ctrl-in{max-width:820px;margin:0 auto;padding:8px 20px}
+#search{width:100%;padding:8px 12px;border-radius:var(--radius);border:1px solid var(--rule);
+  background:var(--surface);color:var(--ink);font-size:.95rem;font-family:var(--sans)}
+#search:focus{outline:2px solid var(--platinum);outline-offset:-1px}
+#chips{display:flex;gap:4px;overflow-x:auto;padding:8px 0 2px;-webkit-overflow-scrolling:touch}
+.chip{flex:0 0 auto;background:transparent;color:var(--ink-soft);border:1px solid var(--rule);
+  border-radius:3px;padding:4px 12px;font-size:13.5px;font-weight:500;cursor:pointer;white-space:nowrap}
+.chip:hover{background:var(--platinum-bg);color:var(--platinum)}
+.chip.on{background:var(--platinum);color:#fff;border-color:var(--platinum)}
+main{max-width:820px;margin:0 auto;padding:16px 20px}
+.principles{background:var(--test-bg);border:1px solid var(--rule);border-left:4px solid var(--amber);
+  border-radius:var(--radius);padding:14px 16px;margin-bottom:18px;font-size:.88rem;box-shadow:var(--shadow)}
+.principles h2{font-family:var(--mono);font-size:12px;letter-spacing:.12em;text-transform:uppercase;
+  color:var(--amber);margin-bottom:8px}
+.principles li{margin-left:1.2em;margin-bottom:4px;color:var(--ink-soft)}
+.principles b{color:var(--ink)}
+.organ{background:var(--surface);border:1px solid var(--rule);border-radius:var(--radius);
+  margin-bottom:12px;overflow:hidden;box-shadow:var(--shadow)}
+.ohead{padding:13px 16px;cursor:pointer;display:flex;align-items:center;gap:12px}
+.ohead:hover{background:var(--platinum-bg)}
+.ohead .ic{font-size:1.35rem}
+.ohead .t{flex:1}
+.ohead .nm{font-family:var(--serif);font-weight:900;font-size:1.05rem}
+.ohead .en{font-family:var(--mono);font-size:11px;color:var(--ink-soft);letter-spacing:.02em}
+.ohead .arrow{color:var(--ink-soft);transition:transform .2s;font-size:.8rem}
+.organ.open .arrow{transform:rotate(90deg)}
+.obody{display:none;padding:0 16px 16px;border-top:1px solid var(--rule-soft)}
+.organ.open .obody{display:block}
+.inc{display:flex;flex-wrap:wrap;gap:6px;margin:12px 0 0}
+.inc .cell{flex:1 1 30%;min-width:150px;background:var(--paper);border:1px solid var(--rule);
+  border-radius:var(--radius);padding:6px 10px;font-size:.8rem;color:var(--ink)}
+.inc .lb{font-family:var(--mono);font-size:10px;letter-spacing:.1em;text-transform:uppercase;display:block}
+.inc .lb.c{color:var(--resist)}.inc .lb.p{color:var(--platinum)}.inc .lb.m{color:var(--g4)}
+.cmp{background:var(--surface);border:1px solid var(--rule);border-radius:var(--radius);
+  padding:14px 16px;margin-bottom:18px;box-shadow:var(--shadow);font-size:.86rem}
+.cmp h2{font-family:var(--mono);font-size:12px;letter-spacing:.12em;text-transform:uppercase;
+  color:var(--platinum);margin-bottom:8px}
+.cmp table{width:100%;border-collapse:collapse;margin:6px 0}
+.cmp th,.cmp td{border:1px solid var(--rule-soft);padding:5px 8px;text-align:left;font-size:.82rem}
+.cmp th{background:var(--paper);font-family:var(--mono);font-size:11px;letter-spacing:.06em}
+.cmp .sig{margin-top:8px;color:var(--ink-soft)}
+.cmp .sig b{color:var(--ink)}
+.wk{font-size:.84rem;color:var(--ink-soft);background:var(--platinum-bg);border-radius:var(--radius);
+  padding:9px 12px;margin:12px 0}
+.wk b{color:var(--platinum);font-family:var(--mono);font-size:11.5px;letter-spacing:.1em;text-transform:uppercase}
+.grade{display:flex;gap:12px;margin:11px 0;align-items:flex-start}
+.gb{flex:0 0 auto;width:40px;height:24px;border-radius:3px;color:#fff;font-weight:700;font-size:.8rem;
+  font-family:var(--mono);display:flex;align-items:center;justify-content:center;margin-top:3px}
+.g1{background:var(--g1)}.g2{background:var(--g2)}.g3{background:var(--g3)}.g4{background:var(--g4)}
+.gd{flex:1;font-size:.89rem}
+.gd .def{color:var(--ink-soft)}
+.gd .act{margin-top:2px}
+.gd .act b{color:var(--platinum)}
+.refr{background:var(--resist-bg);border:1px solid var(--rule);border-left:4px solid var(--resist);
+  border-radius:var(--radius);padding:9px 12px;margin-top:12px;font-size:.86rem}
+.refr b{color:var(--resist);font-family:var(--mono);font-size:11.5px;letter-spacing:.1em;text-transform:uppercase}
+.pearl{font-size:.84rem;color:var(--ink-soft);margin-top:10px;background:var(--marker-bg);
+  border-radius:var(--radius);padding:9px 12px}
+.pearl b{color:var(--marker)}
+footer{max-width:820px;margin:20px auto 0;padding:14px 20px 0;font-size:.74rem;color:var(--ink-soft);
+  border-top:1px solid var(--rule)}
+.hid{display:none!important}
+@media print{
+  .ctrl{display:none!important}
+  .obody{display:block!important}
+  body{background:#fff;padding-bottom:0}
+  .organ{box-shadow:none}
+}
+</style>
+</head>
+<body>
+<header class="masthead">
+  <div class="eyebrow">Onco-Tools · Immune-Related Adverse Events</div>
+  <h1>irAE 器官分級處置速查</h1>
+  <div class="sub">免疫檢查點抑制劑相關不良事件 —— CTCAE v5 分級 × ICI 處置 × 類固醇/二線用藥,依器官系統彙整</div>
+  <div class="meta"><b>架構</b> ASCO 2021 · NCCN · ESMO 2022 &nbsp;|&nbsp; <b>整理</b> 2026-08</div>
+</header>
+<div class="ctrl"><div class="ctrl-in">
+  <input id="search" type="search" placeholder="搜尋:器官、藥名、關鍵字(如 infliximab、colitis、心肌炎)">
+  <div id="chips"></div>
+</div></div>
+<main>
+  <div class="principles">
+    <h2>⚖ 共通原則(先讀)</h2>
+    <li><b>類固醇前先排除感染</b>(糞便 C. diff/CMV、痰液/PJP、病毒性肝炎)—— 類固醇會蓋掉感染表現</li>
+    <li>G2 起暫停 ICI;G3–4 多數器官<b>永久停用</b>(內分泌補足荷爾蒙後為主要例外)</li>
+    <li>類固醇 48–72h 無改善 = <b>steroid-refractory → 上二線</b>(各器官不同,見各卡)</li>
+    <li>改善至 ≤G1 後 <b>4–6 週緩慢 taper</b>(太快減 = 復發主因)</li>
+    <li>類固醇 >4 週:<b>PJP 預防</b>(TMP-SMX)、鈣/VitD、血糖與胃黏膜保護</li>
+    <li>Combo(CTLA-4+PD-1)irAE <b>更早、更重、更多器官</b> —— 監測閾值下修</li>
+    <li>Rechallenge:心肌炎/神經/G4(非內分泌)原則不再挑戰;G2–3 緩解後個案評估(復發約 25–30%)</li>
+  </div>
+  <div class="cmp">
+    <h2>📊 CTLA-4 vs PD-1(±PD-L1)vs 併用 —— 發生率總覽</h2>
+    <table>
+      <tr><th></th><th>CTLA-4 單方<br>(ipilimumab)</th><th>PD-1/PD-L1 單方</th><th>併用<br>(ipi+nivo)</th></tr>
+      <tr><td>任何級別 irAE</td><td>~60–80%<br><small>劑量依賴(3→10 mg/kg 遞增)</small></td><td>~60–70%<br><small>與劑量無關</small></td><td>~95%</td></tr>
+      <tr><td>G3–4 irAE</td><td>~20–30%</td><td>~7–14%</td><td>~55–59%<br><small>(CheckMate 067)</small></td></tr>
+      <tr><td>發作時間</td><td>較早(皮膚 2–3 週 → 腸胃/肝 6–7 週)</td><td>較晚且分散(內分泌 ≥9 週)</td><td>最早、最快疊加</td></tr>
+    </table>
+    <div class="sig"><b>類別特徵(signature)</b>:CTLA-4 → <b>結腸炎、hypophysitis、皮疹</b>(劑量依賴);PD-1 → <b>肺炎、甲狀腺、白斑、T1DM</b>(劑量無關);併用 → 全器官 ↑、肝炎與腸胃毒性最放大。內分泌中 hypophysitis 幾乎專屬 CTLA-4/併用,甲狀腺異常以 PD-1 為主 —— 兩類機轉不同(CTLA-4 = 中樞 T 細胞活化閾值;PD-1 = 周邊耐受)。各器官細項見下方各卡「發生率」列。</div>
+  </div>
+  <div id="organs"></div>
+</main>
+<footer>
+  <p>來源架構:ASCO Guideline 2021(J Clin Oncol 2021;39:4073)、NCCN Management of Immunotherapy-Related Toxicities、ESMO 2022。劑量以 prednisone 當量表示;methylpred = methylprednisolone。</p>
+  <p style="margin-top:4px">發生率來源:各 meta-analysis(El Osta Crit Rev Oncol Hematol 2017;Wang Front Oncol 2020 黑色素瘤網絡分析等)、CheckMate 067(NEJM 2019)、Postow NEJM 2018 綜述;均為約略區間,依癌別/劑量/研究而異,供類別間相對比較用。</p>
+  <p style="margin-top:4px">⚠ 教學/速查用途,非取代臨床判斷與原文指引;個案處置請依最新版 guideline 與院內規範。</p>
+</footer>
+<script>
+var IRAE=[
+{id:"skin",inc:{c:"~40–50%",p:"~30–40%(白斑 ~8%,黑色素瘤)",m:"~60%"},ic:"🩹",nm:"皮膚",en:"Maculopapular rash / pruritus / bullous",
+ wk:"檢查:BSA 估算、黏膜受累、水疱/表皮剝離(Nikolsky)、嗜酸性球;疑 SJS/TEN/DRESS 即皮膚科會診+切片",
+ g:[["G1","<10% BSA,無症狀","<b>續用 ICI</b>;潤膚劑+外用類固醇(中效)±口服抗組織胺"],
+    ["G2","10–30% BSA 或有症狀","<b>續用或考慮暫停</b>;強效外用類固醇;不緩解 → prednisone 0.5–1 mg/kg"],
+    ["G3",">30% BSA 或影響生活功能","<b>暫停 ICI</b>;prednisone 0.5–1(可至 1–2)mg/kg;皮膚科會診"],
+    ["G4","SJS/TEN/DRESS/廣泛水疱","<b>永久停用</b>;住院(燒燙傷中心);IV methylpred 1–2 mg/kg;TEN 考慮 IVIG/cyclosporine"]],
+ rf:"難治:考慮 IVIG、cyclosporine(TEN);DRESS 需長 taper",
+ pl:"<b>Bullous pemphigoid</b> 為 ICI 特色皮疹(BP180 抗體)→ 類固醇+doxycycline,常需 rituximab;疹型不典型時early切片。"},
+{id:"gi",inc:{c:"腹瀉 ~30–35%/結腸炎 ~7–9%",p:"腹瀉 ~10–15%/結腸炎 ~1–2%",m:"腹瀉 ~45%/結腸炎 ~13%(G≥3 9–11%)"},ic:"🚻",nm:"腸胃(結腸炎/腹瀉)",en:"Colitis / diarrhea",
+ wk:"檢查:糞便感染(C. difficile、CMV)、fecal calprotectin、必要時乙狀結腸鏡/大腸鏡+切片;腹痛+發燒警覺穿孔",
+ g:[["G1","比基線多 <4 次/天","<b>續用 ICI</b>;loperamide、補水、避乳製品"],
+    ["G2","多 4–6 次/天、腹痛、血便","<b>暫停 ICI</b>;持續 >2–3 天 → prednisone 1 mg/kg"],
+    ["G3","多 ≥7 次/天、失禁、需住院","<b>暫停(CTLA-4 則永久停)</b>;IV methylpred 1–2 mg/kg;48–72h 無效 → infliximab"],
+    ["G4","危及生命、穿孔/毒性巨結腸","<b>永久停用</b>;IV methylpred 1–2 mg/kg+早期 infliximab;外科評估"]],
+ rf:"難治二線:<b>infliximab 5–10 mg/kg</b>(可重複);次選 <b>vedolizumab</b>(腸道選擇性);內視鏡潰瘍深 = infliximab 反應差預測子",
+ pl:"腹瀉不等於結腸炎,但 <b>G2 以上先當結腸炎處理</b>;CMV 結腸炎與 irAE 可並存,難治時重切片。"},
+{id:"liver",inc:{c:"~5–10%(G3–4 1–2%)",p:"~2–5%(G3–4 ~1%)",m:"~25–30%(G3–4 ~15%)"},ic:"🫀",nm:"肝(肝炎)",en:"Hepatitis",
+ wk:"檢查:AST/ALT/Tbil/ALP、病毒性肝炎(HBV/HCV/HEV)、自體免疫(ANA/ASMA/IgG)、影像排除腫瘤浸潤/膽道;藥物史(含中草藥)",
+ g:[["G1","AST/ALT <3×ULN 或 Tbil <1.5×","<b>續用 ICI</b>;每週 1–2 次追蹤"],
+    ["G2","AST/ALT 3–5× 或 Tbil 1.5–3×","<b>暫停 ICI</b>;持續/惡化 → prednisone 0.5–1 mg/kg"],
+    ["G3","AST/ALT 5–20× 或 Tbil 3–10×","<b>永久停用(多數)</b>;IV methylpred 1–2 mg/kg"],
+    ["G4","AST/ALT >20× 或 Tbil >10×","<b>永久停用</b>;住院;IV methylpred 2 mg/kg"]],
+ rf:"難治二線:<b>MMF 1000 mg bid</b>;再難治 tacrolimus/ATG。<b>⚠ 不用 infliximab</b>(本身肝毒性)",
+ pl:"單純 <b>ALP 升高</b>想到膽管炎型(cholangitis pattern)→ MRCP;類固醇反應較差。"},
+{id:"lung",inc:{c:"<1%",p:"~3–5%(G3–4 ~1%)",m:"~7–10%"},ic:"🫁",nm:"肺(肺炎)",en:"Pneumonitis",
+ wk:"檢查:HRCT、SpO₂(靜態+活動)、感染排除(含 PJP、病毒/COVID)、必要時支氣管鏡+BAL;與 RT 照野/腫瘤惡化鑑別",
+ g:[["G1","無症狀,影像變化 ≤25% 肺野","<b>考慮暫停</b>;3–4 週追 CT+肺功能;惡化即依 G2"],
+    ["G2","有症狀,影響日常活動","<b>暫停 ICI</b>;prednisone 1–2 mg/kg;48–72h 無改善依 G3"],
+    ["G3","症狀嚴重、需氧氣、住院","<b>永久停用</b>;IV methylpred 1–2 mg/kg(可 pulse)"],
+    ["G4","危及生命/ARDS/插管","<b>永久停用</b>;IV methylpred pulse;ICU"]],
+ rf:"難治二線(48h):<b>infliximab</b>、<b>MMF</b>、<b>IVIG</b>、cyclophosphamide(擇一,依院內經驗)",
+ pl:"G1–2 影像常為 <b>OP(organizing pneumonia)pattern</b>;放射線照野內變化想到 radiation recall。"},
+{id:"endo",inc:{c:"hypophysitis ~3–5%(劑量依賴)/甲低 ~4%",p:"甲低 ~7–9%/hypophysitis <1%/T1DM ~0.2–1%",m:"甲狀腺 ~15–20%/hypophysitis ~6–10%"},ic:"🦋",nm:"內分泌",en:"Thyroid / hypophysitis / adrenal / T1DM",
+ wk:"檢查:TSH/fT4(每 4–6 週)、ACTH+早晨 cortisol、電解質/血糖;疑垂體炎 → 腦下垂體 MRI+全軸荷爾蒙",
+ g:[["G1","無症狀生化異常","<b>續用 ICI</b>;監測;甲狀腺 TSH>10 即補 levothyroxine"],
+    ["G2","有症狀,需荷爾蒙補充","<b>多可續用</b>;補充治療為主(見下);垂體炎頭痛明顯時暫停"],
+    ["G3","嚴重症狀(腎上腺危象/DKA/黏液水腫)","<b>暫停至穩定</b>;住院;壓力劑量 hydrocortisone / insulin/DKA protocol"],
+    ["G4","危及生命","同 G3;ICU;<b>穩定後多數仍可恢復 ICI</b>"]],
+ rf:"內分泌 irAE <b>不走類固醇免疫抑制邏輯</b>(垂體炎有 mass effect/視野缺損才用高劑量類固醇)",
+ pl:"補充順序鐵律:<b>先 hydrocortisone 再 levothyroxine</b>(反了會誘發腎上腺危象)。甲狀腺毒症多為破壞性,β-blocker 症狀治療後轉 hypo;內分泌損傷<b>多不可逆=終身補充</b>,衛教必做。T1DM 猛爆起病,查酮體。"},
+{id:"cardiac",inc:{c:"~0.1%",p:"~0.1–0.5%",m:"~0.3–1.3%"},ic:"❤️",nm:"心臟(心肌炎)",en:"Myocarditis",
+ wk:"檢查:troponin、NT-proBNP、ECG、echo、心臟 MRI,必要時切片;<b>同步篩 myositis+MG(overlap 症候群 ~10%)</b>:CK、眼瞼下垂/複視評估",
+ g:[["任何","懷疑即為急症(不分級處理)","<b>永久停用</b>;住院(監測病房);疑似即刻 IV methylpred 1 g/d ×3–5 天 pulse,續 1–2 mg/kg"],
+    ["G3","心衰/傳導異常","同上+心衰治療;完全房室傳導阻滯 → pacing"],
+    ["G4","心因性休克/惡性心律不整","同上+MCS(IABP/ECMO)評估"]],
+ rf:"難治二線(24h 無改善即上):<b>ATG</b>、<b>abatacept</b>(±ruxolitinib 新證據)、alemtuzumab",
+ pl:"歷史死亡率 30–50%,<b>寧可過度警覺</b>;troponin 基線+早期監測(combo 治療尤其);smoldering myocarditis 可只有 troponin 升。"},
+{id:"neuro",inc:{c:"any ~3.8%(嚴重 0.1–0.5%)",p:"any ~6%(多輕度;嚴重 0.1–0.5%)",m:"較高,個案報告為主"},ic:"🧠",nm:"神經",en:"GBS / myasthenia / encephalitis / neuropathy",
+ wk:"檢查:神經學檢查、MRI、LP(細胞/蛋白/自體免疫腦炎抗體)、NCS/EMG、AChR/MuSK 抗體;MG 必查呼吸功能(NIF/FVC)+overlap 心肌炎",
+ g:[["G1","輕微感覺異常","<b>續用+密切觀察</b>(神經 irAE 惡化快)"],
+    ["G2","中度,影響日常","<b>暫停 ICI</b>;prednisone 0.5–1 mg/kg"],
+    ["G3","嚴重/自理受限","<b>永久停用</b>;IV methylpred 1–2 mg/kg 或 pulse"],
+    ["G4","危及生命(呼吸衰竭)","<b>永久停用</b>;ICU;pulse+二線(見下)"]],
+ rf:"分型二線:<b>GBS</b> → IVIG 0.4 g/kg ×5d 或 PLEX(irAE-GBS 可併類固醇,與 idiopathic 不同);<b>MG</b> → pyridostigmine+低起始類固醇緩升+IVIG/PLEX(bulbar/呼吸受累);<b>腦炎</b> → pulse+IVIG,難治 rituximab",
+ pl:"MG-myositis-myocarditis <b>三聯 overlap</b> 是 ICI 特色,見一想三;類固醇單用對 GBS/MG 不夠,早上 IVIG/PLEX。"},
+{id:"renal",inc:{c:"~1–2%",p:"~1–2%",m:"~4–5%"},ic:"🫘",nm:"腎(腎炎)",en:"Nephritis / AIN",
+ wk:"檢查:Cr 對基線倍數、尿液分析(蛋白/白血球/eos)、排除 prerenal/阻塞/顯影劑;<b>盤查 PPI、NSAID</b>(AIN 共犯);不確定時切片",
+ g:[["G1","Cr 1.5–2× 基線","<b>續用或暫停</b>;找共犯藥並停用;1–2 週內追蹤"],
+    ["G2","Cr 2–3× 基線","<b>暫停 ICI</b>;prednisone 0.5–1 mg/kg"],
+    ["G3","Cr >3× 基線或 >4 mg/dL","<b>永久停用</b>;IV methylpred 1–2 mg/kg"],
+    ["G4","需透析/危及生命","<b>永久停用</b>;同上+腎臟科共管"]],
+ rf:"難治二線:<b>MMF</b>;類固醇反應通常好(AIN 為主病理)",
+ pl:"ICI 腎炎多為 <b>AIN</b>,停 PPI/NSAID 有時就改善一半;蛋白尿為主想到 podocytopathy(較少見,處置不同)。"},
+{id:"heme",inc:{c:"<1%",p:"<1%",m:"<1%(HLH 個案)"},ic:"🩸",nm:"血液",en:"AIHA / ITP / neutropenia / HLH",
+ wk:"檢查:CBC+smear、網狀球、DAT/haptoglobin/LDH/bilirubin、PT/aPTT/fibrinogen、ferritin(HLH 警覺);排除 TMA、藥物性",
+ g:[["G1","輕度且無症狀","<b>續用+密切追蹤</b>"],
+    ["G2","Hb 8–10 / plt 50–75k 等","<b>暫停 ICI</b>;prednisone 0.5–1 mg/kg"],
+    ["G3","Hb <8、plt 25–50k、輸血需求","<b>暫停~永久停</b>;prednisone/methylpred 1–2 mg/kg;AIHA/ITP 加 IVIG"],
+    ["G4","危及生命(plt <25k 出血、ANC <500)","<b>永久停用</b>;IV pulse+二線"]],
+ rf:"分型二線:AIHA/ITP → <b>IVIG、rituximab</b>(ITP 另可 TPO-RA);neutropenia → G-CSF;aplastic anemia → ATG+cyclosporine;<b>HLH</b> → 依 HLH-94 邏輯(etoposide/anakinra)+血液科共管",
+ pl:"ICI-血液 irAE 少見但兇;<b>ferritin 飆高+雙系下降+發燒</b> = HLH 警鈴,別當感染燒。"},
+{id:"msk",inc:{c:"關節痛 ~5%",p:"關節痛 ~5–16%/關節炎 ~1–7%/肌炎 ~1%",m:"較高(數字報告不一)"},ic:"🦴",nm:"肌肉骨關節",en:"Arthritis / myositis / PMR-like",
+ wk:"檢查:關節理學+超音波、CRP/ESR、RF/anti-CCP;肌炎:<b>CK+aldolase+troponin(必篩 overlap 心肌炎)</b>、EMG、肌肉 MRI",
+ g:[["G1","輕度關節/肌肉痛","<b>續用</b>;NSAID/acetaminophen"],
+    ["G2","中度,影響日常","<b>續用或暫停</b>;prednisone 10–20 mg/d;不緩解 → 暫停+升劑量"],
+    ["G3","嚴重/不可逆疑慮","<b>暫停~永久停</b>;prednisone 0.5–1 mg/kg;風濕科共管"],
+    ["G4","危及生命(肌炎累及呼吸/吞嚥)","<b>永久停用</b>;IV methylpred pulse+IVIG/PLEX"]],
+ rf:"關節炎 steroid-sparing:<b>MTX、TNFi、tocilizumab</b>(irAE 關節炎常慢性化,是最常「治療結束還在」的 irAE);肌炎難治:IVIG/PLEX",
+ pl:"肌炎+troponin 升 = 當 <b>心肌炎 overlap</b> 處理直到排除;PMR-like 對 15–20 mg prednisone 反應戲劇性。"},
+{id:"ocular",inc:{c:"<1%",p:"<1%",m:"~1%"},ic:"👁️",nm:"眼",en:"Uveitis / episcleritis",
+ wk:"檢查:視力、眼科裂隙燈(前/後房)、眼底;葡萄膜炎分前/中/後/全",
+ g:[["G1","無症狀/輕微","<b>續用</b>;人工淚液;眼科追蹤"],
+    ["G2","前葡萄膜炎、有症狀","<b>暫停 ICI</b>;眼科主導外用類固醇±散瞳"],
+    ["G3","後/全葡萄膜炎、視力下降","<b>永久停用</b>;全身類固醇(prednisone 1 mg/kg)+眼科共管"],
+    ["G4","失明風險(20/200 以下)","<b>永久停用</b>;IV methylpred+眼科急症處置"]],
+ rf:"難治:眼周/玻璃體內類固醇注射;合併 VKH-like 表現時全身治療為主",
+ pl:"葡萄膜炎常<b>伴其他 irAE</b>(colitis 等)同時發生 → 出現眼症狀時全身回顧一次。"}
+];
+var chipsEl=document.getElementById("chips"),organsEl=document.getElementById("organs");
+var activeChip=null;
+function badgeClass(g){ if(g==="G1")return"g1"; if(g==="G2")return"g2"; if(g==="G3")return"g3"; return"g4"; }
+function render(){
+  organsEl.innerHTML=IRAE.map(function(o){
+    var gr=o.g.map(function(x){
+      return '<div class="grade"><div class="gb '+badgeClass(x[0])+'">'+x[0]+'</div>'+
+        '<div class="gd"><div class="def">'+x[1]+'</div><div class="act">'+x[2]+'</div></div></div>';
+    }).join("");
+    return '<div class="organ" id="o-'+o.id+'"><div class="ohead" onclick="tg(\''+o.id+'\')">'+
+      '<span class="ic">'+o.ic+'</span><span class="t"><div class="nm">'+o.nm+'</div>'+
+      '<div class="en">'+o.en+'</div></span><span class="arrow">▶</span></div>'+
+      '<div class="obody"><div class="inc">'+
+      '<div class="cell"><span class="lb c">CTLA-4</span>'+o.inc.c+'</div>'+
+      '<div class="cell"><span class="lb p">PD-1/PD-L1</span>'+o.inc.p+'</div>'+
+      '<div class="cell"><span class="lb m">併用</span>'+o.inc.m+'</div></div>'+
+      '<div class="wk"><b>Workup</b>|'+o.wk+'</div>'+gr+
+      '<div class="refr"><b>難治/二線</b>|'+o.rf+'</div>'+
+      '<div class="pearl">💡 <b>Pearl</b>:'+o.pl+'</div></div></div>';
+  }).join("");
+  chipsEl.innerHTML='<span class="chip on" data-id="all" onclick="chip(\'all\')">全部</span>'+
+    IRAE.map(function(o){return '<span class="chip" data-id="'+o.id+'" onclick="chip(\''+o.id+'\')">'+o.ic+o.nm+'</span>';}).join("");
+}
+function tg(id){ document.getElementById("o-"+id).classList.toggle("open"); }
+function chip(id){
+  activeChip=id;
+  document.querySelectorAll(".chip").forEach(function(c){c.classList.toggle("on",c.dataset.id===id);});
+  document.querySelectorAll(".organ").forEach(function(o){
+    var show=(id==="all")||("o-"+id===o.id);
+    o.classList.toggle("hid",!show);
+    o.classList.toggle("open",id!=="all"&&"o-"+id===o.id);
+  });
+  if(id!=="all") document.getElementById("o-"+id).scrollIntoView({behavior:"smooth",block:"start"});
+}
+document.getElementById("search").addEventListener("input",function(){
+  var q=this.value.trim().toLowerCase();
+  document.querySelectorAll(".organ").forEach(function(o){
+    var hit=!q||o.textContent.toLowerCase().indexOf(q)>=0;
+    o.classList.toggle("hid",!hit);
+    if(q&&hit)o.classList.add("open");
+  });
+});
+render();
+</script>
+</body>
+</html>
