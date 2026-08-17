@@ -157,7 +157,7 @@ footer{max-width:820px;margin:20px auto 0;padding:14px 20px 0;font-size:.74rem;c
     <h2>🧮 類固醇等效換算(glucocorticoid equivalence)</h2>
     <div class="anchor">錨點:prednisolone 5 mg ≡ methylprednisolone 4 mg ≡ dexamethasone 0.75 mg ≡ hydrocortisone 20 mg</div>
     <div class="crow">
-      <span>劑量換算:</span>
+      <span>任意換算(IV→口服 taper 轉換用):</span>
       <input id="cdose" type="number" min="0" step="any" value="60" inputmode="decimal">
       <span>mg</span>
       <select id="cdrug">
@@ -169,20 +169,20 @@ footer{max-width:820px;margin:20px auto 0;padding:14px 20px 0;font-size:.74rem;c
     </div>
     <div class="eqout" id="ceq"></div>
     <div class="crow" style="margin-top:12px">
-      <span>irAE 體重劑量:</span>
+      <span>irAE 情境開方:</span>
       <input id="cwt" type="number" min="0" step="any" value="60" inputmode="decimal">
-      <span>kg ×</span>
+      <span>kg</span>
       <span class="regbtns" id="cregs">
-        <button data-r="0.5">0.5 mg/kg</button>
-        <button data-r="1" class="on">1 mg/kg</button>
-        <button data-r="2">2 mg/kg</button>
+        <button data-s="g2">G2 口服</button>
+        <button data-s="g34" class="on">G3–4 IV</button>
+        <button data-s="pulse">Pulse</button>
       </span>
-      <span style="font-size:.78rem;color:var(--ink-soft)">(prednisone 當量/日)</span>
     </div>
+    <div id="cscen" style="font-size:.8rem;color:var(--ink-soft);margin:2px 0 4px"></div>
     <div class="eqout" id="cwtout"></div>
     <div class="cnote">
       作用時長:hydrocortisone 短效(8–12h)/prednisolone·methylprednisolone 中效(12–36h)/dexamethasone 長效(36–72h)→ 長效藥 taper 節奏不同。
-      <b>⚠ dexamethasone 幾乎無礦物皮質素活性</b>——腎上腺功能不全的「替代治療」以 hydrocortisone 為主(原發性另加 fludrocortisone),不可以 dexamethasone 等效換算充當替代;本表為抗發炎效價近似值,處方仍依院內規範四捨五入至可調劑劑量。指引 irAE 劑量均以 prednisone 當量表示。
+      <b>⚠ dexamethasone 幾乎無礦物皮質素活性</b>——腎上腺功能不全的「替代治療」以 hydrocortisone 為主(原發性另加 fludrocortisone),不可以 dexamethasone 等效換算充當替代;本表為抗發炎效價近似值,處方依院內規範取整至可調劑劑量(MP 針劑常見 40/125/500/1000 mg 規格)。指引 G2 多以 prednisone 當量表示、G3–4 直接以 methylprednisolone mg/kg 表示——同單位直接開立,換算主要用於 IV→口服 taper 交接。
     </div>
   </div>
   <div id="organs"></div>
@@ -343,10 +343,25 @@ function convGo(){
   var predEq = (isFinite(dose)&&dose>=0) ? dose * EQ.pred.f / EQ[drug].f : NaN;
   renderEq(document.getElementById("ceq"), predEq);
 }
+var SCEN = {
+  g2:   {drug:"pred", lo:0.5, hi:1,  perkg:true,  route:"口服 prednisolone",
+         note:"G2:prednisolone 0.5–1 mg/kg/day 口服(指引原文即以 prednisone 當量表示)"},
+  g34:  {drug:"mp",   lo:1,   hi:2,  perkg:true,  route:"IV methylprednisolone",
+         note:"G3–4:methylprednisolone 1–2 mg/kg/day IV——指引直接以 MP 劑量表示,依 MP mg/kg 開立即可,毋須經 prednisone 當量換算"},
+  pulse:{drug:"mp",   lo:500, hi:1000, perkg:false, route:"IV methylprednisolone pulse",
+         note:"心肌炎/重症神經:methylprednisolone 500–1000 mg/day ×3–5 天(固定劑量,與體重無關)"}
+};
 function wtGo(){
   var wt = parseFloat(document.getElementById("cwt").value);
-  var r = parseFloat(document.querySelector("#cregs button.on").dataset.r);
-  renderEq(document.getElementById("cwtout"), (isFinite(wt)&&wt>=0) ? wt*r : NaN);
+  var s = SCEN[document.querySelector("#cregs button.on").dataset.s];
+  document.getElementById("cscen").textContent = s.note;
+  var lo = s.perkg ? wt*s.lo : s.lo, hi = s.perkg ? wt*s.hi : s.hi;
+  var el = document.getElementById("cwtout");
+  if(!isFinite(lo)||wt<0){ el.innerHTML=""; return; }
+  var predLo = lo*EQ.pred.f/EQ[s.drug].f, predHi = hi*EQ.pred.f/EQ[s.drug].f;
+  el.innerHTML = '<div class="cell" style="flex:2 1 60%"><span class="lb">'+s.route+'</span>'+
+    '<span class="val">'+fmtd(lo)+'–'+fmtd(hi)+'</span> mg/day</div>'+
+    '<div class="cell"><span class="lb">≈ prednisolone 當量</span>'+fmtd(predLo)+'–'+fmtd(predHi)+' mg/day</div>';
 }
 document.getElementById("cdose").addEventListener("input", convGo);
 document.getElementById("cdrug").addEventListener("change", convGo);
