@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>多發性骨髓瘤 MM — 治療決策 × 台灣健保 2026</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=Noto+Sans+TC:wght@400;500;700&family=Noto+Serif+TC:wght@600;900&display=swap" rel="stylesheet">
+<style>
+:root{
+  --ink:#0C1F26; --ink-soft:#4A6068; --paper:#EDF1F1; --surface:#FFFFFF;
+  --rule:#C9D5D6; --rule-soft:#E4EAEA;
+  --platinum:#0E6E75; --resist:#9A4B22; --marker:#5A4A86; --amber:#8A6D00;
+  --platinum-bg:#EAF3F3; --resist-bg:#F6EEE9; --marker-bg:#F6F5FA; --test-bg:#F6F2E4;
+  --shadow:0 1px 0 rgba(12,31,38,.06), 0 12px 30px -18px rgba(12,31,38,.35);
+  --serif:"Noto Serif TC",Georgia,serif;
+  --sans:"Noto Sans TC","Helvetica Neue",Arial,sans-serif;
+  --mono:"IBM Plex Mono",monospace;
+  --radius:4px;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{-webkit-text-size-adjust:100%;scroll-behavior:smooth}
+body{font-family:var(--sans);line-height:1.7;color:var(--ink);background:var(--paper);font-size:16px;-webkit-font-smoothing:antialiased}
+.wrap{max-width:1080px;margin:0 auto;padding:0 24px 90px}
+a{color:var(--platinum)}
+
+/* masthead */
+.masthead{padding:54px 0 26px;border-bottom:2px solid var(--ink)}
+.eyebrow{font-family:var(--mono);font-size:11.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--platinum);margin-bottom:10px}
+.masthead h1{font-family:var(--serif);font-weight:900;font-size:clamp(30px,5vw,44px);line-height:1.15}
+.masthead .sub{margin-top:12px;color:var(--ink-soft);font-size:15.5px;max-width:760px}
+.masthead .meta{margin-top:16px;font-family:var(--mono);font-size:11.5px;color:var(--ink-soft);display:flex;gap:22px;flex-wrap:wrap}
+.masthead .meta b{color:var(--ink)}
+
+/* sticky nav */
+nav.toc{position:sticky;top:0;z-index:40;background:rgba(237,241,241,.94);backdrop-filter:blur(8px);border-bottom:1px solid var(--rule);margin:0 -24px;padding:8px 24px;display:flex;gap:4px;overflow-x:auto}
+nav.toc a{font-size:13.5px;font-weight:500;color:var(--ink-soft);padding:6px 12px;border-radius:3px;white-space:nowrap;text-decoration:none}
+nav.toc a:hover{background:var(--platinum-bg);color:var(--platinum)}
+nav.toc a.active{background:var(--platinum);color:#fff}
+
+section{scroll-margin-top:56px;margin-top:44px}
+section>h2{font-family:var(--serif);font-size:26px;font-weight:900;padding-bottom:8px;border-bottom:1px solid var(--rule);margin-bottom:6px}
+section>.lead{color:var(--ink-soft);font-size:14.5px;margin-bottom:18px;max-width:820px}
+h3.sub-h{font-family:var(--serif);font-size:19px;font-weight:600;margin:26px 0 10px}
+
+/* verdict banner */
+.verdict{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:14px;margin:22px 0 4px}
+.v-card{background:var(--surface);border:1px solid var(--rule);border-top:3px solid var(--platinum);border-radius:var(--radius);box-shadow:var(--shadow);padding:15px 16px}
+.v-card .k{font-family:var(--mono);font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--platinum)}
+.v-card .v{font-family:var(--serif);font-size:19px;font-weight:600;line-height:1.35;margin-top:5px}
+.v-card p{font-size:13px;color:var(--ink-soft);margin-top:6px;line-height:1.55}
+
+/* cards */
+.card{background:var(--surface);border:1px solid var(--rule);border-radius:var(--radius);box-shadow:var(--shadow);padding:18px 20px;margin-bottom:14px}
+.card h4{font-family:var(--serif);font-size:17.5px;font-weight:600;display:flex;align-items:baseline;gap:10px;flex-wrap:wrap}
+.card h4 .tr2{font-family:var(--mono);font-size:11px;color:var(--platinum);font-weight:500;letter-spacing:.03em;margin-left:auto}
+.card .rdose{font-family:var(--mono);font-size:12.5px;color:var(--ink-soft);margin:4px 0 6px}
+.card p{font-size:14px;color:var(--ink-soft)}
+.card details{margin-top:8px}
+.card summary{cursor:pointer;font-family:var(--mono);font-size:12px;color:var(--platinum);user-select:none}
+.card details[open] summary{margin-bottom:6px}
+.card details p, .card details li{font-size:13.5px;color:var(--ink-soft)}
+.card details ul{padding-left:20px;margin:4px 0}
+
+/* tables */
+.tbl-wrap{overflow-x:auto;background:var(--surface);border:1px solid var(--rule);border-radius:var(--radius);box-shadow:var(--shadow);margin:12px 0 18px}
+table{border-collapse:collapse;width:100%;font-size:13.5px;min-width:640px}
+th{font-family:var(--mono);font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:var(--ink-soft);text-align:left;padding:10px 14px;border-bottom:2px solid var(--ink);background:var(--surface)}
+td{padding:9px 14px;border-bottom:1px solid var(--rule-soft);vertical-align:top}
+tr:last-child td{border-bottom:none}
+td.num{font-family:var(--mono);font-size:12.5px;white-space:nowrap}
+td b{font-weight:700}
+
+/* badges */
+.tag{display:inline-block;font-family:var(--mono);font-size:10.5px;letter-spacing:.05em;padding:2px 8px;border-radius:2px;vertical-align:middle}
+.tag.std{background:var(--platinum-bg);color:var(--platinum);border:1px solid var(--platinum)}
+.tag.warn{background:var(--resist-bg);color:var(--resist);border:1px solid var(--resist)}
+.tag.new{background:var(--marker-bg);color:var(--marker);border:1px solid var(--marker)}
+.tag.ver{background:var(--test-bg);color:var(--amber);border:1px solid var(--amber)}
+
+/* callouts */
+.callout{border-left:3px solid var(--resist);background:var(--resist-bg);border-radius:0 var(--radius) var(--radius) 0;padding:13px 16px;font-size:14px;margin:14px 0;color:var(--ink)}
+.callout.teal{border-left-color:var(--platinum);background:var(--platinum-bg)}
+.callout b{font-weight:700}
+.callout .mono{font-family:var(--mono);font-size:12.5px}
+
+/* sequencing flow */
+.flow{display:flex;flex-direction:column;gap:0;margin:14px 0}
+.flow .step{background:var(--surface);border:1px solid var(--rule);border-radius:var(--radius);box-shadow:var(--shadow);padding:14px 18px}
+.flow .arrow{text-align:center;color:var(--platinum);font-size:18px;line-height:1.4;font-weight:700}
+.flow .step .st{font-family:var(--mono);font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--platinum)}
+.flow .step h4{font-family:var(--serif);font-size:16.5px;font-weight:600;margin:2px 0 4px}
+.flow .step p{font-size:13.5px;color:var(--ink-soft)}
+
+.foot{margin-top:56px;padding-top:18px;border-top:2px solid var(--ink);font-family:var(--mono);font-size:11.5px;color:var(--ink-soft);line-height:2}
+.foot b{color:var(--ink)}
+.backlink{font-family:var(--mono);font-size:12px}
+@media(max-width:640px){.masthead{padding-top:34px}}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header class="masthead">
+  <p class="eyebrow">Hematologic Oncology · Plasma Cell Disorders Reference</p>
+  <h1>多發性骨髓瘤 MM — 治療決策 × 台灣健保 2026</h1>
+  <p class="sub">NDMM(移植適格/不適格)→ 早期復發 → triple-class exposed 的完整 sequencing,疊上台灣健保給付條件層(條文萃取自健保署第九節 115/6/1 全文,本機 FACT 源)。國際標準與健保現實常常不同——本頁把兩層並排,差異處明標。</p>
+  <div class="meta">
+    <span><b>治療證據</b> NCCN 2026 · IMWG · FDA 2025 核准潮</span>
+    <span><b>健保條文</b> 第九節 115/6/1(12 藥全萃取)</span>
+    <span><b>更新</b> 2026-08-18</span>
+  </div>
+  <p class="backlink" style="margin-top:14px"><a href="../">← 回工具總覽</a></p>
+</header>
+
+<nav class="toc" id="toc">
+  <a href="#tldr">TL;DR</a>
+  <a href="#risk">風險分層</a>
+  <a href="#te">NDMM 移植適格</a>
+  <a href="#tie">NDMM 不適格</a>
+  <a href="#rel1">早期復發</a>
+  <a href="#rel2">≥4線/晚期</a>
+  <a href="#nhi">健保矩陣</a>
+  <a href="#supp">支持治療</a>
+  <a href="#traps">健保陷阱</a>
+</nav>
+
+<section id="tldr">
+  <h2>TL;DR — 五個定調結論</h2>
+  <p class="lead">2026 年 MM 的治療骨架,以及台灣健保層疊上去之後的實戰版本。</p>
+  <div class="verdict">
+    <div class="v-card"><span class="k">01 · NDMM fit</span>
+      <div class="v">四合一 + ASCT</div>
+      <p>anti-CD38+VRd(PERSEUS/GMMG-HD7)為國際標準;台灣健保給的四合一是 <b>D-VTd</b>(CASSIOPEIA 路徑,需附移植計畫)。</p></div>
+    <div class="v-card"><span class="k">02 · NDMM unfit</span>
+      <div class="v">DRd 是標準,健保只給 Rd</div>
+      <p>MAIA(DRd)/IMROZ(Isa-VRd)是國際一線;健保 TIE 一線僅 <b>Rd</b>,dara 前置需自費——這是台灣最大的 guideline–給付落差。</p></div>
+    <div class="v-card"><span class="k">03 · 首次復發</span>
+      <div class="v">先問 len-refractory?</div>
+      <p>復發 backbone 由 lenalidomide 暴露史決定:len-refractory → anti-CD38+<b>Kd</b>/Pd;len-naïve/sensitive → DRd 類。健保二線起有 DVd/DRd/Isa-Kd 可接。</p></div>
+    <div class="v-card"><span class="k">04 · ≥4 線</span>
+      <div class="v">雙特異抗體健保有給付</div>
+      <p><b>Teclistamab/Elranatamab</b> 114/8/1 起給付(≥4 線、PI+IMiD+anti-CD38 均暴露)——但兩藥<b>合併計算 39 針終生上限</b>。CAR-T/talquetamab/belamaf 未給付。</p></div>
+    <div class="v-card"><span class="k">05 · 健保文法</span>
+      <div class="v">事前審查 × 終生上限 × PD 嚴格定義</div>
+      <p>每藥都有終生療程上限;續用看 M-protein 不升;復發線藥物開案需 <b>連續 2 次評估</b>符合同一惡化指標——開單前先對條文,核退 1 筆 = 全額。</p></div>
+  </div>
+</section>
+
+<section id="risk">
+  <h2>風險分層 — 開始治療前必做</h2>
+  <p class="lead">診斷最低要求:FISH(del(17p)、t(4;14)、t(14;16)、1q21+)、R-ISS/R2-ISS、LDH、frailty 評估(IMWG frailty score)。健保開案條件本身就是 SLiM-CRAB 的條文化版本(見健保矩陣)。</p>
+  <div class="tbl-wrap"><table>
+    <tr><th>系統</th><th>組成</th><th>臨床讀法</th></tr>
+    <tr><td><b>R-ISS</b></td><td>ISS(β2M/albumin)+ 高危 FISH + LDH</td><td class="num">III 期 5 年 OS ~40%;但 II 期過度龐雜</td></tr>
+    <tr><td><b>R2-ISS</b> <span class="tag new">較新</span></td><td>加入 <b>1q21+(gain/amp)</b> 計分,拆成 4 組</td><td class="num">把 R-ISS II 的異質性拆開;1q 從此正式入列</td></tr>
+    <tr><td><b>高危細胞遺傳</b></td><td>del(17p)/TP53、t(4;14)、t(14;16)、1q21 amp;<b>≥2 個 = ultra-high-risk</b></td><td class="num">雙打擊/三打擊者:考慮強化 induction+雙藥維持;健保 IRd 二線開案「限高危」用的正是這份清單</td></tr>
+    <tr><td><b>Frailty</b></td><td>IMWG frailty(年齡/ADL/IADL/CCI)</td><td class="num">unfit/frail → 減量骨架(Rd/VRd-lite/DRd);決定 TIE 路徑分流</td></tr>
+    <tr><td><b>t(11;14)</b></td><td>標準風險;BCL2 依賴</td><td class="num">venetoclax 敏感亞群(僅此亞群,off-label/試驗)</td></tr>
+  </table></div>
+  <div class="callout teal"><b>MRD:</b>10⁻⁵ NGS/NGF MRD 陰性是最強預後因子;MRD-adapted 策略(MIDAS 等)正在改寫「要不要 ASCT/何時停維持」。FDA 2024 已接受 MRD 為加速核准終點。台灣實務:NGF/NGS MRD 多為自費或研究性質。</div>
+</section>
+
+<section id="te">
+  <h2>NDMM — 移植適格(TE)</h2>
+  <p class="lead">骨架:四合一 induction → ASCT → consolidation ± 雙藥維持。ASCT 在 quadruplet 時代仍保留 PFS 效益(PERSEUS/IsKia 均含移植)。</p>
+
+  <div class="card">
+    <h4>D-VRd → ASCT → D-R 維持 <span class="tag std">國際標準</span> <span class="tr2">PERSEUS · NEJM 2024 · n=709</span></h4>
+    <p class="rdose">dara SC + bortezomib/lenalidomide/dex ×4 → ASCT → D-VRd ×2 → D-R 維持(MRD 陰性持續 2 年可停 dara)</p>
+    <p>4 年 PFS <b>84.3% vs 67.7%</b>(VRd+ASCT);MRD 10⁻⁶ 陰性率倍增。台灣:dara 一線僅給付 D-VTd 組合 → D-VRd 為 <b>🟡自費</b> 選項。</p>
+  </div>
+  <div class="card">
+    <h4>Isa-VRd <span class="tr2">GMMG-HD7 · MRD 陰性率優於 VRd</span></h4>
+    <p>Isatuximab 版四合一,induction MRD 陰性 50% vs 36%;台灣 isa 給付僅限 Isa-Kd 復發線 → 一線 <b>🟡自費</b>。</p>
+  </div>
+  <div class="card">
+    <h4>D-VTd <span class="tag std">健保唯一四合一</span> <span class="tr2">CASSIOPEIA · Lancet 2019 · 114/9/1 給付</span></h4>
+    <p class="rdose">健保條件:適合 ASCT 之 NDMM;限與 bortezomib/thalidomide/dex 併用;首申 12 針(<b>須附完整移植計畫</b>+移植訓練醫師確認)→ 再申 4 針;一線上限 16 針</p>
+    <p>台灣 TE 病人的健保最優解。⚠ 條文明定:<b>一線用過 dara,之後復發線不再給付 dara</b>(16 針 vs 22 針二擇一,見健保陷阱)。thalidomide 神經毒性監測必做。</p>
+  </div>
+  <div class="callout"><b>ASCT 與維持:</b>melphalan 200 調適 + 移植後 lenalidomide 維持(高危考慮 PI+len 雙藥)。台灣:len <b>維持治療不在健保給付情境內</b>(給付條文僅 TIE 一線 Rd 與復發線 Rd)→ 維持多為自費/減量務實方案。高危病人維持不要單靠 thalidomide。</div>
+</section>
+
+<section id="tie">
+  <h2>NDMM — 移植不適格(TIE)</h2>
+  <p class="lead">國際標準已是 anti-CD38 前置(DRd/Isa-VRd);台灣健保一線僅 Rd——是本頁最大的「標準 vs 給付」剪刀差。frailty 決定強度。</p>
+  <div class="tbl-wrap"><table>
+    <tr><th>方案</th><th>關鍵試驗</th><th>結果錨點</th><th>台灣健保</th></tr>
+    <tr><td><b>DRd</b></td><td>MAIA(NEJM 2019/後續更新)</td><td class="num">中位 PFS ~61.9 個月;OS 效益確立</td><td>🟡 一線自費(dara 一線僅限 TE 之 D-VTd)</td></tr>
+    <tr><td><b>Isa-VRd</b></td><td>IMROZ(NEJM 2024)</td><td class="num">60 個月 PFS 63.2% vs 45.2%(VRd)</td><td>🟡 自費</td></tr>
+    <tr><td><b>D-VRd(TIE)</b></td><td>CEPHEUS(2024)</td><td class="num">MRD 陰性率倍增 vs VRd</td><td>🟡 自費</td></tr>
+    <tr><td><b>Rd 連續治療</b></td><td>FIRST</td><td class="num">舊標準;仍是可接受骨架</td><td>🟢 <b>健保一線唯一</b>(條件見下)</td></tr>
+    <tr><td><b>VRd-lite</b></td><td>—</td><td class="num">fit-intermediate 的務實選項</td><td>🟢 bortezomib+Rd 可分別依條文組合</td></tr>
+  </table></div>
+  <div class="callout"><b>健保 Rd 一線條文的三個機關(115/5/1):</b>①開案須符合骨髓漿細胞 ≥10%(或 plasmacytoma)+ 任一 SLiM-CRAB 症狀;②<b>每 4 療程須重新評估移植適格性,一旦變為適格即須停 Rd</b>;③lenalidomide 終生上限 24 療程(跨品牌合計 36)。維持/連續治療的天花板實際上被上限條款封頂。</div>
+</section>
+
+<section id="rel1">
+  <h2>早期復發(1–3 prior lines)— 由 len-refractory 分流</h2>
+  <p class="lead">第一個問題永遠是:<b>lenalidomide-refractory?</b>(進展於 len 上或停藥 60 天內)。是 → Kd/Pd backbone + anti-CD38;否 → DRd 類仍可用。第二個問題:anti-CD38 用過沒?</p>
+
+  <div class="card">
+    <h4>anti-CD38 + Kd <span class="tag std">len-refractory 首選群</span> <span class="tr2">IKEMA(Isa-Kd)· CANDOR(D-Kd)</span></h4>
+    <p class="rdose">IKEMA:Isa-Kd 中位 PFS 35.7 個月(vs Kd 19.2)——復發線最長 PFS 之一</p>
+    <p>台灣:<b>Isa-Kd 🟢 健保</b>(≥1 線失敗、ECOG&lt;2;113/4/1 起 carfilzomib 條文同步允許 Isa-Kd 併用);D-Kd 組合無給付條文 → 🟡。單用 Kd 🟢(需 bortezomib+len 均暴露後、CrCl≥50)。</p>
+  </div>
+  <div class="card">
+    <h4>DVd / DRd <span class="tr2">CASTOR · POLLUX · 健保 22 針上限</span></h4>
+    <p class="rdose">健保:≥1 線失敗(含 bortezomib 或 len)、ECOG&lt;2,總計 22 針上限(109/4/1→114/9/1)</p>
+    <p>len-sensitive 復發用 DRd、bortezomib-sensitive 用 DVd。⚠ 一線已用 D-VTd 者不得再開(條文互斥)。</p>
+  </div>
+  <div class="card">
+    <h4>Pd 家族與其他健保復發選項 <span class="tr2">APOLLO(D-Pd)· OPTIMISMM(PVd)· BOSTON(XVd)</span></h4>
+    <p><b>Pd</b> 🟢(≥2 線含 len+bortezomib、PD 於前次治療中或結束 60 天內;終生 10 療程);<b>EPd</b> 🟢(elotuzumab 併 Pd,≥2 線含 len+PI;10 療程);<b>XVd</b>(selinexor)🟢(≥2 線失敗、ECOG&lt;2;114/3/1);<b>IRd</b> 🟢 但有獨特門檻:<b>二線使用限高危細胞遺傳者</b>(del17p/t(4;14)/t(14;16)/1q21 amp),三線以上才免;適用「不適合注射治療」或「bortezomib 失敗+嚴重心血管共病不能用 carfilzomib」。</p>
+  </div>
+  <div class="card">
+    <h4>CAR-T 提前到早期復發 <span class="tag new">典範轉移</span> <span class="tr2">CARTITUDE-4(cilta-cel,1–3 線 len-refractory)· KarMMa-3(ide-cel)</span></h4>
+    <p>CARTITUDE-4:cilta-cel vs 標準組 PFS HR 0.26 —— len-refractory 首次復發的最強選項;台灣 <b>🔴 MM CAR-T 未給付</b>(自費/臨床試驗;lymphoma CAR-T 給付經驗顯示未來有窗)。</p>
+  </div>
+</section>
+
+<section id="rel2">
+  <h2>≥4 線 / Triple-class exposed — 免疫治療時代</h2>
+  <p class="lead">PI+IMiD+anti-CD38 均暴露後,核心是 T 細胞重導向(CAR-T/雙特異)與新機轉 ADC。台灣健保在這一段給了雙特異抗體——是亞洲少見的給付。</p>
+  <div class="tbl-wrap"><table>
+    <tr><th>藥物</th><th>標靶/類型</th><th>關鍵數據</th><th>台灣健保(114/8/1 起)</th></tr>
+    <tr><td><b>Teclistamab</b></td><td>BCMA×CD3 雙特異</td><td class="num">MajesTEC:ORR ~63%,mDOR ~24 個月</td><td>🟢 ≥4 線(PI+IMiD+CD38 暴露)、最近治療 PD、ECOG≤2</td></tr>
+    <tr><td><b>Elranatamab</b></td><td>BCMA×CD3 雙特異</td><td class="num">MagnetisMM-3:ORR ~61%</td><td>🟢 同上;<b>與 teclistamab 合併計算 39 針終生上限</b></td></tr>
+    <tr><td><b>Talquetamab</b></td><td>GPRC5D×CD3</td><td class="num">MonumenTAL-1:ORR ~73%;口腔/皮膚/指甲毒性特色</td><td>🔴 未給付(BCMA 後的變靶選項)</td></tr>
+    <tr><td><b>Linvoseltamab</b></td><td>BCMA×CD3</td><td class="num">LINKER-MM1:ORR 70%;FDA 2025-07 加速核准</td><td>🔴 未上市</td></tr>
+    <tr><td><b>Belantamab mafodotin</b></td><td>BCMA ADC</td><td class="num">DREAMM-7(BVd vs DVd)PFS 大勝;FDA 2025-10 重返(≥2 線);<b>眼毒 92%</b> REMS</td><td>🔴 未給付(角膜監測需眼科協作)</td></tr>
+    <tr><td><b>Cilta-cel / Ide-cel</b></td><td>BCMA CAR-T</td><td class="num">CARTITUDE-1 5 年:~33% 無進展且無後續治療;療效平台尾端最深(長期無治療存活)</td><td>🔴 未給付</td></tr>
+    <tr><td><b>Selinexor 組合</b></td><td>XPO1 抑制</td><td class="num">XVd(BOSTON);Xd salvage</td><td>🟢 XVd ≥2 線(見上節)</td></tr>
+  </table></div>
+  <div class="callout"><b>Bispecific 實務:</b>step-up dosing 住院監測 CRS/ICANS;<b>感染是主要死因</b>——IVIG 補充(IgG&lt;400)、PJP 預防、HBV 監測列常規;BCMA→BCMA 序貫(CAR-T 後雙特異)效果減弱,變靶(GPRC5D)是理由。台灣條文把 tec/elra 綁在「≥4 線」——比 FDA label 同步,但 39 針合併上限意味著 <b>兩藥只能選一條路線用好用滿</b>,序貫換藥空間有限。</p></div>
+</section>
+
+<section id="nhi">
+  <h2>台灣健保給付矩陣(第九節 115/6/1 條文萃取)</h2>
+  <p class="lead">每格皆為條文原意濃縮;開單前仍應對原文(章節碼見各列)。共同文法:全部需事前審查(thalidomide 除外)、續用看 M-protein 不升、復發線開案需連續 2 次評估符合同一 PD 指標。</p>
+  <div class="tbl-wrap"><table>
+    <tr><th>藥(條文號)</th><th>給付情境/併用限制</th><th>線數與門檻</th><th>終生上限</th><th>最新生效</th></tr>
+    <tr><td><b>Bortezomib</b>(9.28)</td><td>合併其他 MM 藥物</td><td>不限線;開案需漿細胞≥10%+SLiM-CRAB;4 療程後看 M-protein</td><td class="num">16 療程(可保留後用)</td><td class="num">112/4/1</td></tr>
+    <tr><td><b>Thalidomide</b>(9.33)</td><td>無特殊限制條文</td><td>—</td><td class="num">—(免事審)</td><td class="num">98/7/1</td></tr>
+    <tr><td><b>Lenalidomide</b>(9.43)</td><td>①Rd:TIE 一線 ②Rd:≥1 線失敗</td><td>一線:漿細胞≥10%+SLiM-CRAB+<b>每4療程重評移植適格</b>;復發:連2次 PD 指標+臨床症狀</td><td class="num">24 療程(跨品牌 36)</td><td class="num">115/5/1</td></tr>
+    <tr><td><b>Pomalidomide</b>(9.62)</td><td>Pd;或 EPd(與 elotuzumab)</td><td>≥2 線(含 len+bortezomib);PD 於治療中或停藥 60 天內</td><td class="num">10 療程(Pomado 6)</td><td class="num">113/9/1</td></tr>
+    <tr><td><b>Carfilzomib</b>(9.75)</td><td>①Kd ②Isa-Kd</td><td>Kd:bortezomib+len 後、ECOG&lt;2、<b>CrCl≥50</b>;Isa-Kd:≥1 線失敗、ECOG&lt;2</td><td class="num">10 療程</td><td class="num">113/4/1</td></tr>
+    <tr><td><b>Ixazomib</b>(9.77)</td><td>IRd</td><td>≥1 線失敗+(unfit 注射 或 bortezomib 失敗+心血管共病);<b>二線限高危細胞遺傳</b>,三線起免</td><td class="num">12 療程</td><td class="num">112/4/1</td></tr>
+    <tr><td><b>Daratumumab</b>(9.78)</td><td>①D-VTd:TE 一線 ②DVd/DRd:復發</td><td>一線:附移植計畫,12+4 針;復發:≥1 線失敗、ECOG&lt;2</td><td class="num">一線 16 針;復發 22 針;<b>一線用過不再給復發線</b></td><td class="num">114/9/1</td></tr>
+    <tr><td><b>Isatuximab</b>(9.108)</td><td>限 Isa-Kd</td><td>≥1 線失敗(bortezomib 或 len)、ECOG&lt;2</td><td class="num">依 carfilzomib 上限連動</td><td class="num">114/9/1</td></tr>
+    <tr><td><b>Elotuzumab</b>(9.111)</td><td>限 EPd</td><td>≥2 線(含 len+PI)、PD 60 天內、ECOG&lt;2</td><td class="num">10 療程</td><td class="num">113/9/1</td></tr>
+    <tr><td><b>Selinexor</b>(9.117)</td><td>限 XVd</td><td>≥2 線失敗、ECOG&lt;2</td><td class="num">初申 4 療程(5週/療程)</td><td class="num">114/3/1</td></tr>
+    <tr><td><b>Elranatamab</b>(9.118)</td><td>單方</td><td>≥4 線(PI+IMiD+anti-CD38 均暴露)、最近治療 PD、ECOG≤2</td><td class="num" rowspan="2"><b>兩藥合併 39 針</b></td><td class="num">114/8/1</td></tr>
+    <tr><td><b>Teclistamab</b>(9.119)</td><td>單方</td><td>同上</td><td class="num">114/8/1</td></tr>
+  </table></div>
+  <div class="callout teal"><b>PD 開案定義(復發線共同模板,112/4/1 起):</b>連續 2 次評估符合同一指標——血清 M 蛋白增加 ≥1 g/dL(前次最低值 ≥5 g/dL 時;&lt;5 g/dL 則 ≥0.5 g/dL)/尿 M 蛋白 ≥0.2 g/24h 且 ≥25%/非分泌型看骨髓漿細胞絕對值 +10% 且 ≥25%/新骨病灶或 plasmacytoma(切片,僅需 1 次)/plasmacytoma 體積 +50%;<b>並且</b>出現任一臨床症狀(新病灶/高血鈣/Hb 降 ≥2/eGFR 降 ≥25%/其他器官失能)。純生化復發(biochemical relapse)常常還不符開案門檻——追蹤節奏要提前設計。</div>
+</section>
+
+<section id="supp">
+  <h2>支持治療 — 和主線同等重要</h2>
+  <div class="tbl-wrap"><table>
+    <tr><th>面向</th><th>做法</th></tr>
+    <tr><td><b>骨病</b></td><td>zoledronate(CrCl 調整)或 denosumab(腎功能差者優先;停藥反彈注意)×至少 12 個月;ONJ 前牙科評估</td></tr>
+    <tr><td><b>血栓(IMiD)</b></td><td>len/pom/thal 均需 VTE 風險分層:低危 aspirin、高危 DOAC/LMWH(SAVE-IMiD 等)</td></tr>
+    <tr><td><b>感染</b></td><td>PI → HSV/VZV 預防(acyclovir);anti-CD38 → HBV 再活化監測;雙特異/CAR-T → IVIG(IgG&lt;400)、PJP 預防、疫苗補接種;所有病人流感/肺炎鏈球菌疫苗</td></tr>
+    <tr><td><b>腎</b></td><td>cast nephropathy 急救:速降 light chain(bortezomib 為底);len/雙磷酸鹽依 CrCl 調整;carfilzomib 健保門檻 CrCl≥50 注意</td></tr>
+    <tr><td><b>神經</b></td><td>bortezomib 改皮下+每週一次可大減周邊神經病變;thalidomide 累積神經毒性限制其久用</td></tr>
+    <tr><td><b>眼(belamaf 若自費使用)</b></td><td>每劑前眼科檢查(KVA 量表);人工淚液;劑量延長間隔是主要緩解手段</td></tr>
+  </table></div>
+</section>
+
+<section id="traps">
+  <h2>健保陷阱清單 — 開單前 60 秒自檢</h2>
+  <div class="card">
+    <h4>七個最容易踩的條文機關</h4>
+    <p>1️⃣ <b>Dara 一線/復發二擇一</b>:D-VTd(16 針)用過,終生不再給 DVd/DRd(22 針)——TE 病人一線是否上 dara 是「一次性資源分配」決策。<br>
+    2️⃣ <b>Tec+Elra 合併 39 針</b>:不是各 39 針;BCMA 雙特異的健保額度是共用池。<br>
+    3️⃣ <b>IRd 二線限高危細胞遺傳</b>:FISH 報告沒有 del(17p)/t(4;14)/t(14;16)/1q21 amp,二線開 IRd 必退;三線起才免。<br>
+    4️⃣ <b>Rd 一線的移植適格重評條款</b>:每 4 療程重評,變適格即停——年輕 borderline 病人選 Rd 一線前想清楚。<br>
+    5️⃣ <b>復發開案的「連續 2 次」PD 模板</b>:單次 M-protein 上升不夠;評估間隔要預先排程,否則開案日被迫延後。<br>
+    6️⃣ <b>Pd/EPd 的 60 天條款</b>:PD 須發生於前次治療中或結束後 60 天內——換線空窗拖過 60 天,資格消失。<br>
+    7️⃣ <b>Carfilzomib 的 CrCl≥50 門檻</b>(Kd 情境):MM 病人腎功能常波動,申請時點的 CrCl 決定成敗;Isa-Kd 情境無此欄位但仍需 ECOG&lt;2。</p>
+  </div>
+</section>
+
+<footer>
+  <p>治療證據:NCCN Multiple Myeloma 2026 · IMWG 指引 · PERSEUS/MAIA/IMROZ/CASSIOPEIA/IKEMA/CARTITUDE-4/MajesTEC/MagnetisMM-3/DREAMM-7 等原始試驗 · FDA 2025 核准(belamaf 10/2025、linvoseltamab 7/2025)。健保條文:全民健康保險藥物給付項目及支付標準第九節(115/6/1 版)本機全文萃取,條文號標註於矩陣表。</p>
+  <p style="margin-top:6px">⚠ 教學速查用途;給付規定以健保署最新公告與事前審查核定為準,開單前請對原文。線數/療程之計算方式依條文定義。</p>
+</footer>
+
+</div>
+<script>
+const secs=[...document.querySelectorAll('section')];
+const links=[...document.querySelectorAll('nav.toc a')];
+const onScroll=()=>{
+  let i=secs.findLastIndex(s=>s&&s.getBoundingClientRect().top<90);
+  links.forEach((a,j)=>a.classList.toggle('active',j===i));
+};
+document.addEventListener('scroll',onScroll,{passive:true});onScroll();
+</script>
+</body>
+</html>
