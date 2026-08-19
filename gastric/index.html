@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>胃癌 治療決策 × 台灣健保 2026</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=Noto+Sans+TC:wght@400;500;700&family=Noto+Serif+TC:wght@600;900&display=swap" rel="stylesheet">
+<style>
+:root{
+  --ink:#0C1F26; --ink-soft:#4A6068; --paper:#EDF1F1; --surface:#FFFFFF;
+  --rule:#C9D5D6; --rule-soft:#E4EAEA;
+  --platinum:#0E6E75; --resist:#9A4B22; --marker:#5A4A86; --amber:#8A6D00;
+  --platinum-bg:#EAF3F3; --resist-bg:#F6EEE9; --marker-bg:#F6F5FA; --test-bg:#F6F2E4;
+  --shadow:0 1px 0 rgba(12,31,38,.06), 0 12px 30px -18px rgba(12,31,38,.35);
+  --serif:"Noto Serif TC",Georgia,serif;
+  --sans:"Noto Sans TC","Helvetica Neue",Arial,sans-serif;
+  --mono:"IBM Plex Mono",monospace;
+  --radius:4px;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{-webkit-text-size-adjust:100%;scroll-behavior:smooth}
+body{font-family:var(--sans);line-height:1.7;color:var(--ink);background:var(--paper);font-size:16px;-webkit-font-smoothing:antialiased}
+.wrap{max-width:1080px;margin:0 auto;padding:0 24px 90px}
+a{color:var(--platinum)}
+
+/* masthead */
+.masthead{padding:54px 0 26px;border-bottom:2px solid var(--ink)}
+.eyebrow{font-family:var(--mono);font-size:11.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--platinum);margin-bottom:10px}
+.masthead h1{font-family:var(--serif);font-weight:900;font-size:clamp(30px,5vw,44px);line-height:1.15}
+.masthead .sub{margin-top:12px;color:var(--ink-soft);font-size:15.5px;max-width:760px}
+.masthead .meta{margin-top:16px;font-family:var(--mono);font-size:11.5px;color:var(--ink-soft);display:flex;gap:22px;flex-wrap:wrap}
+.masthead .meta b{color:var(--ink)}
+
+/* sticky nav */
+nav.toc{position:sticky;top:0;z-index:40;background:rgba(237,241,241,.94);backdrop-filter:blur(8px);border-bottom:1px solid var(--rule);margin:0 -24px;padding:8px 24px;display:flex;gap:4px;overflow-x:auto}
+nav.toc a{font-size:13.5px;font-weight:500;color:var(--ink-soft);padding:6px 12px;border-radius:3px;white-space:nowrap;text-decoration:none}
+nav.toc a:hover{background:var(--platinum-bg);color:var(--platinum)}
+nav.toc a.active{background:var(--platinum);color:#fff}
+
+section{scroll-margin-top:56px;margin-top:44px}
+section>h2{font-family:var(--serif);font-size:26px;font-weight:900;padding-bottom:8px;border-bottom:1px solid var(--rule);margin-bottom:6px}
+section>.lead{color:var(--ink-soft);font-size:14.5px;margin-bottom:18px;max-width:820px}
+h3.sub-h{font-family:var(--serif);font-size:19px;font-weight:600;margin:26px 0 10px}
+
+/* verdict banner */
+.verdict{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:14px;margin:22px 0 4px}
+.v-card{background:var(--surface);border:1px solid var(--rule);border-top:3px solid var(--platinum);border-radius:var(--radius);box-shadow:var(--shadow);padding:15px 16px}
+.v-card .k{font-family:var(--mono);font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--platinum)}
+.v-card .v{font-family:var(--serif);font-size:19px;font-weight:600;line-height:1.35;margin-top:5px}
+.v-card p{font-size:13px;color:var(--ink-soft);margin-top:6px;line-height:1.55}
+
+/* cards */
+.card{background:var(--surface);border:1px solid var(--rule);border-radius:var(--radius);box-shadow:var(--shadow);padding:18px 20px;margin-bottom:14px}
+.card h4{font-family:var(--serif);font-size:17.5px;font-weight:600;display:flex;align-items:baseline;gap:10px;flex-wrap:wrap}
+.card h4 .tr2{font-family:var(--mono);font-size:11px;color:var(--platinum);font-weight:500;letter-spacing:.03em;margin-left:auto}
+.card .rdose{font-family:var(--mono);font-size:12.5px;color:var(--ink-soft);margin:4px 0 6px}
+.card p{font-size:14px;color:var(--ink-soft)}
+.card details{margin-top:8px}
+.card summary{cursor:pointer;font-family:var(--mono);font-size:12px;color:var(--platinum);user-select:none}
+.card details[open] summary{margin-bottom:6px}
+.card details p, .card details li{font-size:13.5px;color:var(--ink-soft)}
+.card details ul{padding-left:20px;margin:4px 0}
+
+/* tables */
+.tbl-wrap{overflow-x:auto;background:var(--surface);border:1px solid var(--rule);border-radius:var(--radius);box-shadow:var(--shadow);margin:12px 0 18px}
+table{border-collapse:collapse;width:100%;font-size:13.5px;min-width:640px}
+th{font-family:var(--mono);font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:var(--ink-soft);text-align:left;padding:10px 14px;border-bottom:2px solid var(--ink);background:var(--surface)}
+td{padding:9px 14px;border-bottom:1px solid var(--rule-soft);vertical-align:top}
+tr:last-child td{border-bottom:none}
+td.num{font-family:var(--mono);font-size:12.5px;white-space:nowrap}
+td b{font-weight:700}
+
+/* badges */
+.tag{display:inline-block;font-family:var(--mono);font-size:10.5px;letter-spacing:.05em;padding:2px 8px;border-radius:2px;vertical-align:middle}
+.tag.std{background:var(--platinum-bg);color:var(--platinum);border:1px solid var(--platinum)}
+.tag.warn{background:var(--resist-bg);color:var(--resist);border:1px solid var(--resist)}
+.tag.new{background:var(--marker-bg);color:var(--marker);border:1px solid var(--marker)}
+.tag.ver{background:var(--test-bg);color:var(--amber);border:1px solid var(--amber)}
+
+/* callouts */
+.callout{border-left:3px solid var(--resist);background:var(--resist-bg);border-radius:0 var(--radius) var(--radius) 0;padding:13px 16px;font-size:14px;margin:14px 0;color:var(--ink)}
+.callout.teal{border-left-color:var(--platinum);background:var(--platinum-bg)}
+.callout b{font-weight:700}
+.callout .mono{font-family:var(--mono);font-size:12.5px}
+
+/* sequencing flow */
+.flow{display:flex;flex-direction:column;gap:0;margin:14px 0}
+.flow .step{background:var(--surface);border:1px solid var(--rule);border-radius:var(--radius);box-shadow:var(--shadow);padding:14px 18px}
+.flow .arrow{text-align:center;color:var(--platinum);font-size:18px;line-height:1.4;font-weight:700}
+.flow .step .st{font-family:var(--mono);font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--platinum)}
+.flow .step h4{font-family:var(--serif);font-size:16.5px;font-weight:600;margin:2px 0 4px}
+.flow .step p{font-size:13.5px;color:var(--ink-soft)}
+
+.foot{margin-top:56px;padding-top:18px;border-top:2px solid var(--ink);font-family:var(--mono);font-size:11.5px;color:var(--ink-soft);line-height:2}
+.foot b{color:var(--ink)}
+.backlink{font-family:var(--mono);font-size:12px}
+@media(max-width:640px){.masthead{padding-top:34px}}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header class="masthead">
+  <p class="eyebrow">GI Oncology · Gastric &amp; GEJ Adenocarcinoma Reference</p>
+  <h1>胃癌／胃食道接合處腺癌 治療決策 × 台灣健保 2026</h1>
+  <p class="sub">可切除(圍手術期)與轉移性(生物標記分流)兩大情境,疊上台灣健保給付條件層(條文萃取自健保署第九節本機全文)。生物標記三選一(HER2 / PD-L1 CPS / CLDN18.2)決定一線骨架——本頁把國際標準與健保現實並排,差異處明標。範圍=胃腺癌;GIST(胃腸道基質瘤)為不同疾病,另見備註。</p>
+  <div class="meta">
+    <span><b>治療證據</b> NCCN Gastric v2.2025 · ESMO · FDA 2025</span>
+    <span><b>健保條文</b> 第九節(HER2/ICI/TS-1/Lonsurf/zolbetuximab 全萃取)</span>
+    <span><b>更新</b> 2026-08-19</span>
+  </div>
+  <p class="backlink" style="margin-top:14px"><a href="../">← 回工具總覽</a></p>
+</header>
+
+<nav class="toc" id="toc">
+  <a href="#tldr">TL;DR</a>
+  <a href="#biomarker">生物標記分流</a>
+  <a href="#periop">可切除/圍手術期</a>
+  <a href="#first">轉移性一線</a>
+  <a href="#later">二線以後</a>
+  <a href="#nhi">健保矩陣</a>
+  <a href="#traps">健保陷阱</a>
+  <a href="#gist">GIST 備註</a>
+</nav>
+
+<section id="tldr">
+  <h2>TL;DR — 五個定調結論</h2>
+  <p class="lead">胃癌一線治療已被生物標記重寫;台灣健保在化療與 HER2 跟得上,但免疫治療一線是最大落差。</p>
+  <div class="verdict">
+    <div class="v-card"><span class="k">01 · 一線前必驗</span>
+      <div class="v">三個生物標記缺一不可</div>
+      <p>HER2(IHC/FISH)、PD-L1 CPS、CLDN18.2(IHC)——外加 MMR/MSI。轉移性一線骨架完全由這組決定,開始治療前務必補齊。</p></div>
+    <div class="v-card"><span class="k">02 · 可切除</span>
+      <div class="v">FLOT 圍手術期</div>
+      <p>可切除 cT2+/N+ 首選 FLOT4(圍手術期化療)勝過術後單獨化療;健保化療成分(docetaxel/oxaliplatin/5-FU 類)可組。MSI-H 對化療反應差,考慮免疫治療路徑(健保未給付一線)。</p></div>
+    <div class="v-card"><span class="k">03 · HER2+ 一線</span>
+      <div class="v">化療+trastuzumab(±pembro)</div>
+      <p>ToGA 確立 trastuzumab;KEYNOTE-811(FDA 2025-03,CPS≥1)再加 pembrolizumab。⚠ trastuzumab 胃癌給付本機條文未明列(見下註,以健保署原文為準);pembrolizumab 一線需自費。</p></div>
+    <div class="v-card"><span class="k">04 · HER2− 一線</span>
+      <div class="v">化療 + (nivo/pembro 或 zolbetuximab)</div>
+      <p>CheckMate-649/KEYNOTE-859:CPS 高者加 ICI;CLDN18.2+ 者 zolbetuximab(SPOTLIGHT/GLOW)。健保:zolbetuximab 一線已給付(115/4/1,CLDN18.2≥75%+HER2−),但 ICI 一線未給付——落差最大處。</p></div>
+    <div class="v-card"><span class="k">05 · 健保 ICI 陷阱</span>
+      <div class="v">胃癌 ICI 幾乎是舊案凍結</div>
+      <p>健保 ICI 胃癌僅限「≥2 線失敗且 109/4/1 前已核准」的延續案——等於一線/新申請實質不給付。與國際 CPS 導向一線 IO 標準完全脫節,需病人自費或試驗。</p></div>
+  </div>
+</section>
+
+<section id="biomarker">
+  <h2>生物標記分流 — 一線治療前的決策樹</h2>
+  <p class="lead">轉移性胃腺癌一線骨架由生物標記決定,順序上先看 HER2,再看 CLDN18.2 與 PD-L1 CPS;MMR/MSI 貫穿全局。同一腫瘤可能多標記陽性,需權衡。</p>
+  <div class="tbl-wrap"><table>
+    <tr><th>標記</th><th>檢測法/閾值</th><th>一線意涵</th><th>台灣健保</th></tr>
+    <tr><td><b>HER2</b></td><td>IHC 3+,或 IHC 2+ 且 FISH+</td><td>加 trastuzumab(ToGA);CPS≥1 再加 pembrolizumab(KEYNOTE-811)</td><td>⚠ trastuzumab 見下註</td></tr>
+    <tr><td><b>PD-L1 CPS</b></td><td>免疫組化 combined positive score;常用切點 ≥1 / ≥5 / ≥10</td><td>HER2− 加 nivolumab(CM-649,CPS≥5 獲益明確)或 pembrolizumab(KN-859,CPS≥10 最佳)</td><td>🔴 一線 ICI 未給付(見陷阱)</td></tr>
+    <tr><td><b>CLDN18.2</b></td><td>IHC:<b>≥75% 腫瘤細胞中至強染色</b></td><td>HER2− 加 zolbetuximab(SPOTLIGHT/GLOW)</td><td>🟢 一線給付(115/4/1;ECOG≤1)</td></tr>
+    <tr><td><b>MMR/MSI</b></td><td>IHC(4 蛋白)或 PCR/NGS</td><td>MSI-H:對化療反應差、對 ICI 反應極佳;圍手術期慎用純化療</td><td>🟡 檢測可健保 NGS;ICI 一線仍未給付</td></tr>
+    <tr><td>(EBV)</td><td>EBER 原位雜交</td><td>研究性:EBV+ 富 PD-L1,潛在 ICI 反應族群</td><td>—</td></tr>
+  </table></div>
+  <div class="callout teal"><b>檢測策略:</b>轉移性初診斷即一次送 HER2 + PD-L1 CPS + CLDN18.2 + MMR/MSI(組織夠的話同批做,避免重切片延誤一線)。CLDN18.2 與 HER2 常互斥但非絕對;CPS 與 CLDN18.2 可並存,此時選藥受健保給付現實左右(zolbetuximab 有給付、ICI 沒有)。</div>
+</section>
+
+<section id="periop">
+  <h2>可切除疾病 — 圍手術期</h2>
+  <p class="lead">cT2 以上或 N+ 的可切除胃/GEJ 腺癌,圍手術期化療優於單純手術或術後化療。手術要求 D2 淋巴結廓清。</p>
+  <div class="card">
+    <h4>FLOT4 圍手術期化療 <span class="tag std">可切除首選</span> <span class="tr2">FLOT4-AIO · Lancet 2019</span></h4>
+    <p class="rdose">docetaxel + oxaliplatin + 5-FU/leucovorin,術前 4 週期 → 手術 → 術後 4 週期</p>
+    <p>中位 OS 50 vs 35 個月(勝 ECF/ECX);體能良好者首選。台灣:化療成分(docetaxel #3、oxaliplatin #10、5-FU 類)皆可依條文組,FLOT 骨架本身無單一給付碼但成分可用。</p>
+  </div>
+  <div class="card">
+    <h4>術後輔助選項 <span class="tr2">CLASSIC(CapeOx)· ACTS-GC(S-1)</span></h4>
+    <p class="rdose">已先手術者:CapeOx 或 S-1(TS-1)術後輔助</p>
+    <p><b>TS-1 術後輔助 🟢 健保</b>:限 Stage II(排除 T1)/IIIA/IIIB、已接受根除性手術之成人,用 1 年(條文 9.46)。這是亞洲胃癌術後輔助的健保主力。</p>
+  </div>
+  <div class="callout"><b>MSI-H 的圍手術期難題:</b>MSI-H 胃癌對圍手術期化療反應差(甚至可能有害),而對 ICI 反應極佳(如 KEYNOTE-585/NEONIPIGA 探索 neoadjuvant IO)。國際趨勢是 MSI-H 走免疫路徑;但台灣健保 ICI 圍手術期/一線皆未給付 → 實務上此族群面臨「最該用 IO 卻最難取得」的處境,需自費或試驗評估。</div>
+</section>
+
+<section id="first">
+  <h2>轉移性 — 一線治療</h2>
+  <p class="lead">先分 HER2,再看 CLDN18.2 / PD-L1 CPS 疊加。化療骨架=fluoropyrimidine + platinum(FOLFOX/CapeOx 類)。</p>
+  <div class="tbl-wrap"><table>
+    <tr><th>族群</th><th>國際一線標準</th><th>關鍵試驗</th><th>台灣健保</th></tr>
+    <tr><td><b>HER2+ / CPS≥1</b></td><td>化療 + trastuzumab + pembrolizumab</td><td>ToGA + KEYNOTE-811(FDA 2025-03)</td><td>⚠ trastuzumab 見下註 / 🔴 pembro 自費</td></tr>
+    <tr><td><b>HER2+ / CPS&lt;1</b></td><td>化療 + trastuzumab</td><td>ToGA(Lancet 2010)</td><td>⚠ trastuzumab 見下註</td></tr>
+    <tr><td><b>HER2− / CLDN18.2+</b></td><td>化療 + zolbetuximab</td><td>SPOTLIGHT · GLOW</td><td>🟢 <b>zolbetuximab 給付</b>(115/4/1)</td></tr>
+    <tr><td><b>HER2− / CPS 高</b></td><td>化療 + nivolumab(或 pembrolizumab)</td><td>CheckMate-649(CPS≥5)· KEYNOTE-859(CPS≥10)</td><td>🔴 一線 ICI 未給付</td></tr>
+    <tr><td><b>HER2− / 標記皆陰</b></td><td>化療(FOLFOX/CapeOx)</td><td>—</td><td>🟢 化療成分給付</td></tr>
+  </table></div>
+  <div class="card">
+    <h4>Trastuzumab 一線(HER2+) <span class="tag warn">條文待核</span> <span class="tr2">條文 9.18 · latest 115/7/1</span></h4>
+    <p class="rdose">臨床:HER2 IHC3+ 或 FISH+ 之轉移性胃腺癌,合併化療一線(ToGA)</p>
+    <p>⚠ <b>本機健保條文(9.18)萃取內文僅見乳癌適應症,未見胃癌段落</b>——雖 cancers 標籤列有胃癌。可能為條文萃取不全或版本差異;<b>trastuzumab 胃癌給付狀態請以健保署原文/院內事審為準,勿逕引本頁</b>。trastuzumab deruxtecan(Enhertu)則明確僅列乳癌,HER2+ 胃癌二線 T-DXd 需自費。</p>
+  </div>
+  <div class="card">
+    <h4>Zolbetuximab 一線(CLDN18.2+) <span class="tag new">2026 新給付</span> <span class="tr2">條文 9.133 · 115/4/1 · SPOTLIGHT/GLOW</span></h4>
+    <p class="rdose">健保:限與含氟嘧啶+含鉑化療併用;CLDN18.2 IHC ≥75% 中至強染色、HER2−、ECOG≤1</p>
+    <p>台灣胃癌一線少數跟上國際的新標靶。首次申請須附 CLDN18.2 與 HER2 檢測報告。輸注反應(噁心嘔吐)是特色副作用,首次劑量需預防。</p>
+  </div>
+</section>
+
+<section id="later">
+  <h2>轉移性 — 二線及以後</h2>
+  <p class="lead">一線惡化後,二線抗血管生成為主軸,後線口服化療。HER2+ 者二線可考慮 T-DXd(健保未給付)。</p>
+  <div class="tbl-wrap"><table>
+    <tr><th>線別</th><th>方案</th><th>關鍵試驗</th><th>台灣健保</th></tr>
+    <tr><td><b>二線</b></td><td>ramucirumab + paclitaxel</td><td>RAINBOW(OS 9.6 vs 7.4 月)</td><td>🔴 <b>胃癌未給付</b>(健保 ramucirumab 僅肝癌)</td></tr>
+    <tr><td>二線(單藥)</td><td>ramucirumab 單方</td><td>REGARD</td><td>🔴 同上</td></tr>
+    <tr><td>二線(HER2+)</td><td>trastuzumab deruxtecan</td><td>DESTINY-Gastric01(ORR 51%)</td><td>🔴 胃癌未給付(仿單乳癌)</td></tr>
+    <tr><td>二/三線</td><td>docetaxel 或 irinotecan 單藥</td><td>—</td><td>🟢 化療給付</td></tr>
+    <tr><td><b>≥三線</b></td><td>trifluridine/tipiracil(Lonsurf)</td><td>TAGS(OS 5.7 vs 3.6 月)</td><td>🟢 <b>給付</b>(條文 9.66)</td></tr>
+    <tr><td>≥三線(舊案)</td><td>nivolumab 單藥</td><td>ATTRACTION-2</td><td>🔴 僅 109/4/1 前核准延續</td></tr>
+  </table></div>
+  <div class="card">
+    <h4>Trifluridine/tipiracil(Lonsurf)≥三線 <span class="tag std">健保給付</span> <span class="tr2">條文 9.66 · TAGS · latest 115/6/1</span></h4>
+    <p class="rdose">健保:先前≥2 種治療失敗(含 fluoropyrimidine/platinum/taxane 或 irinotecan 化療,及 HER2 標靶[若適合])之轉移性胃腺癌或胃食道接合處腺癌</p>
+    <p>台灣後線胃癌的健保口服選項。病歷須留存病理與影像;惡化即停藥。</p>
+  </div>
+</section>
+
+<section id="nhi">
+  <h2>台灣健保給付矩陣(第九節條文萃取)</h2>
+  <p class="lead">胃腺癌相關藥物。共同文法:標靶/免疫多需事前審查、留存病理+影像、惡化停藥。⚠ 免疫治療一線缺口是與國際標準的最大落差。</p>
+  <div class="tbl-wrap"><table>
+    <tr><th>藥(條文號)</th><th>胃癌給付情境</th><th>關鍵條件</th><th>PA</th><th>最新</th></tr>
+    <tr><td><b>Trastuzumab</b>(9.18)</td><td>⚠ 條文萃取內文僅見乳癌;胃癌段未見(cancers 標籤有胃癌)→ 以健保署原文為準</td><td>臨床:IHC3+ 或 FISH+</td><td>是</td><td class="num">115/7/1</td></tr>
+    <tr><td><b>Zolbetuximab</b>(9.133)</td><td>CLDN18.2+/HER2− 局部晚期不可切/轉移一線</td><td>CLDN18.2 IHC≥75% 中強染色、HER2−、ECOG≤1、附檢測報告</td><td>是</td><td class="num">115/4/1</td></tr>
+    <tr><td><b>TS-1</b>(9.46)</td><td>①胃癌術後輔助 ②晚期胰臟癌</td><td>術後輔助限 Stage II(排除T1)/IIIA/IIIB、已根除手術,用 1 年</td><td>是</td><td class="num">113/2/1</td></tr>
+    <tr><td><b>Lonsurf</b>(9.66)</td><td>轉移性胃腺癌/GEJ ≥三線</td><td>≥2 種治療失敗(含氟嘧啶/鉑/紫杉或 irinotecan+HER2 標靶若適合)</td><td>否</td><td class="num">115/6/1</td></tr>
+    <tr><td><b>ICI</b>(9.69)</td><td>轉移性胃腺癌:≥2 線化療失敗</td><td>⚠ <b>限 109/4/1 前經核准且符合續用者</b>——實質為凍結舊案,新申請/一線不給付</td><td>是</td><td class="num">113/5/1</td></tr>
+    <tr><td>Docetaxel(9.3)</td><td>胃癌化療成分(FLOT/後線單藥)</td><td>—</td><td>否</td><td class="num">115/6/1</td></tr>
+    <tr><td>Oxaliplatin(9.10)</td><td>胃癌化療成分(FLOX/FOLFOX/CapeOx)</td><td>—</td><td>否</td><td class="num">115/2/1</td></tr>
+    <tr><td>Capecitabine(9.17)</td><td>胃癌化療成分(CapeOx)</td><td>—</td><td>否</td><td class="num">115/2/1</td></tr>
+    <tr><td>Uracil-Tegafur(9.11)</td><td>胃癌化療成分</td><td>—</td><td>否</td><td class="num">100/1/1</td></tr>
+  </table></div>
+  <div class="callout"><b>健保未涵蓋(需自費/試驗)的關鍵新藥:</b>一線化療+pembrolizumab/nivolumab(KEYNOTE-811/859、CheckMate-649)、trastuzumab deruxtecan 胃癌適應症(DESTINY-Gastric)、<b>ramucirumab 二線(健保僅肝癌、胃癌不給付)</b>、圍手術期/MSI-H 之 ICI。這些構成台灣胃癌治療與國際指引的主要缺口。</div>
+</section>
+
+<section id="traps">
+  <h2>健保陷阱清單 — 開單前自檢</h2>
+  <div class="card">
+    <h4>五個胃癌最容易誤判的給付機關</h4>
+    <p>1️⃣ <b>ICI 一線是「看得到吃不到」</b>:國際 HER2−/CPS 高一線標準加 nivo/pembro,但健保 9.69 胃癌僅限 109/4/1 前核准延續案——新診斷病人一線 IO 實質不給付,務必先跟病人講清楚自費金額。<br>
+    2️⃣ <b>T-DXd 胃癌未開放</b>:trastuzumab deruxtecan 健保仿單只列乳癌;HER2+ 胃癌二線想用 T-DXd 需自費,別誤以為 HER2 適應症通用。<br>
+    3️⃣ <b>Zolbetuximab 的 CLDN18.2 門檻很硬</b>:≥75% 腫瘤細胞「中至強」染色才符合,弱染色或 &lt;75% 不給付;初次申請必附 IHC 報告+HER2−。<br>
+    4️⃣ <b>TS-1 術後輔助限特定分期</b>:只給 Stage II(排除 T1)/IIIA/IIIB 且已根除手術;T1 或未手術不符,限用 1 年。<br>
+    5️⃣ <b>Lonsurf 的「≥2 線+HER2 標靶若適合」</b>:HER2+ 病人若未用過 HER2 標靶,可能被要求先用;病歷須留病理影像,惡化即停。<br>
+    6️⃣ <b>Ramucirumab 二線是國際標準卻不給付</b>:RAINBOW(ramucirumab+paclitaxel)為 HER2− 二線標準,但台灣健保 ramucirumab 僅肝癌適應症、胃癌不給付——二線抗血管生成需自費或改用化療單藥。</p>
+  </div>
+</section>
+
+<section id="gist">
+  <h2>GIST 備註 — 不是胃腺癌,但常被歸「胃癌」</h2>
+  <p class="lead">胃腸道基質瘤(GIST)是間葉源性腫瘤(KIT/PDGFRA 驅動),與胃腺癌治療完全不同,健保另有一整條 TKI 序列。此處僅列骨架,詳細另建。</p>
+  <div class="tbl-wrap"><table>
+    <tr><th>線別</th><th>藥物</th><th>健保條文</th></tr>
+    <tr><td>一線 / 輔助</td><td>imatinib</td><td>9.22(PA)</td></tr>
+    <tr><td>二線</td><td>sunitinib</td><td>(另查)</td></tr>
+    <tr><td>三線</td><td>regorafenib</td><td>9.51(PA)</td></tr>
+    <tr><td>四線</td><td>ripretinib</td><td>9.123(PA,114/9/1)</td></tr>
+    <tr><td>(pazopanib)</td><td>pazopanib</td><td>9.41(GIST/腎細胞癌)</td></tr>
+  </table></div>
+  <div class="callout teal">GIST 治療依 KIT/PDGFRA 突變型分流(如 PDGFRA D842V 對 imatinib 抗性,需 avapritinib);與胃腺癌的生物標記(HER2/CLDN18.2/CPS)完全是兩套系統。若需 GIST 專頁請告知。</div>
+</section>
+
+<footer>
+  <p>治療證據:NCCN Gastric Cancer v2.2025 · ESMO 胃癌指引 · ToGA/FLOT4/CheckMate-649/KEYNOTE-811/KEYNOTE-859/SPOTLIGHT/GLOW/RAINBOW/TAGS/DESTINY-Gastric 等原始試驗 · FDA 2025(pembrolizumab HER2+ CPS≥1, 2025-03)。健保條文:全民健康保險藥物給付項目及支付標準第九節本機全文萃取,條文號標於矩陣表。</p>
+  <p style="margin-top:6px">⚠ 教學速查用途;給付規定以健保署最新公告與事前審查核定為準,開單前請對原文。生物標記檢測結果決定給付資格,務必先備齊報告。</p>
+</footer>
+
+</div>
+<script>
+const secs=[...document.querySelectorAll('section')];
+const links=[...document.querySelectorAll('nav.toc a')];
+const onScroll=()=>{
+  let i=secs.findLastIndex(s=>s&&s.getBoundingClientRect().top<90);
+  links.forEach((a,j)=>a.classList.toggle('active',j===i));
+};
+document.addEventListener('scroll',onScroll,{passive:true});onScroll();
+</script>
+</body>
+</html>
