@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ADC 相關急性 ILD／肺炎速查</title>
+<style>
+:root{
+  --ink:#0C1F26; --ink-soft:#4A6068; --paper:#EDF1F1; --surface:#FFFFFF;
+  --rule:#C9D5D6; --rule-soft:#E4EAEA;
+  --platinum:#0E6E75; --resist:#9A4B22; --marker:#5A4A86; --amber:#8A6D00;
+  --platinum-bg:#EAF3F3; --resist-bg:#F6EEE9; --marker-bg:#F6F5FA; --test-bg:#F6F2E4;
+  --g1:#0E6E75; --g2:#8A6D00; --g3:#9A4B22; --g4:#8F2F2F; --g5:#4A2020;
+  --shadow:0 1px 0 rgba(12,31,38,.06), 0 12px 30px -18px rgba(12,31,38,.35);
+  --serif:"Noto Serif TC",Georgia,serif;
+  --sans:"Noto Sans TC","Helvetica Neue",Arial,sans-serif;
+  --mono:"IBM Plex Mono",Menlo,monospace;
+  --radius:4px;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{-webkit-text-size-adjust:100%;scroll-behavior:smooth}
+body{background:var(--paper);color:var(--ink);font-family:var(--sans);
+  font-size:16px;line-height:1.7;-webkit-font-smoothing:antialiased;padding-bottom:70px}
+.masthead{max-width:820px;margin:0 auto;padding:38px 20px 18px;border-bottom:2px solid var(--ink)}
+.eyebrow{font-family:var(--mono);font-size:11.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--platinum);margin-bottom:8px}
+.masthead h1{font-family:var(--serif);font-weight:900;font-size:clamp(24px,5vw,36px);line-height:1.15}
+.masthead .sub{margin-top:8px;color:var(--ink-soft);font-size:14.5px}
+.masthead .meta{margin-top:10px;font-family:var(--mono);font-size:11px;color:var(--ink-soft)}
+.masthead .xlink{margin-top:8px;font-size:12.5px}
+.masthead .xlink a{color:var(--platinum);text-decoration:none;border-bottom:1px solid var(--rule)}
+main{max-width:820px;margin:0 auto;padding:16px 20px}
+.principles{background:var(--test-bg);border:1px solid var(--rule);border-left:4px solid var(--amber);
+  border-radius:var(--radius);padding:14px 16px;margin-bottom:18px;font-size:.9rem;box-shadow:var(--shadow)}
+.principles h2{font-family:var(--mono);font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:var(--amber);margin-bottom:8px}
+.principles li{margin-left:1.2em;margin-bottom:4px;color:var(--ink-soft)}
+.principles b{color:var(--ink)}
+.card{background:var(--surface);border:1px solid var(--rule);border-radius:var(--radius);
+  padding:14px 16px;margin-bottom:18px;box-shadow:var(--shadow);font-size:.88rem}
+.card h2{font-family:var(--mono);font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:var(--platinum);margin-bottom:10px}
+.card h2.m{color:var(--marker)} .card h2.r{color:var(--resist)}
+.card p{margin-bottom:8px} .card b{color:var(--ink)}
+.card ul{margin:4px 0 8px 1.2em} .card li{margin-bottom:4px;color:var(--ink-soft)}
+.card li b{color:var(--ink)}
+.gsel{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:12px}
+.gsel button{flex:1 1 60px;padding:8px 6px;border:1px solid var(--rule);border-radius:var(--radius);
+  background:transparent;color:var(--ink-soft);font-family:var(--mono);font-size:.82rem;cursor:pointer;line-height:1.3}
+.gsel button .n{font-weight:700;font-size:.95rem;display:block}
+.gsel button.on{color:#fff}
+.gsel button.on.b1{background:var(--g1);border-color:var(--g1)}
+.gsel button.on.b2{background:var(--g2);border-color:var(--g2)}
+.gsel button.on.b3{background:var(--g3);border-color:var(--g3)}
+.gsel button.on.b4{background:var(--g4);border-color:var(--g4)}
+.gsel button.on.b5{background:var(--g5);border-color:var(--g5)}
+.gpanel .row{display:flex;gap:10px;padding:9px 0;border-top:1px solid var(--rule-soft);align-items:flex-start}
+.gpanel .row:first-child{border-top:none}
+.gpanel .lb{flex:0 0 66px;font-family:var(--mono);font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-soft);padding-top:2px}
+.gpanel .vv{flex:1;font-size:.9rem}
+.gpanel .vv b{color:var(--platinum)}
+.gtag{display:inline-block;font-family:var(--mono);font-size:11px;padding:2px 8px;border-radius:3px;color:#fff;margin-left:6px}
+table{width:100%;border-collapse:collapse;margin:6px 0;font-size:.83rem}
+th,td{border:1px solid var(--rule-soft);padding:6px 8px;text-align:left;vertical-align:top}
+th{background:var(--paper);font-family:var(--mono);font-size:11px;letter-spacing:.05em}
+.data{display:flex;flex-wrap:wrap;gap:6px;margin:8px 0}
+.data .cell{flex:1 1 30%;min-width:150px;background:var(--paper);border:1px solid var(--rule);border-radius:var(--radius);padding:7px 10px;font-size:.82rem}
+.data .cell .num{font-weight:700;font-size:1.15rem;color:var(--platinum);display:block}
+.data .cell .lb{font-family:var(--mono);font-size:10px;letter-spacing:.06em;text-transform:uppercase;color:var(--ink-soft)}
+.hedge{font-size:.8rem;color:var(--ink-soft);background:var(--marker-bg);border-radius:var(--radius);padding:8px 11px;margin-top:8px}
+.hedge b{color:var(--marker)}
+.warn{font-size:.85rem;background:var(--resist-bg);border-left:4px solid var(--resist);border-radius:var(--radius);padding:9px 12px;margin-top:8px}
+.warn b{color:var(--resist)}
+.ref{font-family:var(--mono);font-size:10.5px;color:var(--ink-soft)}
+sup{font-family:var(--mono);font-size:.7em;color:var(--platinum)}
+footer{max-width:820px;margin:20px auto 0;padding:14px 20px 0;font-size:.74rem;color:var(--ink-soft);border-top:1px solid var(--rule)}
+footer p{margin-bottom:6px} footer b{color:var(--ink)}
+@media print{ body{background:#fff;padding-bottom:0} .card,.principles{box-shadow:none} }
+</style>
+</head>
+<body>
+<header class="masthead">
+  <div class="eyebrow">Onco-Tools · ADC-related Interstitial Lung Disease</div>
+  <h1>ADC 相關急性 ILD／肺炎速查</h1>
+  <div class="sub">抗體藥物複合體(ADC,以 T-DXd 資料最完整)之間質性肺病／肺炎 —— 機轉、影像、CTCAE 分級與病程處置。與 irAE 肺炎機轉不同:<b>ADC-ILD 是藥物毒殺、非自體免疫</b>。</div>
+  <div class="meta"><b>資料</b> T-DXd 匯總試驗(Powell 2022)· Fleischner 2021 · CTCAE v5 · ENHERTU 仿單 &nbsp;|&nbsp; <b>整理</b> 2026-08(引用皆逐篇查證)</div>
+  <div class="xlink">↔ 對照免疫性肺炎請見 <a href="../irae/">irAE 器官分級處置速查</a></div>
+</header>
+<main>
+
+  <div class="principles">
+    <h2>⚖ 一眼摘要(先讀)</h2>
+    <li><b>對因治療 = 停藥</b>。ADC-ILD 是 payload 直接毒殺肺泡,不是免疫驅動 —— payload 毒殺無法逆轉,能動的是「停藥 + 壓續發發炎」。</li>
+    <li><b>只要有症狀(≥G2)一律永久停藥</b>;<b>G1(無症狀、只有影像)也要先停藥</b>。</li>
+    <li>類固醇是壓「續發發炎/DAD」,<b>屬對症、非對因</b>(和 irAE「類固醇=壓驅動本身」不同)。</li>
+    <li><b>致死病例來得早、且多為 DAD 型影像</b>;延遲辨識是壞結局主因 → <b>定期 HRCT 監測</b> + 衛教病人回報咳/喘/發燒。</li>
+    <li>類固醇前先<b>排除感染</b>(含 PJP、病毒);影像上 ADC-ILD 與 irAE 肺炎<b>常無法區分</b>,靠用藥史/時序定因。</li>
+  </div>
+
+  <div class="card">
+    <h2>🩺 依 CTCAE 分級:症狀 × 影像 × 處置(點選 G1–G5)</h2>
+    <div class="gsel" id="gsel"></div>
+    <div class="gpanel" id="gpanel"></div>
+    <div class="hedge"><b>分級=依症狀/功能</b>:CTCAE v5 —— G1 無症狀(僅影像);G2 有症狀、影響工具性日常;G3 症狀嚴重、需氧、影響自我照顧;G4 危及生命呼吸衰竭、需插管/氣切;G5 死亡。<span class="ref">(CTCAE v5;處置依 ENHERTU 仿單與 Swain 2022 共識)</span></div>
+  </div>
+
+  <div class="card">
+    <h2>📈 臨床病程與結局(T-DXd 匯總分析,九項試驗 n=1,150)</h2>
+    <div class="data">
+      <div class="cell"><span class="lb">ILD/肺炎 發生率</span><span class="num">15.4%</span>(裁決確認,177/1150)</div>
+      <div class="cell"><span class="lb">G1–2(低度)</span><span class="num">77.4%</span>多為低度</div>
+      <div class="cell"><span class="lb">G5(致死)</span><span class="num">2.2%</span>25 人(26 事件,1 人 2 次)</div>
+      <div class="cell"><span class="lb">中位發病時間</span><span class="num">5.4 月</span>範圍 &lt;0.1–46.8;87% 在一年內</div>
+      <div class="cell"><span class="lb">致死者中位發病</span><span class="num">3.2 月</span>來得更早(&lt;0.1–20.8)</div>
+      <div class="cell"><span class="lb">G1 停藥後再挑戰</span><span class="num">3/47</span>復發、且皆低度(onset 84–177 天)</div>
+    </div>
+    <p>類固醇使用:G2–4 事件 <b>80.2%(85/106)</b>、G5 <b>84.6%(22/26)</b> 於發病 90 天內至少用過一劑。</p>
+    <div class="warn"><b>試驗自承兩個限制(直接影響解讀)</b>:① <b>類固醇管理不理想</b>——辨識延遲、劑量常不符建議;② 裁決委員會判定的<b>發病日比研究者更早</b>(53.2% 事件,中位差 43 天)→ 現場常低估/太晚處理。**啟示:結局好壞的關鍵是「夠早發現、夠早停藥」,不是類固醇本身。**</div>
+    <div class="hedge"><b>數字要小心對照</b>:上表 G1 再挑戰復發率(3/47≈6.4%)出自 Powell 2022(n=1,150);另一份較新的 T-DXd 再治療匯總(Ann Oncol 2025,不同且更大的 n≈2,145 族群)報告復發約 33%(多為低度、可處理)—— 兩者<b>族群/觀察窗不同,不可混為一談或平均</b>。整體而言,較新/真實世界資料傾向「監測改善後觀察到的嚴重度較低」,但確切新數字尚未逐字核實,故本頁不列。<span class="ref">主源:Powell CA 等. ESMO Open 2022;7(4):100554. PMID 35963179</span></div>
+  </div>
+
+  <div class="card">
+    <h2 class="m">🔬 病理機轉(毒性、非免疫)</h2>
+    <p><b>核心</b>:ADC(尤其 deruxtecan 類)進到肺,大多<b>與標的無關(target-independent)</b> —— 即使肺組織幾乎不表現該抗原,ILD 照樣發生。</p>
+    <ul>
+      <li><b>攝取</b>:主要由<b>肺泡巨噬細胞</b>攝入整個 ADC(猴子毒理:T-DXd 定位於肺泡巨噬細胞而非上皮)<sup>[Kumagai 2020]</sup>;FcγR 媒介的巨噬細胞攝取是跨多種 ADC 的共通型態<sup>[Koganemaru 2025]</sup>。</li>
+      <li><b>payload 釋放 + 旁觀者效應</b>:釋出的細胞毒 payload 毒殺鄰近的正常肺泡上皮(AT2)與內皮 → 屏障破壞。<span class="ref">(此「對正常肺泡的 bystander/AT2 胞飲」為<b>推論機轉</b>,由腫瘤 bystander-killing 生物學與 ADC 一般 off-target 攝取外推,非直接於肺泡上皮證實)</span></li>
+      <li><b>續發發炎</b>:死細胞釋 DAMPs → 巨噬活化、細胞激素(NF-κB 下游)放大損傷 → 這是類固醇的著力點。</li>
+    </ul>
+    <div class="hedge"><b>誠實標註</b>:human ADC-ILD 的確切機轉<b>仍未完全定論</b>(Koganemaru 2025 直言「detailed mechanism…is not known」)。急性重症的組織對應是 <b>DAD(瀰漫性肺泡損傷)</b>,但目前 DAD 歸類主要來自<b>影像</b>分類(見下),尚無 ADC-ILD 專屬的系統性人體病理系列;玻璃樣膜/AT2 增生屬 DAD 的一般病理特徵。</div>
+  </div>
+
+  <div class="card">
+    <h2>🖼️ 影像(HRCT):型態與鑑別</h2>
+    <p>ADC-ILD、免疫性肺炎、藥物性肺炎<b>共用同一套 HRCT 型態</b>(OP、NSIP、HP、DAD/AIP),<b>單看影像無法可靠區分病因</b>——診斷靠排除 + 用藥史/時序<sup>[Fleischner 2021]</sup>。</p>
+    <p><b>T-DXd 影像分布</b>(130 例 T-DXd ILD)<sup>[Baba 2023]</sup>:機化性肺炎(OP)型 <b>63.1%</b>、過敏性肺炎(HP)型 16.9%、<b>DAD 型 14.6%</b>;死亡 11/130,其中 <b>8/11(72.7%)為 DAD 型</b> → <b>DAD 型雖少但不成比例致命</b>。</p>
+    <ul>
+      <li><b>Grade 1</b>:淡薄、範圍局限、雙側周邊/下肺為主的 GGO,<b>無蜂窩</b>。<span class="ref">(此為定性描述;目前無「以影像範圍對應各 CTCAE 分級」的驗證量表可引用——範圍越大/consolidation 比例越高一般越重,僅供定性參考)</span></li>
+      <li><b>影像能可靠區分的是</b>「急性發炎型(GGO/OP/DAD)↔ 慢性纖維化型(蜂窩/牽引支擴)」——後者才是抗纖維化(nintedanib)對症的那一格。</li>
+    </ul>
+  </div>
+
+  <div class="card">
+    <h2 class="r">⚖️ ADC-ILD vs irAE(免疫性)肺炎 —— 機轉決定處置</h2>
+    <table>
+      <tr><th></th><th>ADC 急性 ILD</th><th>irAE(ICI)肺炎</th></tr>
+      <tr><td>本質</td><td><b>藥物直接毒殺 + 旁觀者效應</b></td><td><b>適應性 T 細胞自體免疫</b></td></tr>
+      <tr><td>「效應者」</td><td>payload 打肺泡上皮/內皮</td><td>自體反應 T 細胞 → 骨髓放大</td></tr>
+      <tr><td>組織傾向</td><td>DAD 比例較高、且不成比例致命</td><td>多為機化性肺炎/淋巴球浸潤(DAD 少)<sup>[Larsen 2019]</sup></td></tr>
+      <tr><td>對因治療</td><td><b>停藥</b>(有症狀即永久停)</td><td><b>免疫抑制</b>(類固醇=壓驅動本身)</td></tr>
+      <tr><td>類固醇角色</td><td>壓續發發炎(對症)</td><td>疾病導向治療</td></tr>
+      <tr><td>二線升級</td><td>較無理:藥停了無持續免疫驅動</td><td>infliximab/MMF/IVIG 對免疫機轉合理</td></tr>
+    </table>
+    <div class="hedge">影像「長得像」正是處置模板長得像的原因;但<b>對因的第一步完全不同</b>:ADC=拿掉藥,irAE=壓免疫。</div>
+  </div>
+
+  <div class="card">
+    <h2 class="m">🧪 抗纖維化(nintedanib)有沒有用?</h2>
+    <ul>
+      <li><b>急性 ADC-ILD:機轉不對症</b>。急性期限速是「payload 毒殺 + 發炎/DAD」,而 nintedanib 打的是<b>纖維化</b>(PDGFR/FGFR);對急性期<b>無確立角色,僅個案級</b>。</li>
+      <li><b>抗 VEGF 的理論顧慮</b>:VEGF 是肺泡/內皮的修復因子,理論上急性肺泡損傷期抗 VEGFR 可能不利修復。<span class="ref"><b>但這是純機轉推測、非臨床有害訊號</b>——少數 acute ADC-ILD 用 nintedanib 的個案報告其實<b>顯示改善、非變差</b>。</span></li>
+      <li><b>機轉對得上的情境</b>:若殘留/進展成<b>進展性肺纖維化(PPF)</b><sup>[Raghu 2022]</sup>,則落回「不分病因的 PF-ILD」傘下,nintedanib 有 <b>INBUILD</b> 級外推支持<sup>[Flaherty 2019]</sup>(SSc-ILD 有 SENSCIS、IPF 有 INPULSIS)—— 但 ADC-ILD 停藥後多為 one-hit,真的持續進展成纖維化較少見,且仍屬外推。</li>
+    </ul>
+    <div class="warn"><b>結論</b>:別在急性 ADC-ILD 反射性加 nintedanib(第一步永遠是<b>停藥</b>);保留給「確實在纖維化並進展」的殘留,並知道那是外推、非直接證據。</div>
+  </div>
+
+  <div class="card">
+    <h2>💊 分級管理細節(T-DXd／ENHERTU 仿單 + Swain 2022 共識)</h2>
+    <ul>
+      <li><b>Grade 1(無症狀)</b>:暫停 ENHERTU 直到恢復至 G0 —— <b>28 天內</b>恢復可原劑量續用;<b>>28 天</b>恢復則減一階;可考慮類固醇 ≥0.5 mg/kg/day prednisolone 當量。</li>
+      <li><b>Grade ≥2(任何有症狀)</b>:<b>永久停用 ENHERTU</b>;立即 <b>≥1 mg/kg/day prednisolone</b> 當量,持續 <b>≥14 天</b>後<b>緩減 ≥4 週</b>。</li>
+      <li>全程:排除感染;類固醇 >4 週考慮 PJP 預防、血糖/骨/胃保護。</li>
+    </ul>
+    <div class="hedge"><b>類別風險比較(勿過度概化)</b>:與 <b>T-DM1</b> 頭對頭,T-DXd 的 ILD 明顯較高(DESTINY-Breast03:全級別 <b>16.7% vs 3.4%</b>)<sup>[Cortés 2022]</sup>。但「deruxtecan 類 > MMAE 類」<b>未定論</b> —— 有 NSCLC meta 反而發現 <b>vedotin/MMAE 的 grade≥3 肺炎更高(5.23% vs 1.88%)</b><sup>[Li 2025]</sup>。故勿一概宣稱「deruxtecan 最毒」;T-DXd 全級別發生率確實名列前茅,但跨藥比較尚未定論。</div>
+  </div>
+
+</main>
+<footer>
+  <p><b>主要出處(皆逐篇查證)</b>:Powell CA 等. <i>ESMO Open</i> 2022;7(4):100554(PMID 35963179,病程數字)· Baba T 等. <i>Int J Clin Oncol</i> 2023;28:1585(PMID 37787866,影像)· Naidoo J 等. <i>JCO</i> 2017;35:709(PMID 27646942)· Johkoh T 等(Fleischner). <i>Radiology</i> 2021;298:550(PMID 33434111)· Kumagai K 等. <i>Cancer Sci</i> 2020;111:4636(PMID 33051938,機轉)· Koganemaru S 等. <i>Mol Cancer Ther</i> 2025;24:242 · Larsen BT 等. <i>Am J Surg Pathol</i> 2019;43:1331(PMID 31162288)· Swain SM 等. <i>Cancer Treat Rev</i> 2022;106:102378(PMID 35430509,管理共識)· ENHERTU 美國仿單(USPI,以最新版本為準)· Flaherty KR 等(INBUILD). <i>NEJM</i> 2019(PMID 31566307)· Raghu G 等(PPF). <i>AJRCCM</i> 2022(PMID 35486072)· Cortés J 等(DESTINY-Breast03). <i>NEJM</i> 2022(PMID 35320644)· Li Y 等. <i>Thorac Cancer</i> 2025(PMID 41268683).</p>
+  <p>⚠ 教學／速查用途,<b>非取代臨床判斷與最新版原文仿單/指引</b>;個案處置請依最新 ENHERTU 仿單、多科團隊與院內規範。分級以 CTCAE v5 為準。</p>
+  <p class="ref">Onco-Tools · adc-ild · 整理 2026-08 · 內容經逐篇原始文獻查證(RED/YELLOW/GREEN 稽核)</p>
+</footer>
+<script>
+var G=[
+ {g:"G1",cls:"b1",tag:"var(--g1)",label:"G1 無症狀",
+  sx:"<b>無症狀</b>,僅影像/檢查發現(常於例行療效評估 CT 意外發現)。",
+  img:"淡薄、範圍局限、雙側周邊/下肺為主的 GGO;<b>無蜂窩</b>。",
+  mx:"<b>暫停用藥</b>直到恢復 G0:28 天內恢復→原劑量續用;>28 天→減一階。可考慮類固醇 ≥0.5 mg/kg/day。"},
+ {g:"G2",cls:"b2",tag:"var(--g2)",label:"G2 有症狀·可自理",
+  sx:"<b>有症狀</b>(咳、喘、發燒),影響<b>工具性日常</b>(如煮飯、購物);仍能自我照顧。",
+  img:"範圍較廣的 GGO ± consolidation(OP 型常見)。",
+  mx:"<b>永久停藥</b> + 立即 <b>≥1 mg/kg/day prednisolone</b>,≥14 天後緩減 ≥4 週。先排除感染。"},
+ {g:"G3",cls:"b3",tag:"var(--g3)",label:"G3 嚴重·需氧",
+  sx:"<b>症狀嚴重</b>,影響<b>自我照顧</b>;<b>需氧氣</b>。",
+  img:"廣泛 GGO + consolidation。",
+  mx:"<b>永久停藥</b> + 住院 + 高劑量類固醇(可 IV methylprednisolone);持續惡化依 G4。"},
+ {g:"G4",cls:"b4",tag:"var(--g4)",label:"G4 危及生命",
+  sx:"<b>危及生命的呼吸衰竭</b>,需緊急處置(插管/氣切)。",
+  img:"瀰漫雙側 GGO + consolidation,<b>DAD/AIP 型</b>。",
+  mx:"<b>永久停藥</b> + ICU + <b>脈衝類固醇</b>;支持治療。"},
+ {g:"G5",cls:"b5",tag:"var(--g5)",label:"G5 死亡",
+  sx:"死亡。",
+  img:"致死病例<b>多為 DAD 型</b>(8/11 致死案),且<b>發病較早</b>(中位 3.2 月)。",
+  mx:"匯總試驗致死率 <b>2.2%</b>;延遲辨識/延遲停藥是可修正的風險 → 早監測、早停藥。"}
+];
+var gsel=document.getElementById("gsel"), gpanel=document.getElementById("gpanel"), cur=1;
+function drawSel(){
+  gsel.innerHTML=G.map(function(x,i){
+    return '<button class="'+x.cls+(i===cur?' on':'')+'" onclick="pick('+i+')">'+
+      '<span class="n">'+x.g+'</span>'+x.label.replace(/^G\d\s/,'')+'</button>';
+  }).join("");
+}
+function drawPanel(){
+  var x=G[cur];
+  gpanel.innerHTML=
+    '<div class="row"><div class="lb">症狀</div><div class="vv">'+x.sx+'<span class="gtag" style="background:'+x.tag+'">'+x.g+'</span></div></div>'+
+    '<div class="row"><div class="lb">影像</div><div class="vv">'+x.img+'</div></div>'+
+    '<div class="row"><div class="lb">處置</div><div class="vv">'+x.mx+'</div></div>';
+}
+function pick(i){ cur=i; drawSel(); drawPanel(); }
+drawSel(); drawPanel();
+</script>
+</body>
+</html>
