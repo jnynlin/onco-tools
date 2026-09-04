@@ -242,6 +242,9 @@ window.ONCO = (function(){
     if(g.anyOf){ var yes=false,unk=false;
       g.anyOf.forEach(function(s){var r=gate1(s); if(r==='yes')yes=true; else if(r==='unk')unk=true;});
       return yes?'yes':(unk?'unk':'no'); }
+    if(g.allOf){ var no=false,unk2=false;   // AND-gate: any 'no' dominates, then any 'unk', else 'yes'
+      g.allOf.forEach(function(s){var r=gate1(s); if(r==='no')no=true; else if(r==='unk')unk2=true;});
+      return no?'no':(unk2?'unk':'yes'); }
     return gate1(g);
   }
   function gateLabel(item){var g=item.gate; return (g&&g.label)||(g&&DATA.gateLabels&&DATA.gateLabels[g.key])||'標記';}
