@@ -253,7 +253,11 @@ window.ONCO = (function(){
     if(!st||st.indexOf('*')>=0) return true;
     return st.indexOf(ctx[DATA.primaryKey])>=0;
   }
-  function anyFamilyUsed(fam){return (DATA.items||[]).some(function(i){return i.family===fam&&used.has(i.id);});}
+  // family may be a string or an array (an item can belong to several families, e.g. chemo-combo + ICI)
+  function fams(x){return Array.isArray(x)?x:(x?[x]:[]);}
+  function anyFamilyUsed(fam){var f=fams(fam);
+    return (DATA.items||[]).some(function(i){ if(!used.has(i.id)) return false;
+      return fams(i.family).some(function(x){return f.indexOf(x)>=0;}); });}
 
   function evaluate(item){
     if(used.has(item.id)) return {bucket:'used',reason:'已使用'};
