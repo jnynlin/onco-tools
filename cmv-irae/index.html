@@ -77,7 +77,18 @@ th{background:var(--paper);font-family:var(--mono);font-size:11px;letter-spacing
 .tscroll table{margin:0;min-width:600px}
 .tscroll.w table{min-width:820px}
 @media (max-width:600px){.tscroll::after{content:'← 左右滑動看完整表格';display:block;font-family:var(--mono);font-size:10px;color:var(--ink-soft);padding:4px 0 0}}
+.entrybar{position:sticky;top:0;z-index:20;background:var(--paper);border-bottom:1px solid var(--rule);
+  padding:9px 0 8px;margin:0 0 16px;display:flex;gap:6px;flex-wrap:wrap;align-items:center}
+.entrybar button{padding:7px 12px;border:1px solid var(--rule);border-radius:var(--radius);background:var(--surface);
+  color:var(--ink-soft);font-family:var(--mono);font-size:.8rem;cursor:pointer;line-height:1.3}
+.entrybar button.on{background:var(--ink);border-color:var(--ink);color:#fff}
+.entrybar .cnt{font-family:var(--mono);font-size:10.5px;color:var(--ink-soft);margin-left:auto;padding-left:8px}
+.cmeta{margin-top:11px;padding-top:8px;border-top:1px dashed var(--rule);font-family:var(--mono);
+  font-size:10px;color:var(--ink-soft);display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.rk{padding:1px 6px;border-radius:3px;color:#fff;font-size:9.5px;letter-spacing:.04em}
+.rk.high{background:var(--resist)} .rk.med{background:var(--amber)} .rk.low{background:var(--platinum)}
 .ref{font-family:var(--mono);font-size:10.5px;color:var(--ink-soft)}
+@media print{ .card,.principles{display:block!important} .entrybar{display:none} }
 footer{max-width:820px;margin:20px auto 0;padding:14px 20px 0;font-size:.74rem;color:var(--ink-soft);border-top:1px solid var(--rule)}
 footer p{margin-bottom:6px} footer b{color:var(--ink)}
 @media print{ body{background:#fff;padding-bottom:0} .card,.principles{box-shadow:none} }
@@ -93,7 +104,9 @@ footer p{margin-bottom:6px} footer b{color:var(--ink)}
 </header>
 <main>
 
-  <div class="principles">
+  <div class="entrybar" id="entrybar"></div>
+
+  <div class="principles" data-k="summary">
     <h2>⚖ 一眼摘要(先讀)</h2>
     <li><b>陰性不能排除,陽性不能確認。</b> 血中 PCR 特異度高但敏感度差;組織侵犯可以在血中低量甚至測不到時發生。</li>
     <li><b>確診 = 該器官組織中以組織病理、免疫組化或原位雜交測到 CMV。</b> 依國際共識定義,<b>組織 PCR 本身不算</b>確診,因為分不出潛伏與侵犯。</li>
@@ -103,7 +116,7 @@ footer p{margin-bottom:6px} footer b{color:var(--ink)}
     <li><b>兩種紀律,不要混用。</b> CMV 是「先證實再治」,HSV／VZV／PJP 是「先治再說」。搞反任何一邊都會出事 —— 詳見下一張卡。</li>
   </div>
 
-  <div class="card">
+  <div class="card" data-k="discipline">
     <h2 class="r">⚖ 兩種診斷紀律:先證實再治 vs 先治再說</h2>
     <p>這是全頁最該記住的一件事。同樣是「免疫抑制下的感染」,處理紀律卻分成相反的兩類,決定因素是<b>「等待的代價」與「亂治的代價」哪一個比較大</b>。</p>
     <div class="tscroll">
@@ -127,7 +140,7 @@ footer p{margin-bottom:6px} footer b{color:var(--ink)}
     <div class="warn"><b>⚠ 「先治再說」有一個明確的邊界:呼吸道的 HSV 不適用。</b> 這條規則來自 <b>HSV 肝炎與播散性 HSV</b>。<b>呼吸道</b>的 HSV 大多只是口咽再活化沿氣道下行或管路污染,<b>不是肺炎</b> —— 插管病人 BAL 驗到 HSV 很常見。一項隨機試驗(n=238,插管且有口咽 HSV 再活化者)給 acyclovir <b>主要終點為陰性</b>:第 60 天 ventilator-free days <b>35 vs 36(P=.17)</b>;死亡率 22% vs 33% 是<b>次要終點且未達顯著</b>(風險差 0.11,95% CI −0.004 至 0.22,P=.06),<b>不能當作治療理由</b>。<b>在肺,HSV 回到「先證實再治」那一格。</b></div>
   </div>
 
-  <div class="card">
+  <div class="card" data-k="tier">
     <h2>🎚 互動一:懷疑度分層 → 現在該做什麼</h2>
     <p class="qlabel">CMV IgG 血清狀態</p>
     <div class="seg" id="segIgG"></div>
@@ -137,13 +150,13 @@ footer p{margin-bottom:6px} footer b{color:var(--ink)}
     <div class="hedge"><b>分層原則</b>:取「最高階觸發器」決定層級,不是計分。難治與反彈之所以是最高階,是因為它們同時代表「目前的免疫抑制沒解決問題」與「累積免疫抑制已經夠深」—— 這正是 CMV 的窗口。</div>
   </div>
 
-  <div class="card">
+  <div class="card" data-k="pcr">
     <h2>🧪 互動二:血中定量 PCR 回來了,怎麼讀</h2>
     <div class="seg" id="segPCR"></div>
     <div class="verdict" id="pcrOut"></div>
   </div>
 
-  <div class="card">
+  <div class="card" data-k="threetest">
     <h2 class="m">🔬 三層檢查:各自能證明什麼、不能證明什麼</h2>
     <div class="tscroll">
     <table>
@@ -156,7 +169,7 @@ footer p{margin-bottom:6px} footer b{color:var(--ink)}
     </div>
   </div>
 
-  <div class="card">
+  <div class="card" data-k="ihc">
     <h2 class="m">🔬 CMV 免疫組化到底染什麼、看哪些細胞</h2>
     <p><b>染的是病毒「蛋白」,不是病毒 DNA。</b> 這正是共識定義接受免疫組化當確診、卻不接受組織 PCR 的根本理由。</p>
     <ul>
@@ -174,7 +187,7 @@ footer p{margin-bottom:6px} footer b{color:var(--ink)}
     <div class="warn"><b>判讀兩個守則</b>:①陽性訊號必須落在<b>形態相符的細胞</b>上,孤立的淡胞質染色是非特異,不能算數。②HSV、VZV、腺病毒各有各的抗體,<b>CMV 免疫組化不會涵蓋它們</b> —— 懷疑哪個就要分開開單。</div>
   </div>
 
-  <div class="card">
+  <div class="card" data-k="perf">
     <h2 class="a">📐 診斷效能的硬數字(以及它們的適用邊界)</h2>
     <div class="data">
       <div class="cell"><span class="lb">血中檢驗 敏感度</span><span class="num">50.8%</span>95% CI 19.9–81.6</div>
@@ -188,7 +201,7 @@ footer p{margin-bottom:6px} footer b{color:var(--ink)}
     <div class="warn"><b>⚠ 適用邊界要講清楚</b>:上表出自發炎性腸道疾病族群的系統性回顧與統合分析,以 <b>免疫組化／組織 PCR 為參考標準</b>,測的是<b>大腸</b> CMV 再活化。<b>不是</b> irAE 族群、<b>不是</b>肝臟。搬到肝臟是<b>方向性外推</b>(陰性不可信、IHC 才是標準),<b>不要引用其確切數字宣稱肝臟的敏感度</b>。<span class="ref">Tandon P 等. Inflamm Bowel Dis 2017;23(4):551. PMID 28296820</span></div>
   </div>
 
-  <div class="card">
+  <div class="card" data-k="traps">
     <h2 class="r">🚩 三個會害人的陷阱</h2>
     <ul>
       <li><b>陷阱一:把「PCR 陰性」當結案。</b> 一個對足量免疫抑制沒有反應的病人,陰性 PCR 只排除了 DNAemia,沒排除組織侵犯。該做的是切片,不是再加一線免疫抑制。</li>
@@ -197,7 +210,7 @@ footer p{margin-bottom:6px} footer b{color:var(--ink)}
     </ul>
   </div>
 
-  <div class="card">
+  <div class="card" data-k="multiorgan">
     <h2>🌐 CMV 不會只挑一個器官(但也不是全身一起發病)</h2>
     <p>這題要分兩層,混在一起講就會誤導。</p>
     <ul>
@@ -219,7 +232,7 @@ footer p{margin-bottom:6px} footer b{color:var(--ink)}
     ③ <b>確診本來就是逐器官的</b>:共識定義是「在<b>該器官</b>組織中測到」,所以沒有「全身性 CMV 疾病」這種單一標籤,哪裡有臨床意義就在哪裡取證。</div>
   </div>
 
-  <div class="card">
+  <div class="card" data-k="imgliver">
     <h2 class="m">🖼 影像:分不出來,但有三件事非它不可</h2>
     <p><b>兩者共有的非特異性所見</b>(對鑑別<b>沒有</b>幫助):</p>
     <div class="tscroll">
@@ -243,7 +256,18 @@ footer p{margin-bottom:6px} footer b{color:var(--ink)}
     <div class="hedge"><b>檢查怎麼開</b>:腹部超音波加 Doppler 當第一線,便宜且同時看膽道與血管。<b>肝指數以 ALP／GGT 為主</b>或超音波見膽管異常 → 加 MRCP。腫瘤病人通常已有 restaging CT,<b>回頭跟前一次比對</b> periportal 與膽道變化,常比新開一次檢查有用。</div>
   </div>
 
-  <div class="card">
+  <div class="card" data-k="imglung">
+    <h2 class="m">🖼 互動四:肺 —— PJP／CMV／HSV／ICI 肺炎在影像上怎麼分(點一個)</h2>
+    <p><b>先說結論:分不出來,只能加減分。</b> 影像真正的三個工作是 ——① 夠像 PJP 就<b>邊等 BAL 邊先給 TMP-SMX</b>(PJP 屬「先治再說」)②決定<b>往哪一葉灌洗</b> ③排掉麴菌、心因性肺水腫、疾病進展。<b>確診仍在 BAL 或組織那一格。</b></p>
+    <div class="seg" id="segImg"></div>
+    <div class="verdict" id="imgOut"></div>
+    <div class="warn"><b>兩個必須記住的限制</b><br>
+    ① <b>三者可以同時存在</b>,尤其累積免疫抑制之下 —— 影像給的是機率,不是答案。<br>
+    ② <b>非 HIV 的 PJP 不典型比例高</b>:可以實變為主、可以周邊分布,甚至有「只有小葉中心結節、完全沒有 GGO」的報告。所以「<b>不像 PJP</b>」只能降低優先序,<b>不能拿來排除</b>。「GGO 缺席有高陰性預測值」那筆資料出自<b>愛滋族群</b>,不可直接搬到類固醇引起的免疫低下。</div>
+    <div class="hedge"><b>不屬於這四個的影像線索</b>:<b>暈徵／空氣新月／空洞</b> → 血管侵襲性麴菌。<b>肺葉性實變加支氣管血管束增厚</b> → 細菌性肺炎。<b>結節加瀰漫 GGO 且血色素掉</b> → 瀰漫性肺泡出血。</div>
+  </div>
+
+  <div class="card" data-k="hsvliver">
     <h2 class="r">🔥 HSV 肝炎:紀律跟 CMV 剛好相反</h2>
     <p><b>CMV 是沒有組織證據不要亂治;HSV 是懷疑就先打 acyclovir,不要等切片。</b> 支撐這個反轉的是下面這組數字。</p>
     <div class="data">
@@ -273,7 +297,30 @@ footer p{margin-bottom:6px} footer b{color:var(--ink)}
     <div class="warn"><b>irAE 情境的操作結論</b>:病人在高劑量類固醇加 MMF 之下出現<b>「發燒 + transaminase 破千 + 白血球低 + 膽紅素不高」</b>,做法是<b>一邊送 HSV PCR 與其他檢查、一邊就把 acyclovir 開下去</b>,同時<b>不停</b> irAE 需要的免疫抑制。這條路徑要和 CMV 的「先切片再加碼」<b>分開記</b>。</div>
   </div>
 
-  <div class="card">
+  <div class="card" data-k="hsvlung">
+    <h2 class="r">💧 HSV 肺:藥物、療程,以及「沒有終點」這件事</h2>
+    <p><b>藥和療程有得抄,endpoint 沒有。</b>HSV 肺炎<b>沒有經過驗證的治療終點</b> —— 這是本卡最該記住的一句。</p>
+    <div class="tscroll">
+    <table>
+      <tr><th style="width:16%">線</th><th style="width:26%">藥與劑量</th><th style="width:22%">療程</th><th>要注意</th></tr>
+      <tr><td><b>第一線</b></td><td><span class="dz">Acyclovir 10 mg/kg IV q8h</span>(內臟型／播散型劑量)</td><td>至少 <b>10–14 天</b>;HSV 肺炎本身<b>無試驗定義的療程</b>,14 天是實務錨點</td><td>食道炎的建議劑量較低(5 mg/kg q8h),<b>肺炎與播散走 10</b>。必須<b>充分水化</b>並依 CrCl 調整 —— 結晶尿與急性腎損傷跟脫水、快速輸注、併用腎毒性藥直接相關。</td></tr>
+      <tr><td><b>口服接續</b></td><td><span class="dz">Valacyclovir 1 g PO TID</span></td><td>併入總療程</td><td>此作法是從<b>腦膜炎與黏膜皮膚外推</b>,<b>肺炎沒有驗證過</b>。</td></tr>
+      <tr><td><b>抗藥時</b></td><td><span class="dz">Foscarnet 40 mg/kg IV q8h 或 q12h</span></td><td>2–3 週或至痊癒</td><td>真實世界成績要先有底:31 個療程<b>約半數緩解</b>、<b>32% 因不良事件停藥</b>;電解質異常 65%、腎功能異常 42%。</td></tr>
+      <tr><td><b>研發中</b></td><td>Pritelivir(helicase-primase 抑制劑,對 ACV 與 foscarnet 抗藥株皆有活性)</td><td>—</td><td><b>尚未核准</b>:NDA 獲 FDA 優先審查與突破性療法認定,PDUFA 目標 2026 第四季。第三期收的是<b>難治／抗藥的黏膜皮膚 HSV,不是內臟型</b> → <b>現階段不是肺炎的選項</b>。</td></tr>
+    </table>
+    </div>
+    <div class="warn"><b>🔑 比終點更重要的一條反向規則</b><br>
+    <b>治了 7–10 天沒改善,第一個該問的不是「要不要加量或延長」,而是「HSV 到底是不是元凶」。</b> 因為呼吸道 HSV 本來就常是旁觀者。<b>第二個</b>才問抗藥(送 TK／pol 基因型或表型,換 foscarnet)。<br>
+    另一個容易誤判的點:<b>影像改善慢不等於治療失敗</b> —— 實變為主型的影像改善顯著較慢(p=0.023)但結局與 GGO 型相當(p=0.9),中位完全消散要 <b>20 天</b>。</div>
+    <p><b>那「終點」到底怎麼定?</b> 分兩種讀法,兩個都給:</p>
+    <ul>
+      <li><b>臨床停藥終點 —— 沒有驗證過的。</b> 能用的只有退燒、氧合改善、脫離呼吸器、影像不再惡化。病毒學上可重做 BAL 看病毒量,但<b>很少人真的重做支氣管鏡,而且沒有驗證過的閾值</b>。對照 <b>CMV</b> 就清楚:CMV 至少有「血中定量<b>連續兩次陰性</b>」這種可操作的替代終點,<b>HSV 在肺沒有對應的東西</b>。所以實務是<b>設一個固定療程(常用 14 天)+ 期中重新評估</b>,而不是無限延長。</li>
+      <li><b>研究端的終點</b>:PTH(2020)主要終點 = <b>day-60 ventilator-free days</b>(結果陰性);HerpMV(進行中)主要終點 = <b>day-30 死亡率</b>。<b>連試驗界都沒有採用病毒學終點,而是用呼吸器與存活這種硬終點</b> —— 這件事本身就說明「BAL 轉陰」不被認為是有意義的終點。</li>
+    </ul>
+    <div class="hedge"><b>irAE 情境的操作結論</b>:①真的認定是 HSV 肺炎(有細胞病變加免疫染色,或切片)→ 照內臟型劑量與 10–14 天。②<b>只有 BAL PCR 陽性、影像看起來像 ICI 肺炎 → 不要把類固醇停掉改打 acyclovir</b>;兩者可並存,而 ICI 肺炎的治療是類固醇。③每一次「沒改善」都要<b>回頭質疑診斷</b>,而不是先加藥。</div>
+  </div>
+
+  <div class="card" data-k="others">
     <h2 class="a">🧫 還有哪些感染屬於同一類</h2>
     <p>共同點不是器官,而是<b>「被你給的免疫抑制打開」加上「長得像 irAE 難治」</b>。所以反射性的錯誤永遠是同一個:<b>把沒反應解讀成免疫抑制不夠,再加碼</b>。</p>
     <p class="qlabel">第一層 · 有現成篩檢或預防,可在事前處理</p>
@@ -298,7 +345,7 @@ footer p{margin-bottom:6px} footer b{color:var(--ink)}
     <div class="hedge">本卡談的是<b>感染</b>。同一時間還要排除的<b>非感染性</b>原因(免疫相關硬化性膽管炎、ICI myocarditis 致鬱血肝、腫瘤浸潤／膽道阻塞)另見下方「同一時間別漏掉的鑑別診斷」表。</div>
   </div>
 
-  <div class="card">
+  <div class="card" data-k="matrix">
     <h2>🧭 互動三:各器官的「決定診斷」是什麼(點器官)</h2>
     <p>同一個病原,在不同器官的確診方式不一樣。<b>差別不在病原,在那個部位有沒有定植或潛伏</b> —— 這條原則決定了 PCR 到底算不算數。</p>
     <div class="seg" id="segOrg"></div>
@@ -306,7 +353,7 @@ footer p{margin-bottom:6px} footer b{color:var(--ink)}
     <div class="hedge" id="orgNote"></div>
   </div>
 
-  <div class="card">
+  <div class="card" data-k="principles">
     <h2 class="m">🔑 三條原則(比上面的表格重要)</h2>
     <ul>
       <li><b>部位決定 PCR 的效力。</b> <b>無菌腔室</b>(CSF)沒有定植 → PCR 本身就是決定診斷。<b>有定植或潛伏的部位</b>(BAL、腸黏膜、肝實質)→ PCR 只是線索,要靠免疫組化或培養。這一條就解釋了為什麼 <b>CMV 組織 PCR 不算確診、而 CSF 的 HSV PCR 算</b>。</li>
@@ -315,7 +362,7 @@ footer p{margin-bottom:6px} footer b{color:var(--ink)}
     </ul>
   </div>
 
-  <div class="card">
+  <div class="card" data-k="ddx">
     <h2>🔀 同一時間別漏掉的鑑別診斷</h2>
     <div class="tscroll">
     <table>
@@ -331,7 +378,7 @@ footer p{margin-bottom:6px} footer b{color:var(--ink)}
     <div class="hedge"><b>順序建議</b>:第二線免疫抑制劑<b>開打之前</b>就把上述基線留好。事後回頭補驗,常常已經分不清是本來就有還是後來發生。</div>
   </div>
 
-  <div class="card">
+  <div class="card" data-k="drugs">
     <h2 class="r">💊 抗病毒藥物:角色、劑量、毒性</h2>
     <div class="warn"><b>⚠ 先講最重要的一句:以下每一支在本頁的情境都是仿單外使用。</b>ganciclovir、valganciclovir、foscarnet、cidofovir 的核准劑量來自<b>愛滋病人的 CMV 視網膜炎</b>;maribavir、letermovir 來自<b>移植後族群</b>。<b>沒有任何一支的仿單涵蓋「ICI／irAE 免疫抑制下的 CMV 肝炎」</b>。劑量欄是仿單原文,用在此情境屬外推,務必照會感染科。</div>
     <div class="tscroll w">
@@ -384,7 +431,7 @@ footer p{margin-bottom:6px} footer b{color:var(--ink)}
     <div class="hedge"><b>台灣可及性本頁不標</b>:這些抗病毒藥不在健保第九節(抗癌瘤藥物)範圍內,本頁沒有權威的本機資料源可對帳,故<b>刻意留白</b>而非猜測。請依院內藥局與健保相關規定確認。</div>
   </div>
 
-  <div class="card">
+  <div class="card" data-k="interact">
     <h2 class="a">⚠ 與病人「正在用的」irAE 免疫抑制劑怎麼撞</h2>
     <div class="tscroll w">
     <table>
@@ -399,7 +446,7 @@ footer p{margin-bottom:6px} footer b{color:var(--ink)}
     <div class="hedge">irAE 免疫抑制劑<b>本身</b>的藥理(起效動力學、劑量、選藥邏輯)不在本頁重複 —— 見 <a href="../irae/" style="color:var(--platinum)">irAE 器官分級處置速查</a>的「免疫抑制劑藥理學」卡。本頁只處理<b>它們與抗病毒治療相撞的部分</b>。</div>
   </div>
 
-  <div class="card">
+  <div class="card" data-k="course">
     <h2>⏱ 療程、停藥與抗藥</h2>
     <ul>
       <li><b>療程長度由反應決定,不是固定天數。</b> 一般作法是治療到<b>症狀緩解且病毒量測不到</b>,並以<b>連續兩次陰性</b>作為停藥依據,總療程通常不短於兩週;器官侵犯性疾病常需更久。確切判準請依感染科與最新版共識指引(Kotton 2025)。</li>
@@ -411,13 +458,40 @@ footer p{margin-bottom:6px} footer b{color:var(--ink)}
     <div class="warn"><b>合併腹瀉一併處理</b>:CMV 腸炎與 irAE 結腸炎可並存,且是 anti-TNF 難治性腸炎的已知成因之一。<b>血中 PCR 對腸道更不敏感</b>,難治就排大腸鏡重切片。而且腸道受累時<b>口服 valganciclovir 的吸收本身就不可靠</b>,應走靜脈。</div>
   </div>
 
-  <div class="card">
+  <div class="card" data-k="evidence">
     <h2 class="m">📉 證據的邊界(這頁最該記住的一段)</h2>
     <ul>
       <li><b>直接證據幾乎都來自 ICI 結腸炎,不是肝炎。</b> 黑色素瘤單中心系列:370 人用過 ICI,41 人有 irColitis,其中 <b>5 人(12.2%)對類固醇加 infliximab 難治;這 5 人<u>全部</u>測到 CMV</b>。大腸切片與血漿 CMV DNA 在難治組顯著較常偵測到(p=0.005、p=0.002)。</li>
       <li><b>肝炎方面目前只有個案層級的證據</b>:已有 ICI 治療中發燒加肝指數上升、原本擬診 ICI 肝炎、<b>切片後病理證實為 CMV 肝炎</b>、抗病毒後完全緩解的報告。這正是本頁主張「先切片再加碼」的臨床原型。</li>
       <li><b>血清狀態不是風險預測工具</b>:黑色素瘤世代中 CMV IgG／IgM 與 ICI 肝炎<b>無關聯</b>;基線高 IgG 反而與較差的腫瘤結局相關(此為觀察性關聯,<b>不可</b>作為處置依據)。</li>
       <li><b>沒有任何指引為此族群訂出病毒量閾值或預防性抗病毒建議。</b> 本頁的分層是把既有證據與共識定義整理成可操作的順序,<b>不等於指引</b>。</li>
+    </ul>
+  </div>
+
+  <div class="card" data-k="clock">
+    <h2 class="a">🕑 這頁的過期時鐘(誰會過期、誰不會)</h2>
+    <p>內容一多,最大的風險不是亂,是<b>某張卡的來源改版了而沒人發現</b>。所以把過期風險寫出來,而不是等它自己壞掉。</p>
+    <p class="qlabel">會過期 · 綁在會改版的指引上</p>
+    <div class="tscroll">
+    <table>
+      <tr><th style="width:34%">卡</th><th style="width:34%">綁在哪份會改版的東西</th><th>改版時要回頭看什麼</th></tr>
+      <tr><td>三層檢查 · 決定診斷矩陣</td><td><b>CMV 共識定義</b>(CID 2024 更新)</td><td>「proven／probable」的判準、組織 PCR 的地位</td></tr>
+      <tr><td>療程、停藥與抗藥</td><td><b>Kotton 共識</b>(<i>Transplantation</i> 2025)</td><td>停藥判準、抗藥門檻</td></tr>
+      <tr><td>還有哪些感染(第一層)</td><td><b>ASCO／IDSA 預防指引</b>(2018)</td><td>PJP 預防門檻、族群範圍</td></tr>
+      <tr><td>懷疑度分層 · 鑑別診斷</td><td><b>ASCO／ESMO／AGA irAE 指引</b></td><td>irAE 分級與二線藥順序</td></tr>
+      <tr><td>抗病毒藥物 · HSV 肺</td><td><b>FDA 仿單</b>(以最新版為準)</td><td>劑量、腎功能調整、新適應症</td></tr>
+    </table>
+    </div>
+    <p class="qlabel">追蹤中 · 結果一出來就要改這頁</p>
+    <ul>
+      <li><b>HerpMV</b>(BAL HSV-1 陽性之肺炎,隨機 acyclovir vs 不介入,主要終點 day-30 死亡率)<b>—— 進行中</b>。結果會直接動到「肺的 HSV 屬於先證實再治」這個判斷。</li>
+      <li><b>Pritelivir NDA</b>(FDA 優先審查,<b>PDUFA 目標 2026 第四季</b>)。若核准,抗藥 HSV 那一列要更新;但其適應症預期限<b>黏膜皮膚</b>,不自動延伸到內臟型。</li>
+    </ul>
+    <p class="qlabel">不太會過期 · 機轉與原理</p>
+    <ul>
+      <li><b>為什麼免疫組化能當確診而組織 PCR 不行</b>(潛伏不表現 IE／early 抗原)。</li>
+      <li><b>部位決定 PCR 的效力</b>(無菌腔室 vs 有定植的部位)。</li>
+      <li><b>兩種診斷紀律</b>的邏輯(等待的代價 vs 亂治的代價)—— 個別藥物會變,這個取捨結構不會。</li>
     </ul>
   </div>
 
@@ -567,7 +641,94 @@ function drawOrg(){
 }
 function pickOrg(i){ orgCur=i; drawOrg(); }
 
-drawIgG(); drawTrig(); drawVerdict(); drawPCR(); drawOrg();
+var IMG=[
+ {k:"pjp",t:"PJP",col:"var(--t1)",
+  typ:"<b>雙側對稱瀰漫 GGO</b>,中央／肺門為主、<b>周邊留白</b>(非 HIV 族群約 <b>43%</b> 呈對稱、肺尖分布、周邊留白)。<b>囊泡／肺氣囊</b> → 氣胸風險。通常<b>無肋膜積水、無淋巴結腫</b>。",
+  plus:"純 GGO + 囊泡 + 無積水無淋巴結 → <b>PJP 往上調</b>。",
+  minus:"在「廣泛 GGO(&gt;50% 肺野)」的族群裡,<b>結節(p=0.015)、支氣管血管束增厚(p=0.001)、小葉間隔增厚(p=0.002)三者在 PJP 都顯著少見</b> → 看到它們就把 PJP 往下調。",
+  cav:"<b>非 HIV 的 PJP 不典型比例高</b>:可實變為主、可周邊分布,甚至有「只有小葉中心結節、無 GGO」的報告。<b>「不像 PJP」只能降低優先序,不能排除</b>。"},
+ {k:"cmv",t:"CMV",col:"var(--t2)",
+  typ:"<b>雙側混合 GGO + 界線不清的小葉中心小結節 + 實變</b>;<b>小葉間隔增厚與肋膜積水常伴隨</b>。",
+  plus:"GGO <b>併小葉中心小結節</b>(±積水)→ <b>CMV 往上調</b>。",
+  minus:"純 GGO、完全沒有結節 → 往 PJP 想。",
+  cav:"影像<b>從不確診</b> CMV 肺炎。確診要<b>肺組織 + 免疫組化</b>;<b>BAL PCR 單獨不足</b>(特異度與陽性預測值低),BAL 定量加相符臨床只到 probable。"},
+ {k:"hsv",t:"HSV",col:"var(--t3)",
+  typ:"<b>兩種主型</b>(n=25 免疫低下族群):<b>GGO 型 72%</b> —— 雙側、對稱、<b>隨機分布</b>;<b>實變型 52%</b> —— 雙側、<b>不對稱、支氣管周圍</b>。小葉間隔增厚 24%。",
+  plus:"<b>不對稱的支氣管周圍實變</b> → HSV 實變型(但<b>吸入與細菌也長這樣</b>)。",
+  minus:"沒有可靠的排除性所見 —— 這是四者中影像最不特異的一個。",
+  cav:"<b>影像改善慢不等於治療失敗</b>:實變為主型改善顯著較慢(p=0.023),但<b>結局與 GGO 型相當</b>(p=0.9),中位完全消散 <b>20 天</b>。而且呼吸道 HSV <b>本來就常是旁觀者</b>,影像更不能定因。"},
+ {k:"ici",t:"ICI 肺炎",col:"var(--marker)",
+  typ:"最常描述為 <b>OP(organizing pneumonia)型</b> —— 周邊或支氣管周圍實變、可見<b>反暈徵</b>;其次 <b>NSIP 樣 GGO</b>;較少 HP 樣與 DAD。",
+  plus:"在「廣泛 GGO」的族群裡,<b>小葉間隔增厚顯著常見於藥物性肺炎(p&lt;0.001)</b> → 在 ICI 病人身上把天平<b>往 ICI 肺炎推</b>。OP 型也<b>不典型於 PJP／CMV</b>。",
+  minus:"囊泡、或純中央 GGO 併周邊留白 → 往 PJP 想。",
+  cav:"<b>NSIP 樣 GGO 與 PJP／CMV 高度重疊</b> —— 落在這一型時影像就是分不出來,直接走 BAL。"}
+];
+var imgCur=0;
+function drawImg(){
+  document.getElementById("segImg").innerHTML=IMG.map(function(x,i){
+    return '<button class="'+(i===imgCur?'on':'')+'" onclick="pickImg('+i+')">'+x.t+'</button>';}).join("");
+  var x=IMG[imgCur];
+  document.getElementById("imgOut").innerHTML=
+    '<div class="vh" style="background:'+x.col+'">'+x.t+' 的影像</div><div class="vb">'+
+    '<div class="row"><div class="lb">典型所見</div><div class="vv">'+x.typ+'</div></div>'+
+    '<div class="row"><div class="lb">加分項</div><div class="vv">'+x.plus+'</div></div>'+
+    '<div class="row"><div class="lb">減分項</div><div class="vv">'+x.minus+'</div></div>'+
+    '<div class="row"><div class="lb">注意</div><div class="vv">'+x.cav+'</div></div></div>';
+}
+function pickImg(i){ imgCur=i; drawImg(); }
+
+var CARDMETA={
+ summary:{g:["core"],src:"本頁綜合",r:"low"},
+ discipline:{g:["always","core"],src:"Norvell 2007 · 治療取捨結構",r:"low"},
+ tier:{g:["core"],src:"ASCO／ESMO irAE 指引 · 本頁操作化",r:"high"},
+ pcr:{g:["core"],src:"Tandon 2017 · CID 2024",r:"med"},
+ threetest:{g:["core"],src:"CID 2024 共識定義",r:"high"},
+ perf:{g:["core"],src:"Tandon IBD 2017",r:"med"},
+ traps:{g:["core"],src:"本頁綜合",r:"low"},
+ multiorgan:{g:["core"],src:"Fernández 2024 · CID 2024",r:"med"},
+ matrix:{g:["core"],src:"CID 2024 · Lee 2025 · Tan 2016",r:"high"},
+ principles:{g:["always","core"],src:"原理(不綁指引)",r:"low"},
+ ihc:{g:["liver","gi"],src:"Plachter 1992 · Buyuk 2025 · 抗體原廠規格",r:"low"},
+ imgliver:{g:["liver"],src:"RadioGraphics · Kim 2013 · Okamoto 2024",r:"med"},
+ hsvliver:{g:["liver"],src:"Norvell Liver Transpl 2007",r:"med"},
+ ddx:{g:["liver"],src:"AGA 2021 · Berry 2023",r:"med"},
+ imglung:{g:["lung"],src:"Brodoefel 2012 · Kunihiro 2021 · Moon 2000 · Naidoo 2017",r:"med"},
+ hsvlung:{g:["lung"],src:"Luyt 2020 · Hammond 2024 · FDA 仿單 · pritelivir 審查中",r:"high"},
+ others:{g:["sys"],src:"Taplitz ASCO／IDSA 2018",r:"high"},
+ drugs:{g:["sys"],src:"FDA 仿單(以最新版為準)",r:"high"},
+ interact:{g:["sys"],src:"FDA 仿單 · 本頁綜合",r:"med"},
+ course:{g:["sys"],src:"Kotton Transplantation 2025",r:"high"},
+ evidence:{g:["evidence"],src:"本頁綜合",r:"low"},
+ clock:{g:["evidence"],src:"維護用",r:"low"}
+};
+var RKTXT={high:"會過期",med:"中",low:"穩定"};
+var ENTRY=[{k:"core",t:"總則"},{k:"liver",t:"肝"},{k:"lung",t:"肺"},{k:"gi",t:"腸道"},
+           {k:"sys",t:"全身·藥物"},{k:"evidence",t:"證據"},{k:"all",t:"全部／列印"}];
+var entryCur="core";
+function allCards(){ return Array.prototype.slice.call(document.querySelectorAll("[data-k]")); }
+function stampMeta(){
+  allCards().forEach(function(el){
+    var m=CARDMETA[el.getAttribute("data-k")]; if(!m) return;
+    var d=document.createElement("div"); d.className="cmeta";
+    d.innerHTML='<span class="rk '+m.r+'">'+RKTXT[m.r]+'</span><span>來源:'+m.src+'</span><span>更新 2026-09-06</span>';
+    el.appendChild(d);
+  });
+}
+function applyFilter(){
+  var shown=0, total=0;
+  allCards().forEach(function(el){
+    var m=CARDMETA[el.getAttribute("data-k")]; if(!m) return;
+    total++;
+    var vis = (entryCur==="all") || m.g.indexOf("always")>=0 || m.g.indexOf(entryCur)>=0;
+    el.hidden=!vis; if(vis) shown++;
+  });
+  document.getElementById("entrybar").innerHTML=
+    ENTRY.map(function(e){return '<button class="'+(e.k===entryCur?'on':'')+'" onclick="pickEntry(\''+e.k+'\')">'+e.t+'</button>';}).join("")+
+    '<span class="cnt">顯示 '+shown+' / '+total+' 張卡'+(entryCur==="all"?"":" · 需全文搜尋或列印請按「全部」")+'</span>';
+}
+function pickEntry(k){ entryCur=k; applyFilter(); window.scrollTo(0,0); }
+
+drawIgG(); drawTrig(); drawVerdict(); drawPCR(); drawOrg(); drawImg(); stampMeta(); applyFilter();
 </script>
 </body>
 </html>
