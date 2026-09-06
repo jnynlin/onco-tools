@@ -97,6 +97,8 @@ main{max-width:820px;margin:0 auto;padding:16px 20px}
 .regbtns button{padding:5px 10px;border:1px solid var(--rule);border-radius:3px;background:transparent;
   color:var(--ink-soft);font-size:.8rem;cursor:pointer;font-family:var(--mono)}
 .regbtns button.on{background:var(--marker);color:#fff;border-color:var(--marker)}
+.tbl{overflow-x:auto;margin:6px 0}
+.tbl table{min-width:520px}
 .cnote{font-size:.78rem;color:var(--ink-soft);margin-top:10px;border-top:1px solid var(--rule-soft);padding-top:8px}
 .cnote b{color:var(--resist)}
 .wk{font-size:.84rem;color:var(--ink-soft);background:var(--platinum-bg);border-radius:var(--radius);
@@ -119,6 +121,12 @@ main{max-width:820px;margin:0 auto;padding:16px 20px}
 footer{max-width:820px;margin:20px auto 0;padding:14px 20px 0;font-size:.74rem;color:var(--ink-soft);
   border-top:1px solid var(--rule)}
 .hid{display:none!important}
+.chip.sec{border-style:dashed;font-weight:600}
+.cmeta{margin-top:11px;padding-top:8px;border-top:1px dashed var(--rule);font-family:var(--mono);
+  font-size:10px;color:var(--ink-soft);display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.rk{padding:1px 6px;border-radius:3px;color:#fff;font-size:9.5px;letter-spacing:.04em}
+.rk.high{background:var(--resist)} .rk.med{background:var(--amber)} .rk.low{background:var(--platinum)}
+@media print{ [data-sec],.organ{display:block!important} .organ .obody{display:block!important} .ctrl{display:none} }
 @media print{
   .ctrl{display:none!important}
   .obody{display:block!important}
@@ -133,15 +141,15 @@ footer{max-width:820px;margin:20px auto 0;padding:14px 20px 0;font-size:.74rem;c
   <div class="eyebrow">Onco-Tools · Immune-Related Adverse Events</div>
   <h1>irAE 器官分級處置速查</h1>
   <div class="sub">免疫檢查點抑制劑相關不良事件 —— CTCAE v5 分級 × ICI 處置 × 類固醇/二線用藥,依器官系統彙整</div>
-  <div class="meta"><b>架構</b> ASCO 2021 · NCCN · ESMO 2022 &nbsp;|&nbsp; <b>整理</b> 2026-08</div>
-  <div class="xlink">↔ 肝功能異常的 R 值分型與減量判準見 <a href="../liver-lab/">肝毒性判讀計算機</a>;藥物毒殺型肺損傷見 <a href="../adc-ild/">ADC 相關急性 ILD 速查</a>;免疫抑制中如何確認合併 CMV 見 <a href="../cmv-irae/">irAE 免疫抑制下的 CMV 確認與排除</a></div>
+  <div class="meta"><b>架構</b> ASCO 2021 · NCCN · ESMO 2022 &nbsp;|&nbsp; <b>整理</b> 2026-08 · <b>結構與過期標記更新</b> 2026-09-06</div>
+  <div class="xlink">↔ 肝功能異常的 R 值分型與減量判準見 <a href="../liver-lab/">肝毒性判讀計算機</a>;藥物毒殺型肺損傷見 <a href="../adc-ild/">ADC 相關急性 ILD 速查</a>;免疫抑制打開的感染(CMV／HSV／PJP…)見 <a href="../cmv-irae/">irAE 免疫抑制下的機會性感染</a></div>
 </header>
 <div class="ctrl"><div class="ctrl-in">
   <input id="search" type="search" placeholder="搜尋:器官、藥名、關鍵字(如 infliximab、colitis、心肌炎)">
   <div id="chips"></div>
 </div></div>
 <main>
-  <div class="principles">
+  <div class="principles" data-sec="core" data-always="1">
     <h2>⚖ 共通原則(先讀)</h2>
     <li><b>類固醇前先排除感染</b>(糞便 C. diff/CMV、痰液/PJP、病毒性肝炎)—— 類固醇會蓋掉感染表現</li>
     <li>G2 起暫停 ICI;G3–4 多數器官<b>永久停用</b>(內分泌補足荷爾蒙後為主要例外)</li>
@@ -151,7 +159,7 @@ footer{max-width:820px;margin:20px auto 0;padding:14px 20px 0;font-size:.74rem;c
     <li>Combo(CTLA-4+PD-1)irAE <b>更早、更重、更多器官</b> —— 監測閾值下修</li>
     <li>Rechallenge:心肌炎/神經/G4(非內分泌)原則不再挑戰;G2–3 緩解後個案評估(復發約 25–30%)</li>
   </div>
-  <div class="cmp">
+  <div class="cmp" data-sec="inc">
     <h2>📊 CTLA-4 vs PD-1(±PD-L1)vs 併用 —— 發生率總覽</h2>
     <table>
       <tr><th></th><th>CTLA-4 單方<br>(ipilimumab)</th><th>PD-1/PD-L1 單方</th><th>併用<br>(ipi+nivo)</th></tr>
@@ -161,7 +169,7 @@ footer{max-width:820px;margin:20px auto 0;padding:14px 20px 0;font-size:.74rem;c
     </table>
     <div class="sig"><b>類別特徵(signature)</b>:CTLA-4 → <b>結腸炎、hypophysitis、皮疹</b>(劑量依賴);PD-1 → <b>肺炎、甲狀腺、白斑、T1DM</b>(劑量無關);併用 → 全器官 ↑、肝炎與腸胃毒性最放大。內分泌中 hypophysitis 幾乎專屬 CTLA-4/併用,甲狀腺異常以 PD-1 為主 —— 兩類機轉不同(CTLA-4 = 中樞 T 細胞活化閾值;PD-1 = 周邊耐受)。各器官細項見下方各卡「發生率」列。</div>
   </div>
-  <div class="conv">
+  <div class="conv" data-sec="eq">
     <h2>🧮 類固醇等效換算(glucocorticoid equivalence)</h2>
     <div class="anchor">錨點:prednisolone 5 mg ≡ methylprednisolone 4 mg ≡ dexamethasone 0.75 mg ≡ hydrocortisone 20 mg</div>
     <div class="crow">
@@ -194,7 +202,7 @@ footer{max-width:820px;margin:20px auto 0;padding:14px 20px 0;font-size:.74rem;c
     </div>
   </div>
 
-  <div class="conv">
+  <div class="conv" data-sec="drugs">
     <h2>💊 免疫抑制劑藥理學(irAE 二線 / steroid-sparing)</h2>
     <div style="font-size:.86rem;color:var(--ink-soft);margin-bottom:10px">類固醇無效或需減量時的第二線藥物,依「作用機轉」分類。共通紀律:上二線前先排除感染;起效速度決定重症用藥選擇;多數藥有 HBV/TB/感染監測需求。</div>
 
@@ -226,6 +234,20 @@ footer{max-width:820px;margin:20px auto 0;padding:14px 20px 0;font-size:.74rem;c
       <tr><td style="border:1px solid var(--rule-soft);padding:5px 8px"><b>Cyclophosphamide</b></td><td style="border:1px solid var(--rule-soft);padding:5px 8px">烷化劑 → 廣譜免疫抑制</td><td style="border:1px solid var(--rule-soft);padding:5px 8px">1–2 週</td><td style="border:1px solid var(--rule-soft);padding:5px 8px">極難治(神經、肺炎、血管炎)</td><td style="border:1px solid var(--rule-soft);padding:5px 8px">骨髓抑制、出血性膀胱炎、生育</td></tr>
     </table></div>
     <div class="cnote"><b>選藥邏輯速記</b>:結腸炎→infliximab 或 vedolizumab(後者腸道選擇性、抗腫瘤疑慮小);<b>肝炎→MMF(不用 infliximab)</b>;心肌炎→abatacept±ruxolitinib(+ATG);神經(GBS/MG)→IVIG/PLEX;關節炎→TNFi/tocilizumab;血液(AIHA/ITP)→IVIG/rituximab;皮膚(BP)→rituximab。<b>橫向共通疑慮</b>:所有二線都是在「抑制免疫」與「保留抗腫瘤療效」間權衡,abatacept/JAK 因機轉直接對沖 ICI 而疑慮最大,vedolizumab 因局部作用疑慮最小。</div>
+  </div>
+
+  <div class="conv" data-sec="clock">
+    <h2>🕑 這頁的過期時鐘(誰會過期、誰不會)</h2>
+    <div style="font-size:.86rem;color:var(--ink-soft);margin-bottom:10px">本頁大部分內容綁在<b>會改版的指引</b>上。把過期風險寫出來,而不是等它自己壞掉。</div>
+    <div class="tbl"><table>
+      <tr><th style="width:30%">區塊</th><th style="width:32%">綁在哪份會改版的東西</th><th>改版時要回頭看什麼</th></tr>
+      <tr><td>各器官分級與處置</td><td><b>ASCO 2021 · NCCN · ESMO 2022</b> irAE 指引</td><td>CTCAE 分級門檻、ICI 續用/永久停用的判準、各器官二線藥順序</td></tr>
+      <tr><td>發生率總覽</td><td>原始試驗與統合分析</td><td>新藥(含雙特異性、新組合)加入後的分母改變</td></tr>
+      <tr><td>免疫抑制劑藥理學</td><td><b>FDA 仿單</b>(以最新版為準)</td><td>劑量、監測需求、新適應症</td></tr>
+      <tr><td>類固醇等效換算</td><td>藥理常數</td><td><b>幾乎不會變</b> —— 錨點是固定的等效關係</td></tr>
+      <tr><td>共通原則</td><td>臨床取捨結構</td><td><b>幾乎不會變</b> —— 個別藥物會換,「先排除感染、G2 暫停、48–72h 無效上二線」這個結構不會</td></tr>
+    </table></div>
+    <div class="cnote"><b>互補頁的過期時鐘另計</b>:免疫抑制期間的機會性感染見 <a href="../cmv-irae/" style="color:var(--platinum)">irAE 免疫抑制下的機會性感染</a>(該頁自帶過期時鐘,並追蹤 HerpMV 等進行中試驗)。</div>
   </div>
 
   <div id="organs"></div>
@@ -345,19 +367,30 @@ function render(){
       '<div class="refr"><b>難治/二線</b>|'+o.rf+'</div>'+
       '<div class="pearl">💡 <b>Pearl</b>:'+o.pl+'</div></div></div>';
   }).join("");
-  chipsEl.innerHTML='<span class="chip on" data-id="all" onclick="chip(\'all\')">全部</span>'+
+  chipsEl.innerHTML='<span class="chip on" data-id="all" onclick="chip(\'all\')">全部／列印</span>'+
+    SECS.map(function(sc){return '<span class="chip sec" data-id="'+sc[0]+'" onclick="chip(\''+sc[0]+'\')">'+sc[1]+'</span>';}).join("")+
     IRAE.map(function(o){return '<span class="chip" data-id="'+o.id+'" onclick="chip(\''+o.id+'\')">'+o.ic+o.nm+'</span>';}).join("");
 }
 function tg(id){ document.getElementById("o-"+id).classList.toggle("open"); }
+var SECS=[["inc","📊 發生率"],["eq","🧮 類固醇換算"],["drugs","💊 二線藥理"],["clock","🕑 過期時鐘"]];
+function isSec(id){ return SECS.some(function(x){return x[0]===id;}); }
 function chip(id){
   activeChip=id;
   document.querySelectorAll(".chip").forEach(function(c){c.classList.toggle("on",c.dataset.id===id);});
+  // 靜態區塊:共通原則永遠顯示(data-always),其餘依選取
+  document.querySelectorAll("[data-sec]").forEach(function(el){
+    var keep=(id==="all")||el.getAttribute("data-always")==="1"||el.getAttribute("data-sec")===id;
+    el.classList.toggle("hid",!keep);
+  });
+  // 器官卡
   document.querySelectorAll(".organ").forEach(function(o){
     var show=(id==="all")||("o-"+id===o.id);
     o.classList.toggle("hid",!show);
-    o.classList.toggle("open",id!=="all"&&"o-"+id===o.id);
+    o.classList.toggle("open",id!=="all"&&!isSec(id)&&"o-"+id===o.id);
   });
-  if(id!=="all") document.getElementById("o-"+id).scrollIntoView({behavior:"smooth",block:"start"});
+  var t=(id==="all"||isSec(id))?null:document.getElementById("o-"+id);
+  if(t) t.scrollIntoView({behavior:"smooth",block:"start"});
+  else window.scrollTo({top:0,behavior:"smooth"});
 }
 document.getElementById("search").addEventListener("input",function(){
   var q=this.value.trim().toLowerCase();
@@ -366,8 +399,37 @@ document.getElementById("search").addEventListener("input",function(){
     o.classList.toggle("hid",!hit);
     if(q&&hit)o.classList.add("open");
   });
+  // 靜態區塊一起搜(否則搜 infliximab 找不到「二線藥理學」那張表)
+  document.querySelectorAll("[data-sec]").forEach(function(el){
+    var hit=!q||el.getAttribute("data-always")==="1"||el.textContent.toLowerCase().indexOf(q)>=0;
+    el.classList.toggle("hid",!hit);
+  });
+  if(q){ document.querySelectorAll(".chip").forEach(function(c){c.classList.remove("on");}); activeChip=null; }
 });
 render();
+
+// ---- 卡層級過期標記(此 kit 的決策包早有 guideline+updated,參考工具下放)----
+var SECMETA={
+ core:["low","臨床取捨結構"],
+ inc:["med","原始試驗與統合分析"],
+ eq:["low","藥理常數(等效關係固定)"],
+ drugs:["high","FDA 仿單(以最新版為準)"],
+ clock:["low","維護用"]
+};
+var RKTXT={high:"會過期",med:"中",low:"穩定"};
+(function stampSections(){
+  document.querySelectorAll("[data-sec]").forEach(function(el){
+    var m=SECMETA[el.getAttribute("data-sec")]; if(!m) return;
+    var d=document.createElement("div"); d.className="cmeta";
+    d.innerHTML='<span class="rk '+m[0]+'">'+RKTXT[m[0]]+'</span><span>來源:'+m[1]+'</span><span>更新 2026-09-06</span>';
+    el.appendChild(d);
+  });
+  document.querySelectorAll(".organ .obody").forEach(function(el){
+    var d=document.createElement("div"); d.className="cmeta";
+    d.innerHTML='<span class="rk high">會過期</span><span>來源:ASCO 2021 · NCCN · ESMO 2022</span><span>更新 2026-09-06</span>';
+    el.appendChild(d);
+  });
+})();
 
 // ---- 類固醇等效換算(以 prednisolone 5 mg 為錨) ----
 var EQ = {pred:{f:5, n:"Prednisolone"}, mp:{f:4, n:"Methylprednisolone"},
