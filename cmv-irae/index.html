@@ -83,6 +83,11 @@ th{background:var(--paper);font-family:var(--mono);font-size:11px;letter-spacing
   color:var(--ink-soft);font-family:var(--mono);font-size:.8rem;cursor:pointer;line-height:1.3}
 .entrybar button.on{background:var(--ink);border-color:var(--ink);color:#fff}
 .entrybar .cnt{font-family:var(--mono);font-size:10.5px;color:var(--ink-soft);margin-left:auto;padding-left:8px}
+.lungwrap{display:flex;gap:14px;align-items:flex-start;flex-wrap:wrap;margin:2px 0 4px}
+.lungdiag{width:210px;height:auto;flex:0 0 auto;background:var(--paper);border:1px solid var(--rule);border-radius:var(--radius)}
+.lungcap{flex:1 1 210px;font-size:.82rem;color:var(--ink-soft);line-height:1.6}
+.lungcap b{color:var(--ink)}
+.lungcap .lgd{font-family:var(--mono);font-size:10px;letter-spacing:.05em;text-transform:uppercase;color:var(--platinum);display:block;margin-bottom:4px}
 .cmeta{margin-top:11px;padding-top:8px;border-top:1px dashed var(--rule);font-family:var(--mono);
   font-size:10px;color:var(--ink-soft);display:flex;gap:8px;flex-wrap:wrap;align-items:center}
 .rk{padding:1px 6px;border-radius:3px;color:#fff;font-size:9.5px;letter-spacing:.04em}
@@ -664,12 +669,59 @@ var IMG=[
   cav:"<b>NSIP 樣 GGO 與 PJP／CMV 高度重疊</b> —— 落在這一型時影像就是分不出來,直接走 BAL。"}
 ];
 var imgCur=0;
+function lungSVG(k,col,overlay){
+  var ru="#C9D5D6", ink="#4A6068";
+  return '<svg class="lungdiag" viewBox="0 0 200 134" role="img" aria-label="\u8ef8\u4f4d\u80f8\u90e8\u793a\u610f\u5716">'+
+   '<defs><clipPath id="lgL_'+k+'"><ellipse cx="58" cy="62" rx="33" ry="43"/></clipPath>'+
+   '<clipPath id="lgR_'+k+'"><ellipse cx="142" cy="62" rx="33" ry="43"/></clipPath></defs>'+
+   '<ellipse cx="100" cy="66" rx="95" ry="60" fill="none" stroke="'+ru+'" stroke-width="1.5"/>'+
+   '<ellipse cx="58" cy="62" rx="33" ry="43" fill="#FFFFFF" stroke="'+ru+'" stroke-width="1.2"/>'+
+   '<ellipse cx="142" cy="62" rx="33" ry="43" fill="#FFFFFF" stroke="'+ru+'" stroke-width="1.2"/>'+
+   overlay+
+   '<ellipse cx="100" cy="70" rx="12" ry="26" fill="'+ink+'" opacity=".16"/>'+
+   '<circle cx="100" cy="115" r="8" fill="none" stroke="'+ru+'" stroke-width="1.2"/>'+
+   '<text x="100" y="131" text-anchor="middle" font-size="7.5" fill="'+ink+'" font-family="monospace">\u8ef8\u4f4d\u793a\u610f\u00b7\u975e\u771f\u5be6\u5f71\u50cf</text></svg>';
+}
+function ov(k,col){
+  var L='url(#lgL_'+k+')', R='url(#lgR_'+k+')';
+  if(k==="pjp"){ return '<g clip-path="'+L+'"><ellipse cx="82" cy="62" rx="24" ry="40" fill="'+col+'" opacity=".42"/></g>'+
+    '<g clip-path="'+R+'"><ellipse cx="118" cy="62" rx="24" ry="40" fill="'+col+'" opacity=".42"/></g>'+
+    '<circle cx="46" cy="40" r="6" fill="#FFFFFF" stroke="'+col+'" stroke-width="1.6"/>'+
+    '<circle cx="62" cy="30" r="4.2" fill="#FFFFFF" stroke="'+col+'" stroke-width="1.6"/>'+
+    '<circle cx="154" cy="38" r="5.5" fill="#FFFFFF" stroke="'+col+'" stroke-width="1.6"/>'; }
+  if(k==="cmv"){ var pts=[[46,42],[62,52],[52,72],[68,84],[40,60],[74,38],[132,44],[148,58],[136,76],[152,86],[126,66],[158,40]];
+    return '<g clip-path="'+L+'"><ellipse cx="58" cy="62" rx="31" ry="40" fill="'+col+'" opacity=".22"/></g>'+
+    '<g clip-path="'+R+'"><ellipse cx="142" cy="62" rx="31" ry="40" fill="'+col+'" opacity=".22"/></g>'+
+    '<g fill="'+col+'">'+pts.map(function(c){return '<circle cx="'+c[0]+'" cy="'+c[1]+'" r="2.6"/>';}).join("")+'</g>'; }
+  if(k==="hsv"){ return '<g clip-path="'+L+'"><ellipse cx="58" cy="62" rx="33" ry="43" fill="'+col+'" opacity=".18"/>'+
+    '<ellipse cx="74" cy="74" rx="18" ry="22" fill="'+col+'" opacity=".62"/>'+
+    '<ellipse cx="68" cy="44" rx="11" ry="12" fill="'+col+'" opacity=".5"/></g>'+
+    '<g clip-path="'+R+'"><ellipse cx="142" cy="62" rx="33" ry="43" fill="'+col+'" opacity=".18"/></g>'; }
+  return '<g clip-path="'+L+'"><ellipse cx="58" cy="62" rx="33" ry="43" fill="'+col+'" opacity=".5"/>'+
+    '<ellipse cx="58" cy="62" rx="24" ry="33" fill="#FFFFFF"/></g>'+
+    '<g clip-path="'+R+'"><ellipse cx="142" cy="62" rx="33" ry="43" fill="'+col+'" opacity=".5"/>'+
+    '<ellipse cx="142" cy="62" rx="24" ry="33" fill="#FFFFFF"/></g>'+
+    '<circle cx="142" cy="52" r="11" fill="#FFFFFF" stroke="'+col+'" stroke-width="4.5"/>'+
+    '<circle cx="142" cy="52" r="6" fill="'+col+'" opacity=".16"/>';
+}
+var SVGCOL={pjp:"#0E6E75",cmv:"#8A6D00",hsv:"#9A4B22",ici:"#5A4A86"};
+var IMGCAP={
+ pjp:"<b>\u4e2d\u592e\uff0f\u80ba\u9580\u70ba\u4e3b\u7684 GGO\uff0c\u5468\u908a\u7559\u767d</b>\uff08\u5716\u4e2d\u5169\u80ba\u5167\u5074\u67d3\u8272\u3001\u5916\u7de3\u7559\u767d\uff09\uff0c\u52a0\u4e0a<b>\u4e0a\u80ba\u91ce\u56ca\u6ce1</b>\uff08\u7a7a\u5fc3\u5708\uff09\u3002\u901a\u5e38<b>\u7121\u808b\u819c\u7a4d\u6c34\u3001\u7121\u6de1\u5df4\u7d50\u816b</b>\u3002",
+ cmv:"<b>GGO \u5e95\u8272 + \u6563\u5e03\u7684\u5c0f\u8449\u4e2d\u5fc3\u5c0f\u7d50\u7bc0</b>\uff08\u5716\u4e2d\u5c0f\u9ede\uff09\u3002\u7d50\u7bc0\u662f\u8207 PJP \u7684<b>\u4e3b\u8981\u5206\u91ce</b>\u2014\u2014 \u7d14 GGO \u7121\u7d50\u7bc0\u6642\u5f80 PJP \u60f3\u3002",
+ hsv:"<b>\u4e0d\u5c0d\u7a31</b>\u662f\u91cd\u9ede\uff1a\u5716\u4e2d\u4e00\u5074\u6709<b>\u652f\u6c23\u7ba1\u5468\u570d\u7684\u5be6\u8b8a</b>\uff08\u6df1\u8272\u5718\u584a\uff09\uff0c\u5c0d\u5074\u50c5\u6de1 GGO\u3002\u53e6\u4e00\u4e3b\u578b\u70ba\u96d9\u5074\u5c0d\u7a31\u3001<b>\u96a8\u6a5f\u5206\u5e03</b>\u7684 GGO\u3002",
+ ici:"<b>\u5468\u908a\uff0f\u80f8\u819c\u4e0b\u5e36\u72c0\u5be6\u8b8a</b>\uff08\u5716\u4e2d\u6cbf\u5916\u7de3\u7684\u74b0\u5e36\uff09= OP \u578b\uff0c\u52a0\u4e0a<b>\u53cd\u6688\u5fb5</b>\uff08\u5716\u4e2d\u74b0\u72c0\u9ad8\u5bc6\u5ea6\u3001\u4e2d\u592e\u8f03\u6de1\uff09\u3002"
+};
 function drawImg(){
   document.getElementById("segImg").innerHTML=IMG.map(function(x,i){
     return '<button class="'+(i===imgCur?'on':'')+'" onclick="pickImg('+i+')">'+x.t+'</button>';}).join("");
   var x=IMG[imgCur];
   document.getElementById("imgOut").innerHTML=
     '<div class="vh" style="background:'+x.col+'">'+x.t+' 的影像</div><div class="vb">'+
+    '<div class="row"><div class="lb">型態示意</div><div class="vv"><div class="lungwrap">'+
+      lungSVG(x.k,SVGCOL[x.k],ov(x.k,SVGCOL[x.k]))+
+      '<div class="lungcap"><span class="lgd">Schematic · 示意圖,不是真實 CT</span>'+IMGCAP[x.k]+
+      '<br><br>示意圖只教<b>分布</b> —— 這張卡的加減分項全是分布特徵;<b>質地辨識</b>(GGO 實際長什麼樣)仍須對照真實影像。</div>'+
+    '</div></div></div>'+
     '<div class="row"><div class="lb">典型所見</div><div class="vv">'+x.typ+'</div></div>'+
     '<div class="row"><div class="lb">加分項</div><div class="vv">'+x.plus+'</div></div>'+
     '<div class="row"><div class="lb">減分項</div><div class="vv">'+x.minus+'</div></div>'+
