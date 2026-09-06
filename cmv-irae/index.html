@@ -1,0 +1,392 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>irAE 免疫抑制下的 CMV 確認與排除</title>
+<style>
+:root{
+  --ink:#0C1F26; --ink-soft:#4A6068; --paper:#EDF1F1; --surface:#FFFFFF;
+  --rule:#C9D5D6; --rule-soft:#E4EAEA;
+  --platinum:#0E6E75; --resist:#9A4B22; --marker:#5A4A86; --amber:#8A6D00;
+  --platinum-bg:#EAF3F3; --resist-bg:#F6EEE9; --marker-bg:#F6F5FA; --test-bg:#F6F2E4;
+  --t0:#4A6068; --t1:#0E6E75; --t2:#8A6D00; --t3:#9A4B22;
+  --shadow:0 1px 0 rgba(12,31,38,.06), 0 12px 30px -18px rgba(12,31,38,.35);
+  --serif:"Noto Serif TC",Georgia,serif;
+  --sans:"Noto Sans TC","Helvetica Neue",Arial,sans-serif;
+  --mono:"IBM Plex Mono",Menlo,monospace;
+  --radius:4px;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{-webkit-text-size-adjust:100%;scroll-behavior:smooth}
+body{background:var(--paper);color:var(--ink);font-family:var(--sans);
+  font-size:16px;line-height:1.7;-webkit-font-smoothing:antialiased;padding-bottom:70px}
+.masthead{max-width:820px;margin:0 auto;padding:38px 20px 18px;border-bottom:2px solid var(--ink)}
+.eyebrow{font-family:var(--mono);font-size:11.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--platinum);margin-bottom:8px}
+.masthead h1{font-family:var(--serif);font-weight:900;font-size:clamp(24px,5vw,36px);line-height:1.15}
+.masthead .sub{margin-top:8px;color:var(--ink-soft);font-size:14.5px}
+.masthead .meta{margin-top:10px;font-family:var(--mono);font-size:11px;color:var(--ink-soft)}
+.masthead .xlink{margin-top:8px;font-size:12.5px}
+.masthead .xlink a{color:var(--platinum);text-decoration:none;border-bottom:1px solid var(--rule)}
+main{max-width:820px;margin:0 auto;padding:16px 20px}
+.principles{background:var(--test-bg);border:1px solid var(--rule);border-left:4px solid var(--amber);
+  border-radius:var(--radius);padding:14px 16px;margin-bottom:18px;font-size:.9rem;box-shadow:var(--shadow)}
+.principles h2{font-family:var(--mono);font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:var(--amber);margin-bottom:8px}
+.principles li{margin-left:1.2em;margin-bottom:5px;color:var(--ink-soft)}
+.principles b{color:var(--ink)}
+.card{background:var(--surface);border:1px solid var(--rule);border-radius:var(--radius);
+  padding:14px 16px;margin-bottom:18px;box-shadow:var(--shadow);font-size:.88rem}
+.card h2{font-family:var(--mono);font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:var(--platinum);margin-bottom:10px}
+.card h2.m{color:var(--marker)} .card h2.r{color:var(--resist)} .card h2.a{color:var(--amber)}
+.card p{margin-bottom:8px} .card b{color:var(--ink)}
+.card ul{margin:4px 0 8px 1.2em} .card li{margin-bottom:5px;color:var(--ink-soft)}
+.card li b{color:var(--ink)}
+.qlabel{font-family:var(--mono);font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-soft);margin:10px 0 6px}
+.seg{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:6px}
+.seg button{flex:1 1 90px;padding:8px 6px;border:1px solid var(--rule);border-radius:var(--radius);
+  background:transparent;color:var(--ink-soft);font-family:var(--mono);font-size:.82rem;cursor:pointer;line-height:1.35}
+.seg button.on{background:var(--platinum);border-color:var(--platinum);color:#fff}
+.trig{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:6px;margin-bottom:6px}
+.trig label{display:flex;gap:8px;align-items:flex-start;border:1px solid var(--rule);border-radius:var(--radius);
+  padding:8px 10px;font-size:.83rem;color:var(--ink-soft);cursor:pointer;background:transparent;line-height:1.45}
+.trig label.on{background:var(--platinum-bg);border-color:var(--platinum);color:var(--ink)}
+.trig input{margin-top:4px;flex:0 0 auto;accent-color:var(--platinum)}
+.trig .tw{font-family:var(--mono);font-size:10px;color:var(--resist);display:block}
+.verdict{border:1px solid var(--rule);border-radius:var(--radius);margin-top:12px;overflow:hidden}
+.verdict .vh{padding:9px 13px;color:#fff;font-family:var(--mono);font-size:.85rem;letter-spacing:.04em}
+.verdict .vb{padding:4px 13px 11px}
+.verdict .row{display:flex;gap:10px;padding:9px 0;border-top:1px solid var(--rule-soft);align-items:flex-start}
+.verdict .row:first-child{border-top:none}
+.verdict .lb{flex:0 0 74px;font-family:var(--mono);font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-soft);padding-top:3px}
+.verdict .vv{flex:1;font-size:.87rem}
+.verdict .vv ul{margin:2px 0 0 1.1em} .verdict .vv li{margin-bottom:4px}
+.verdict .vv b{color:var(--ink)}
+table{width:100%;border-collapse:collapse;margin:6px 0;font-size:.83rem}
+th,td{border:1px solid var(--rule-soft);padding:6px 8px;text-align:left;vertical-align:top}
+th{background:var(--paper);font-family:var(--mono);font-size:11px;letter-spacing:.05em}
+.data{display:flex;flex-wrap:wrap;gap:6px;margin:8px 0}
+.data .cell{flex:1 1 30%;min-width:150px;background:var(--paper);border:1px solid var(--rule);border-radius:var(--radius);padding:7px 10px;font-size:.82rem}
+.data .cell .num{font-weight:700;font-size:1.15rem;color:var(--platinum);display:block}
+.data .cell .lb{font-family:var(--mono);font-size:10px;letter-spacing:.06em;text-transform:uppercase;color:var(--ink-soft)}
+.hedge{font-size:.8rem;color:var(--ink-soft);background:var(--marker-bg);border-radius:var(--radius);padding:8px 11px;margin-top:8px}
+.hedge b{color:var(--marker)}
+.warn{font-size:.85rem;background:var(--resist-bg);border-left:4px solid var(--resist);border-radius:var(--radius);padding:9px 12px;margin-top:8px}
+.warn b{color:var(--resist)}
+.dz{font-family:var(--mono);font-size:.79rem;color:var(--platinum);display:block;line-height:1.6;white-space:nowrap}
+.tscroll{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:6px 0}
+.tscroll table{margin:0;min-width:600px}
+.tscroll.w table{min-width:820px}
+@media (max-width:600px){.tscroll::after{content:'← 左右滑動看完整表格';display:block;font-family:var(--mono);font-size:10px;color:var(--ink-soft);padding:4px 0 0}}
+.ref{font-family:var(--mono);font-size:10.5px;color:var(--ink-soft)}
+footer{max-width:820px;margin:20px auto 0;padding:14px 20px 0;font-size:.74rem;color:var(--ink-soft);border-top:1px solid var(--rule)}
+footer p{margin-bottom:6px} footer b{color:var(--ink)}
+@media print{ body{background:#fff;padding-bottom:0} .card,.principles{box-shadow:none} }
+</style>
+</head>
+<body>
+<header class="masthead">
+  <div class="eyebrow">Onco-Tools · CMV during irAE Immunosuppression</div>
+  <h1>irAE 免疫抑制下的 CMV 確認與排除</h1>
+  <div class="sub">用類固醇／MMF／infliximab 壓 irAE 時,怎麼確認有沒有合併 <b>CMV 肝炎</b>(及並存的 CMV 腸炎)。三句話:<b>血中 PCR 是篩檢不是確診</b>、<b>確診靠組織加免疫組化</b>、<b>影像只能排除不能確認</b>。</div>
+  <div class="meta"><b>資料</b> CID 2024 共識定義 · Franklin EJC 2017 · Tandon IBD 2017 統合分析 · ASCO 2021 / ESMO 2022 / AGA 2021 &nbsp;|&nbsp; FDA 仿單(6 支抗病毒藥劑量) &nbsp;|&nbsp; <b>整理</b> 2026-09-06(PMID 與劑量逐筆核實)</div>
+  <div class="xlink">↔ <a href="../irae/">irAE 器官分級處置速查</a> &nbsp;·&nbsp; <a href="../liver-lab/">肝毒性判讀:R 值分型 × 分級</a></div>
+</header>
+<main>
+
+  <div class="principles">
+    <h2>⚖ 一眼摘要(先讀)</h2>
+    <li><b>陰性不能排除,陽性不能確認。</b> 血中 PCR 特異度高但敏感度差;組織侵犯可以在血中低量甚至測不到時發生。</li>
+    <li><b>確診 = 該器官組織中以組織病理、免疫組化或原位雜交測到 CMV。</b> 依國際共識定義,<b>組織 PCR 本身不算</b>確診,因為分不出潛伏與侵犯。</li>
+    <li><b>切片申請單要主動寫「CMV 免疫組化」。</b> 只做 H&amp;E 找 owl-eye inclusion 會漏掉大部分。</li>
+    <li><b>不是二選一,而是先後。</b> 最常見的真實情境是 irAE 肝炎在先、免疫抑制把 CMV 壓出來在後 —— 兩者並存,irAE 的免疫抑制通常不能停。</li>
+    <li><b>影像只用來排除。</b> CMV 肝炎與 ICI 肝炎的影像所見幾乎完全重疊,而且輕症兩者都可以是正常影像。</li>
+  </div>
+
+  <div class="card">
+    <h2>🎚 互動一:懷疑度分層 → 現在該做什麼</h2>
+    <p class="qlabel">CMV IgG 血清狀態</p>
+    <div class="seg" id="segIgG"></div>
+    <p class="qlabel">臨床觸發器(勾選所有符合的)</p>
+    <div class="trig" id="trig"></div>
+    <div class="verdict" id="verdict"></div>
+    <div class="hedge"><b>分層原則</b>:取「最高階觸發器」決定層級,不是計分。難治與反彈之所以是最高階,是因為它們同時代表「目前的免疫抑制沒解決問題」與「累積免疫抑制已經夠深」—— 這正是 CMV 的窗口。</div>
+  </div>
+
+  <div class="card">
+    <h2>🧪 互動二:血中定量 PCR 回來了,怎麼讀</h2>
+    <div class="seg" id="segPCR"></div>
+    <div class="verdict" id="pcrOut"></div>
+  </div>
+
+  <div class="card">
+    <h2 class="m">🔬 三層檢查:各自能證明什麼、不能證明什麼</h2>
+    <div class="tscroll">
+    <table>
+      <tr><th style="width:24%">檢查</th><th style="width:32%">角色</th><th>侷限(這欄才是重點)</th></tr>
+      <tr><td><b>CMV IgG／IgM</b></td><td>只回答一件事:這個人身上有沒有可以被再活化的 CMV。</td><td>不診斷活動性疾病。IgM 在免疫抑制下不可信。<b>血清狀態不預測誰會得 ICI 肝炎</b>(黑色素瘤 n=190 世代,IgG／IgM 與 ICI 肝炎無關聯)。</td></tr>
+      <tr><td><b>血漿／全血定量 PCR</b><br><span class="ref">報 IU/mL</span></td><td>篩檢與趨勢追蹤。特異度高,陽性有意義。</td><td>敏感度差,<b>陰性不能排除組織侵犯</b>。此族群<b>沒有經過驗證的閾值</b>可宣告器官疾病;移植的 cut-off 不能直接搬。不同實驗室／assay 不可混著比。</td></tr>
+      <tr><td><b>組織切片 + CMV 免疫組化</b></td><td><b>唯一的確診</b>。同時解決「irAE 肝炎本身成不成立」。</td><td>侵入性,凝血與血小板要先過關。<b>要主動指定 IHC</b>;單看 H&amp;E 敏感度低。</td></tr>
+      <tr><td><b>組織 PCR</b></td><td>輔助,敏感度高。</td><td>依共識定義<b>不足以確診</b>器官疾病(分不出潛伏病毒、血液污染與真正侵犯);高病毒量僅列為 possible。</td></tr>
+    </table>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2 class="a">📐 診斷效能的硬數字(以及它們的適用邊界)</h2>
+    <div class="data">
+      <div class="cell"><span class="lb">血中檢驗 敏感度</span><span class="num">50.8%</span>95% CI 19.9–81.6</div>
+      <div class="cell"><span class="lb">血中檢驗 特異度</span><span class="num">99.9%</span>95% CI 99–100</div>
+      <div class="cell"><span class="lb">其中 血液 PCR 敏感度</span><span class="num">60.0%</span>95% CI 46.5–73.5</div>
+      <div class="cell"><span class="lb">pp65 抗原血症 敏感度</span><span class="num">39.7%</span>95% CI 27.4–52.1</div>
+      <div class="cell"><span class="lb">H&amp;E 組織病理 敏感度</span><span class="num">12.5%</span>95% CI 3.6–21.4</div>
+      <div class="cell"><span class="lb">血中檢驗 陽性預測值</span><span class="num">83.8%</span>95% CI 58.6–95.0</div>
+    </div>
+    <p>把這張表念成一句話:<b>陽性很可信,陰性很不可信,而且只看 H&amp;E 幾乎等於沒看</b>。這也是「要主動要 IHC」的量化理由。</p>
+    <div class="warn"><b>⚠ 適用邊界要講清楚</b>:上表出自發炎性腸道疾病族群的系統性回顧與統合分析,以 <b>免疫組化／組織 PCR 為參考標準</b>,測的是<b>大腸</b> CMV 再活化。<b>不是</b> irAE 族群、<b>不是</b>肝臟。搬到肝臟是<b>方向性外推</b>(陰性不可信、IHC 才是標準),<b>不要引用其確切數字宣稱肝臟的敏感度</b>。<span class="ref">Tandon P 等. Inflamm Bowel Dis 2017;23(4):551. PMID 28296820</span></div>
+  </div>
+
+  <div class="card">
+    <h2 class="r">🚩 三個會害人的陷阱</h2>
+    <ul>
+      <li><b>陷阱一:把「PCR 陰性」當結案。</b> 一個對足量免疫抑制沒有反應的病人,陰性 PCR 只排除了 DNAemia,沒排除組織侵犯。該做的是切片,不是再加一線免疫抑制。</li>
+      <li><b>陷阱二:把「低量陽性」當診斷。</b> 類固醇下的低量 DNAemia 常常只是再活化。反射性給 ganciclovir,換來的是骨髓抑制與腎毒性,而真正的病因(HEV、膽道、藥物、腫瘤浸潤)還沒被找出來。</li>
+      <li><b>陷阱三:以為要在 irAE 和 CMV 之間二選一。</b> 兩者並存是常態,而且 CMV 常常是你給的免疫抑制造成的。確認 CMV 後,irAE 的免疫抑制通常不能停,做法是一邊抗病毒、一邊把類固醇壓到安全的最低劑量。</li>
+    </ul>
+  </div>
+
+  <div class="card">
+    <h2 class="m">🖼 影像:分不出來,但有三件事非它不可</h2>
+    <p><b>兩者共有的非特異性所見</b>(對鑑別<b>沒有</b>幫助):</p>
+    <div class="tscroll">
+    <table>
+      <tr><th style="width:20%">模態</th><th>所見</th></tr>
+      <tr><td>超音波／CT</td><td>肝腫大;periportal edema(門脈周圍與肝門區低衰減);periportal 與 hepatoduodenal ligament 淋巴結腫;膽囊壁水腫增厚;肝實質衰減下降或不均;少量腹水</td></tr>
+      <tr><td>MRI</td><td>肝實質 T2 訊號上升;門脈周圍 T2 高訊號;<b>延遲期 periportal enhancement</b></td></tr>
+    </table>
+    </div>
+    <p>這份清單對急性病毒性肝炎、自體免疫肝炎、藥物性肝損傷、被動性肝鬱血全都適用,<b>鑑別力等於零</b>。而且在 ICI 肝炎,這些所見主要出現在 ALT 超過 1,000 的重症;輕中度者影像常是乾淨的。<b>影像正常不代表任何事。</b></p>
+    <p><b>影像真正能做的三件事:</b></p>
+    <ul>
+      <li><b>排除其他病因</b>(主要價值):膽道阻塞、肝轉移進展、門靜脈血栓、Budd-Chiari、肝膿瘍。特別注意<b>鬱血肝樣貌加上肝靜脈／下腔靜脈擴張要回頭想 ICI myocarditis</b> —— 那是完全不同的處置路徑。</li>
+      <li><b>抓出膽管炎表型</b>(唯一能直接改變治療決策的地方):免疫相關硬化性膽管炎在 MRCP 上是<b>肝外膽管擴張合併管壁增厚</b>、<b>肝門到肝內多發狹窄與狹窄前擴張</b>。此型以 <b>ALP／GGT 為主</b>而非 transaminase,<b>對類固醇反應差</b>,常見於 anti-PD-1。認出它,才不會把一個本來就不吃類固醇的東西當成「類固醇難治」而一路加碼免疫抑制,反而把 CMV 壓出來。</li>
+      <li><b>確認切片可行並導引切片</b>:腹水、血管解剖、有無局部病灶可取。</li>
+    </ul>
+    <div class="warn"><b>🚩 這些影像所見該讓你改變想法</b><br>
+    <b>多發低衰減小病灶</b> → 肝膿瘍、侵襲性黴菌、淋巴瘤或轉移;CMV 偶爾以微膿瘍樣病灶表現但罕見,仍需切片。<br>
+    <b>膽管擴張</b> → 先排除機械性阻塞,再想免疫相關膽管炎。<br>
+    <b>明顯脾腫大加廣泛淋巴結</b> → 想 EBV 與淋巴增生性疾病。</div>
+    <div class="hedge"><b>檢查怎麼開</b>:腹部超音波加 Doppler 當第一線,便宜且同時看膽道與血管。<b>肝指數以 ALP／GGT 為主</b>或超音波見膽管異常 → 加 MRCP。腫瘤病人通常已有 restaging CT,<b>回頭跟前一次比對</b> periportal 與膽道變化,常比新開一次檢查有用。</div>
+  </div>
+
+  <div class="card">
+    <h2>🔀 同一時間別漏掉的鑑別診斷</h2>
+    <div class="tscroll">
+    <table>
+      <tr><th style="width:22%">病因</th><th style="width:30%">為什麼在這個情境特別容易漏</th><th>要驗什麼</th></tr>
+      <tr><td><b>HBV 再活化</b></td><td>在這個族群<b>比 CMV 更常見也更好處理</b>,而且高劑量類固醇加 anti-TNF 正是最強誘因。</td><td>HBsAg、anti-HBc;陽性者驗 HBV DNA 並考慮預防性抗病毒</td></tr>
+      <tr><td><b>HEV</b></td><td>「類固醇難治肝炎」被漏診的<b>經典</b>原因,常規肝炎套組通常沒有它。</td><td>anti-HEV IgM、HEV RNA</td></tr>
+      <tr><td><b>免疫相關硬化性膽管炎</b></td><td>ALP／GGT 為主、對類固醇反應差,容易被誤標成「類固醇難治的 irAE 肝炎」。</td><td>R 值分型、MRCP、切片</td></tr>
+      <tr><td><b>ICI myocarditis 致鬱血肝</b></td><td>肝指數異常被當成肝的問題,漏掉致命的心臟事件。</td><td>troponin、心電圖、影像看鬱血徵象</td></tr>
+      <tr><td><b>腫瘤浸潤／膽道阻塞</b></td><td>疾病進展偽裝成毒性,免疫抑制越給越糟。</td><td>影像</td></tr>
+      <tr><td><b>其他機會性感染</b></td><td>累積免疫抑制下不會只有 CMV。</td><td>依臨床:PJP、EBV、HSV、C. difficile、黴菌</td></tr>
+    </table>
+    </div>
+    <div class="hedge"><b>順序建議</b>:第二線免疫抑制劑<b>開打之前</b>就把上述基線留好。事後回頭補驗,常常已經分不清是本來就有還是後來發生。</div>
+  </div>
+
+  <div class="card">
+    <h2 class="r">💊 抗病毒藥物:角色、劑量、毒性</h2>
+    <div class="warn"><b>⚠ 先講最重要的一句:以下每一支在本頁的情境都是仿單外使用。</b>ganciclovir、valganciclovir、foscarnet、cidofovir 的核准劑量來自<b>愛滋病人的 CMV 視網膜炎</b>;maribavir、letermovir 來自<b>移植後族群</b>。<b>沒有任何一支的仿單涵蓋「ICI／irAE 免疫抑制下的 CMV 肝炎」</b>。劑量欄是仿單原文,用在此情境屬外推,務必照會感染科。</div>
+    <div class="tscroll w">
+    <table>
+      <tr><th style="width:15%">藥</th><th style="width:21%">角色與時機</th><th style="width:24%">劑量(仿單,腎功能正常)</th><th style="width:20%">關鍵毒性與監測</th><th>這個情境的陷阱</th></tr>
+      <tr>
+        <td><b>Ganciclovir</b><br><span class="ref">IV</span></td>
+        <td>器官侵犯性疾病的<b>第一線</b>,尤其腸道受累或口服吸收不可靠時。</td>
+        <td><span class="dz">誘導 5 mg/kg IV q12h × 14–21 天</span><span class="dz">維持 5 mg/kg q24h(每週 7 天)</span><span class="dz">或 6 mg/kg q24h(每週 5 天)</span></td>
+        <td><b>骨髓抑制</b>(嗜中性球／血小板／貧血)、腎毒性。依 CrCl 減量;CBC 每週至少兩次。</td>
+        <td>與 <b>MMF、azathioprine 骨髓毒性直接疊加</b> —— 這正是 irAE 病人身上最可能同時在用的兩支。</td>
+      </tr>
+      <tr>
+        <td><b>Valganciclovir</b><br><span class="ref">PO</span></td>
+        <td>口服前驅藥。輕中度、腸道功能完整、可門診處理時。</td>
+        <td><span class="dz">誘導 900 mg PO BID × 21 天</span><span class="dz">維持 900 mg PO QD(隨餐)</span><span class="dz">腎:CrCl ≥60→900 BID;40–59→450 BID;</span><span class="dz">25–39→450 QD;10–24→450 q48h;&lt;10 不建議</span></td>
+        <td>同 ganciclovir(活性代謝物相同)。</td>
+        <td>生體可用率約 <b>60% 且需要完整的腸道</b> —— <b>合併 CMV 腸炎或嚴重腹瀉時吸收不可靠,應改走靜脈 ganciclovir</b>。</td>
+      </tr>
+      <tr>
+        <td><b>Foscarnet</b><br><span class="ref">IV</span></td>
+        <td>ganciclovir <b>骨髓毒性無法承受</b>,或懷疑 ganciclovir 抗藥時。</td>
+        <td><span class="dz">誘導 60 mg/kg IV q8h</span><span class="dz">或 90 mg/kg q12h,共 2–3 週</span><span class="dz">維持 90–120 mg/kg/day(依腎功能個別化)</span></td>
+        <td><b>腎毒性是主要毒性</b>;鈣／鎂／鉀／磷流失可致<b>癲癇</b>。需輸注前後水化、電解質補充、密集追肌酸酐。</td>
+        <td><b>不抑制骨髓</b>是它在這個情境的核心價值(可與 MMF 並行);代價是腎與電解質的照護負擔很重。</td>
+      </tr>
+      <tr>
+        <td><b>Cidofovir</b><br><span class="ref">IV</span></td>
+        <td>三線／救援,前兩者都不能用時。</td>
+        <td><span class="dz">5 mg/kg IV 每週 1 次 × 2 週</span><span class="dz">之後 5 mg/kg 每 2 週 1 次</span><span class="dz">必須併 probenecid 1 g PO TID + 生理食鹽水前水化</span></td>
+        <td>嚴重腎毒性(蛋白尿、氮血症、<b>Fanconi 樣症候群</b>)、嗜中性球低下。</td>
+        <td>啟用門檻嚴格(仿單:Cr ≤1.5 mg/dL、CrCl &gt;55、尿蛋白 &lt;100 mg/dL)。腫瘤病人常已有腎功能負擔,實務上很難用。</td>
+      </tr>
+      <tr>
+        <td><b>Maribavir</b><br><span class="ref">PO</span></td>
+        <td><b>難治／抗藥</b>的移植後 CMV(≥12 歲)。</td>
+        <td><span class="dz">400 mg PO BID,至多 8 週</span></td>
+        <td>味覺障礙、噁心、腹瀉。</td>
+        <td><b>會拮抗 ganciclovir 與 valganciclovir</b>(抑制 pUL97 激酶,而該激酶正是這兩者活化所必需)→ <b>不可併用</b>。核准範圍限移植後,用在 irAE 情境是更外圍的外推。</td>
+      </tr>
+      <tr>
+        <td><b>Letermovir</b><br><span class="ref">PO／IV</span></td>
+        <td><b>僅預防,不治療。</b>異體造血幹細胞移植的 CMV 血清陽性受贈者;高風險(D+/R−)腎移植受贈者。</td>
+        <td><span class="dz">480 mg QD</span><span class="dz">與 cyclosporine 併用時 240 mg QD</span></td>
+        <td>一般耐受良好;交互作用多(cyclosporine 等)。</td>
+        <td><b>不要拿來治已成立的器官疾病</b> —— 仿單無此適應症。這是本頁最常見的用藥誤解。</td>
+      </tr>
+    </table>
+    </div>
+    <div class="hedge"><b>台灣可及性本頁不標</b>:這些抗病毒藥不在健保第九節(抗癌瘤藥物)範圍內,本頁沒有權威的本機資料源可對帳,故<b>刻意留白</b>而非猜測。請依院內藥局與健保相關規定確認。</div>
+  </div>
+
+  <div class="card">
+    <h2 class="a">⚠ 與病人「正在用的」irAE 免疫抑制劑怎麼撞</h2>
+    <div class="tscroll w">
+    <table>
+      <tr><th style="width:24%">病人身上的藥</th><th style="width:34%">撞什麼</th><th>怎麼處理</th></tr>
+      <tr><td><b>MMF</b>(irAE 肝炎最常用的第二線)</td><td>與 ganciclovir／valganciclovir <b>骨髓抑制疊加</b>,是這個組合最現實的問題。</td><td>CBC 每週至少兩次;必要時 G-CSF 支持;<b>血球撐不住優先改 foscarnet</b>(不抑制骨髓)而非直接停抗病毒;或下修 MMF。</td></tr>
+      <tr><td><b>Azathioprine</b></td><td>同樣是骨髓毒性,疊加邏輯相同。</td><td>同上。</td></tr>
+      <tr><td><b>高劑量類固醇</b></td><td>本身就是<b>促成 CMV 再活化的主因</b>,而且會<b>蓋掉感染的臨床表現</b>(發燒、腹痛)。</td><td>壓到安全的最低劑量,但 <b>irAE 沒解決前不能停</b>。減量速度由 irAE 決定,不是由 CMV 決定。</td></tr>
+      <tr><td><b>Infliximab／tocilizumab</b></td><td>不與抗病毒藥直接交互作用,但<b>加深免疫抑制的深度</b>。anti-TNF 難治性腸炎已知與 CMV 有關。</td><td>確認 CMV 後<b>重新檢視是否還需要</b>下一劑;不是反射性續打。</td></tr>
+      <tr><td><b>其他腎毒性藥物</b>(NSAID、對比劑、部分抗生素)</td><td>抗病毒藥幾乎全靠腎排除;foscarnet 與 cidofovir 本身即腎毒性。</td><td>開抗病毒藥前<b>整份藥歷盤點一次</b>,能停的先停;安排對比劑檢查要重新評估時機。</td></tr>
+    </table>
+    </div>
+    <div class="hedge">irAE 免疫抑制劑<b>本身</b>的藥理(起效動力學、劑量、選藥邏輯)不在本頁重複 —— 見 <a href="../irae/" style="color:var(--platinum)">irAE 器官分級處置速查</a>的「免疫抑制劑藥理學」卡。本頁只處理<b>它們與抗病毒治療相撞的部分</b>。</div>
+  </div>
+
+  <div class="card">
+    <h2>⏱ 療程、停藥與抗藥</h2>
+    <ul>
+      <li><b>療程長度由反應決定,不是固定天數。</b> 一般作法是治療到<b>症狀緩解且病毒量測不到</b>,並以<b>連續兩次陰性</b>作為停藥依據,總療程通常不短於兩週;器官侵犯性疾病常需更久。確切判準請依感染科與最新版共識指引(Kotton 2025)。</li>
+      <li><b>追蹤方式</b>:固定<b>同一實驗室、同一 assay</b>,每週定量。換實驗室等於換尺,趨勢就讀不出來了。</li>
+      <li><b>停藥後復發不罕見</b>,尤其 irAE 的免疫抑制還在。停藥後仍應追一段時間,不要當天結案。</li>
+      <li><b>抗藥要想到</b>:適當治療<b>兩週</b>病毒量不降或反升 → 送 <b>UL97／UL54 基因型</b>檢測並照會感染科,而不是直接加量。</li>
+      <li><b>證據邊界</b>:上述全部來自移植與愛滋族群。<b>irAE 族群沒有專屬的療程或停藥資料</b>,本段是外推的實務原則,不是指引。</li>
+    </ul>
+    <div class="warn"><b>合併腹瀉一併處理</b>:CMV 腸炎與 irAE 結腸炎可並存,且是 anti-TNF 難治性腸炎的已知成因之一。<b>血中 PCR 對腸道更不敏感</b>,難治就排大腸鏡重切片。而且腸道受累時<b>口服 valganciclovir 的吸收本身就不可靠</b>,應走靜脈。</div>
+  </div>
+
+  <div class="card">
+    <h2 class="m">📉 證據的邊界(這頁最該記住的一段)</h2>
+    <ul>
+      <li><b>直接證據幾乎都來自 ICI 結腸炎,不是肝炎。</b> 黑色素瘤單中心系列:370 人用過 ICI,41 人有 irColitis,其中 <b>5 人(12.2%)對類固醇加 infliximab 難治;這 5 人<u>全部</u>測到 CMV</b>。大腸切片與血漿 CMV DNA 在難治組顯著較常偵測到(p=0.005、p=0.002)。</li>
+      <li><b>肝炎方面目前只有個案層級的證據</b>:已有 ICI 治療中發燒加肝指數上升、原本擬診 ICI 肝炎、<b>切片後病理證實為 CMV 肝炎</b>、抗病毒後完全緩解的報告。這正是本頁主張「先切片再加碼」的臨床原型。</li>
+      <li><b>血清狀態不是風險預測工具</b>:黑色素瘤世代中 CMV IgG／IgM 與 ICI 肝炎<b>無關聯</b>;基線高 IgG 反而與較差的腫瘤結局相關(此為觀察性關聯,<b>不可</b>作為處置依據)。</li>
+      <li><b>沒有任何指引為此族群訂出病毒量閾值或預防性抗病毒建議。</b> 本頁的分層是把既有證據與共識定義整理成可操作的順序,<b>不等於指引</b>。</li>
+    </ul>
+  </div>
+
+</main>
+<footer>
+  <p><b>主要出處(PMID 逐筆於 PubMed 核實)</b>:Ljungman P 等. Consensus Definitions of CMV Infection and Disease in Transplant Patients（2024 Update）. <i>Clin Infect Dis</i> 2024;79(3):787（PMID 39041385,確診定義)· Tandon P 等. <i>Inflamm Bowel Dis</i> 2017;23(4):551(PMID 28296820,診斷效能統合分析)· Franklin C 等. <i>Eur J Cancer</i> 2017;86:248-256(PMID 29055840,難治 irColitis 與 CMV)· Lankes K 等. <i>Oncoimmunology</i> 2016;5(6):e1128611(PMID 27471608,anti-TNF 難治與 CMV)· Harper H 等. <i>BMJ Case Rep</i> 2025;18(8):e265250(PMID 40803709,ICI 治療中切片證實 CMV 肝炎)· Strobel SB 等. <i>Cancer Immunol Immunother</i> 2025;74(2):59(PMID 39751902,CMV IgG 與 ICI 肝炎無關聯)· Schneider BJ 等. ASCO irAE 指引更新. <i>JCO</i> 2021;39(36):4073(PMID 34724392)· Haanen J 等. ESMO 毒性處置指引. <i>Ann Oncol</i> 2022;33(12):1217(PMID 36270461)· Dougan M 等. AGA Clinical Practice Update:ICI 結腸炎與肝炎. <i>Gastroenterology</i> 2021;160(4):1384(PMID 33080231)· Berry P 等. ICI-related cholangiopathy. <i>Liver Int</i> 2023;43(1):147(PMID 35704341)· Okamoto K 等. 免疫相關硬化性膽管炎影像與治療. <i>Jpn J Clin Oncol</i> 2024;54(8):887(PMID 38715325)· Kim KW 等. Ipilimumab associated hepatitis:imaging and clinicopathologic findings. <i>Invest New Drugs</i> 2013;31(4):1071(PMID 23408334)。</p>
+  <p><b>藥物劑量出處</b>:CYTOVENE-IV(ganciclovir)、VALCYTE(valganciclovir)、FOSCAVIR(foscarnet)、VISTIDE(cidofovir)、LIVTENCITY(maribavir)、PREVYMIS(letermovir)<b>美國 FDA 仿單</b>(以最新版本為準;各支核准適應症為 CMV 視網膜炎或移植後 CMV,<b>均不涵蓋 irAE 情境</b>)· 療程與抗藥原則:Kotton CN 等. The Fourth International Consensus Guidelines on the Management of CMV in Solid Organ Transplantation. <i>Transplantation</i> 2025;109(7):1066(PMID 40200403)。</p>
+  <p>⚠ 教學／速查用途,<b>非取代臨床判斷、感染科會診與最新版原文指引</b>。本頁分層為既有證據之操作化整理,<b>不是任何學會指引</b>;抗病毒藥物劑量與腎功能調整請依原文仿單與院內規範。</p>
+  <p class="ref">Onco-Tools · cmv-irae · 整理 2026-09-06 · 所有引用經 PubMed esummary/efetch 逐筆核實標題與出處</p>
+</footer>
+<script>
+var IGG=[{k:"pos",t:"IgG 陽性"},{k:"neg",t:"IgG 陰性"},{k:"unk",t:"未驗／不明"}];
+var igg="unk";
+
+var TRIG=[
+ {k:"second",  t:"已用或即將用第二線免疫抑制(MMF／infliximab／azathioprine／tocilizumab)"},
+ {k:"dose",    t:"prednisone 等效 ≥20 mg/day 已累積 ≥2 週"},
+ {k:"refract", t:"足量類固醇 3–7 天,肝指數未降(類固醇難治)", w:"最高階觸發器"},
+ {k:"rebound", t:"減量途中 LFT 反彈,或降到高原不再改善", w:"最高階觸發器"},
+ {k:"dx",      t:"irAE 肝炎的診斷本身仍有疑問(其他病因未排除)", w:"最高階觸發器"},
+ {k:"sys",     t:"新發燒、血球下降或不明全身症狀"},
+ {k:"gi",      t:"合併腹瀉,或已知 irAE 結腸炎"}
+];
+var on={};
+
+var TIERS={
+ 0:{n:"層級 0",name:"基線分層(還沒有懷疑的理由)",col:"var(--t0)",
+    doIt:["<b>在開始免疫抑制之前</b>留 CMV IgG。","同時留 HBsAg、anti-HBc、anti-HCV、anti-HEV IgM／HEV RNA。","記錄基線 AST／ALT／ALP／GGT／T-bil,供日後 R 值分型。"],
+    dont:["不必常規送 CMV 定量 PCR。","不需要預防性抗病毒。"],
+    note:"此刻的目的是「將來看得懂」,不是現在找病。事後回頭補驗,常常已分不清是本來就有還是後來發生。"},
+ 1:{n:"層級 1",name:"暴露期監測(免疫抑制已夠深,但無臨床線索)",col:"var(--t1)",
+    doIt:["IgG 陽性者,在第二線藥開打時留一次<b>定量 PCR 基線</b>(IU/mL,記下實驗室與 assay)。","衛教病人主動回報發燒、腹瀉、乏力。","確認 HBV 基線已留且已依結果處理。"],
+    dont:["不因單純暴露就開預防性抗病毒 —— 此族群無實證,letermovir 的適應症在造血幹細胞移植。","不因單次低量陽性就啟動治療。"],
+    note:"風險來自<b>累積免疫抑制</b>,不是 ICI 本身。真正的風險期是第二線藥疊在高劑量類固醇之上的那段時間。"},
+ 2:{n:"層級 2",name:"主動送驗並重新盤點鑑別診斷",col:"var(--t2)",
+    doIt:["送 <b>CMV 定量 PCR(IU/mL)</b>,<b>每週兩次看趨勢</b>,固定同一實驗室同一 assay。","<b>同時</b>重新盤點:HBV DNA、HEV、藥物史(含中草藥)、膽道影像、腫瘤進展。","合併腹瀉者 → 安排<b>大腸鏡加切片</b>(血中 PCR 對腸道尤其不敏感)。","有全身症狀者評估其他機會性感染(PJP、EBV、C. difficile)。"],
+    dont:["不要因為一個低量陽性就開 ganciclovir。","不要因為一次陰性就把 CMV 從鑑別診斷中刪掉。"],
+    note:"<b>趨勢勝過單點</b>。一個上升中的病毒量配上惡化的器官功能才有意義;單一數值幾乎不能解釋任何事。"},
+ 3:{n:"層級 3",name:"走組織確認(不要在沒有組織下繼續加碼)",col:"var(--t3)",
+    doIt:["安排<b>肝切片</b>,並在申請單上<b>明確要求 CMV 免疫組化</b>(只做 H&amp;E 會漏)。","<b>同時</b>送定量 PCR,但<b>不要等它</b>決定要不要切片。","合併腹瀉者一併排大腸鏡切片(CMV 腸炎與 irAE 結腸炎可並存)。","切片前確認凝血、血小板、有無腹水;先做超音波加 Doppler。","若 ALP／GGT 為主或影像見膽管異常 → 加 MRCP 找免疫相關硬化性膽管炎。"],
+    dont:["<b>不要在沒有組織的情況下持續加碼免疫抑制。</b>「類固醇難治」在切片之前不是一個安全的結論。","不要用組織 PCR 單獨當作確診依據。"],
+    note:"切片一次解決兩個問題:<b>確認 irAE 肝炎本身成不成立</b>,以及<b>排除 CMV 與其他病因</b>。已有 ICI 治療中原本擬診 ICI 肝炎、切片後證實為 CMV 肝炎的報告。"}
+};
+
+function tierOf(){
+  if(on.refract||on.rebound||on.dx) return 3;
+  if(on.sys||on.gi) return 2;
+  if(on.second||on.dose) return 1;
+  return 0;
+}
+function iggNote(t){
+  if(igg==="neg") return '<div class="hedge"><b>IgG 陰性</b>:再活化在定義上不成立,CMV 的先驗機率大幅下降(原發感染仍可能但罕見)。'+
+    (t===3?'切片<b>照做</b> —— 層級 3 的切片本來就是為了確認 irAE 肝炎本身與排除其他病因,不只是為了 CMV。':'把火力移到 HEV、HBV、藥物、膽道與腫瘤進展。')+
+    ' <span class="ref">注意:血清狀態不預測 ICI 肝炎風險(PMID 39751902)。</span></div>';
+  if(igg==="unk") return '<div class="hedge"><b>血清狀態未知</b>:<b>先補驗 IgG</b>。這是最便宜的一步,陰性就能把一大半的可能性一刀切掉。不要為了等它而延後層級 2／3 該做的事。</div>';
+  return '<div class="hedge"><b>IgG 陽性</b>:具備再活化的條件,但<b>陽性本身不是診斷、也不是治療指徵</b>。它只把 CMV 留在鑑別診斷裡。</div>';
+}
+function drawIgG(){
+  document.getElementById("segIgG").innerHTML=IGG.map(function(x){
+    return '<button class="'+(igg===x.k?'on':'')+'" onclick="setIgG(\''+x.k+'\')">'+x.t+'</button>';}).join("");
+}
+function drawTrig(){
+  document.getElementById("trig").innerHTML=TRIG.map(function(x){
+    return '<label class="'+(on[x.k]?'on':'')+'"><input type="checkbox" '+(on[x.k]?'checked':'')+
+      ' onchange="tog(\''+x.k+'\')"><span>'+x.t+(x.w?'<span class="tw">'+x.w+'</span>':'')+'</span></label>';}).join("");
+}
+function drawVerdict(){
+  var t=tierOf(), T=TIERS[t];
+  document.getElementById("verdict").innerHTML=
+    '<div class="vh" style="background:'+T.col+'"><b>'+T.n+'</b> · '+T.name+'</div><div class="vb">'+
+    '<div class="row"><div class="lb">現在就做</div><div class="vv"><ul><li>'+T.doIt.join('</li><li>')+'</li></ul></div></div>'+
+    '<div class="row"><div class="lb">不要做</div><div class="vv"><ul><li>'+T.dont.join('</li><li>')+'</li></ul></div></div>'+
+    '<div class="row"><div class="lb">為什麼</div><div class="vv">'+T.note+'</div></div>'+
+    '</div>'+iggNote(t);
+}
+function setIgG(k){ igg=k; drawIgG(); drawVerdict(); }
+function tog(k){ on[k]=!on[k]; drawTrig(); drawVerdict(); }
+
+var PCR=[
+ {k:"neg",t:"陰性",col:"var(--t3)",
+  mean:"<b>只排除了 DNAemia,沒有排除組織侵犯。</b> 在發炎性腸道疾病族群的統合分析中,血中檢驗對大腸 CMV 的敏感度僅約五成(血液 PCR 約 60%)。",
+  act:"若病人<b>仍對足量免疫抑制無反應</b> → 走組織確認,不要把陰性當結案。若臨床本來就沒有線索 → 這個陰性讓 CMV 的優先序下降,回到 HEV／HBV／膽道／進展。",
+  cav:"敏感度數字出自腸道與發炎性腸道疾病族群,方向可外推到肝臟,<b>確切數值不可</b>。"},
+ {k:"low",t:"低量陽性,未上升",col:"var(--t2)",
+  mean:"<b>多半是免疫抑制下的再活化,不等於器官疾病。</b> 此族群<b>沒有經驗證的閾值</b>可宣告 end-organ disease,移植的 cut-off 不能直接搬。",
+  act:"繼續追趨勢(每週兩次、同一實驗室),<b>先不急著抗病毒</b>,把注意力放回鑑別診斷。若臨床同時惡化,升級為組織確認。",
+  cav:"反射性給 ganciclovir 換來骨髓抑制與腎毒性,而真正病因還沒找到 —— 這是本頁的陷阱二。"},
+ {k:"high",t:"高量且連續上升",col:"var(--t1)",
+  mean:"<b>高度懷疑。</b> 血中檢驗特異度極高(統合分析 99.9%,PPV 83.8%),所以陽性有意義 —— 但它證明的是<b>體內有活動性 CMV</b>,不是<b>肝臟被侵犯</b>。",
+  act:"可在<b>等切片的同時</b>啟動抗病毒並照會感染科;但<b>「證明」仍需組織加免疫組化</b>。同步檢視 MMF 與 ganciclovir 的骨髓毒性疊加。",
+  cav:"病毒量高不代表肝指數異常就是它造成的。irAE 肝炎與 CMV 並存是常態,兩邊都要處理。"}
+];
+var pcrCur=0;
+function drawPCR(){
+  document.getElementById("segPCR").innerHTML=PCR.map(function(x,i){
+    return '<button class="'+(i===pcrCur?'on':'')+'" onclick="pickPCR('+i+')">'+x.t+'</button>';}).join("");
+  var x=PCR[pcrCur];
+  document.getElementById("pcrOut").innerHTML=
+    '<div class="vh" style="background:'+x.col+'">血中定量 PCR:'+x.t+'</div><div class="vb">'+
+    '<div class="row"><div class="lb">代表什麼</div><div class="vv">'+x.mean+'</div></div>'+
+    '<div class="row"><div class="lb">下一步</div><div class="vv">'+x.act+'</div></div>'+
+    '<div class="row"><div class="lb">注意</div><div class="vv">'+x.cav+'</div></div></div>';
+}
+function pickPCR(i){ pcrCur=i; drawPCR(); }
+
+drawIgG(); drawTrig(); drawVerdict(); drawPCR();
+</script>
+</body>
+</html>

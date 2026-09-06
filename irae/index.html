@@ -134,7 +134,7 @@ footer{max-width:820px;margin:20px auto 0;padding:14px 20px 0;font-size:.74rem;c
   <h1>irAE 器官分級處置速查</h1>
   <div class="sub">免疫檢查點抑制劑相關不良事件 —— CTCAE v5 分級 × ICI 處置 × 類固醇/二線用藥,依器官系統彙整</div>
   <div class="meta"><b>架構</b> ASCO 2021 · NCCN · ESMO 2022 &nbsp;|&nbsp; <b>整理</b> 2026-08</div>
-  <div class="xlink">↔ 肝功能異常的 R 值分型與減量判準見 <a href="../liver-lab/">肝毒性判讀計算機</a>;藥物毒殺型肺損傷見 <a href="../adc-ild/">ADC 相關急性 ILD 速查</a></div>
+  <div class="xlink">↔ 肝功能異常的 R 值分型與減量判準見 <a href="../liver-lab/">肝毒性判讀計算機</a>;藥物毒殺型肺損傷見 <a href="../adc-ild/">ADC 相關急性 ILD 速查</a>;免疫抑制中如何確認合併 CMV 見 <a href="../cmv-irae/">irAE 免疫抑制下的 CMV 確認與排除</a></div>
 </header>
 <div class="ctrl"><div class="ctrl-in">
   <input id="search" type="search" placeholder="搜尋:器官、藥名、關鍵字(如 infliximab、colitis、心肌炎)">
@@ -252,9 +252,9 @@ var IRAE=[
     ["G3","多 ≥7 次/天、失禁、需住院","<b>暫停(CTLA-4 則永久停)</b>;IV methylpred 1–2 mg/kg;48–72h 無效 → infliximab"],
     ["G4","危及生命、穿孔/毒性巨結腸","<b>永久停用</b>;IV methylpred 1–2 mg/kg+早期 infliximab;外科評估"]],
  rf:"難治二線:<b>infliximab 5–10 mg/kg</b>(可重複);次選 <b>vedolizumab</b>(腸道選擇性);內視鏡潰瘍深 = infliximab 反應差預測子",
- pl:"腹瀉不等於結腸炎,但 <b>G2 以上先當結腸炎處理</b>;CMV 結腸炎與 irAE 可並存,難治時重切片。"},
+ pl:"腹瀉不等於結腸炎,但 <b>G2 以上先當結腸炎處理</b>;CMV 結腸炎與 irAE 可並存,難治時重切片(難治 irColitis 系列中 CMV 偵測率顯著較高;判讀見 CMV 專頁)。"},
 {id:"liver",inc:{c:"~5–10%(G3–4 1–2%)",p:"~2–5%(G3–4 ~1%)",m:"~25–30%(G3–4 ~15%)"},ic:"🫀",nm:"肝(肝炎)",en:"Hepatitis",
- wk:"檢查:AST/ALT/Tbil/<b>ALP+GGT</b>(GGT 確認 ALP 升高是否來自肝膽;ALP 高而 GGT 正常 → 想骨骼來源)、病毒性肝炎(HBV/HCV/HEV)、自體免疫(ANA/ASMA/IgG)、影像排除腫瘤浸潤/膽道;藥物史(含中草藥)。<b>先分型再分級</b>:R=(ALT/ULN)÷(ALP/ULN),≥5 肝細胞型、≤2 膽汁鬱積型",
+ wk:"檢查:AST/ALT/Tbil/<b>ALP+GGT</b>(GGT 確認 ALP 升高是否來自肝膽;ALP 高而 GGT 正常 → 想骨骼來源)、病毒性肝炎(HBV/HCV/HEV)、自體免疫(ANA/ASMA/IgG)、影像排除腫瘤浸潤/膽道;藥物史(含中草藥)。<b>先分型再分級</b>:R=(ALT/ULN)÷(ALP/ULN),≥5 肝細胞型、≤2 膽汁鬱積型。<b>類固醇難治或減量反彈 → 想 CMV</b>,但血中 PCR 陰性不能排除,確診靠切片+CMV 免疫組化(見 CMV 專頁)",
  g:[["G1","AST/ALT <3×ULN 且 Tbil <1.5×","<b>續用 ICI</b>;每週 1–2 次追蹤"],
     ["G2","AST/ALT 3–5× 或 Tbil 1.5–3×(取較高者)","<b>暫停 ICI</b>;持續/惡化 → prednisone 0.5–1 mg/kg"],
     ["G3","AST/ALT 5–20× 或 Tbil 3–10×(取較高者)","<b>永久停用(多數)</b>;IV methylpred 1–2 mg/kg"],
