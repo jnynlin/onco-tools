@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>肝毒性判讀:R 值分型 × 分級 × 減量判準</title>
+<style>
+:root{
+  --ink:#0C1F26; --ink-soft:#4A6068; --paper:#EDF1F1; --surface:#FFFFFF;
+  --rule:#C9D5D6; --rule-soft:#E4EAEA;
+  --platinum:#0E6E75; --resist:#9A4B22; --marker:#5A4A86; --amber:#8A6D00;
+  --platinum-bg:#EAF3F3; --resist-bg:#F6EEE9; --marker-bg:#F6F5FA; --test-bg:#F6F2E4;
+  --g1:#0E6E75; --g2:#8A6D00; --g3:#9A4B22; --g4:#8F2F2F;
+  --shadow:0 1px 0 rgba(12,31,38,.06), 0 12px 30px -18px rgba(12,31,38,.35);
+  --serif:"Noto Serif TC",Georgia,serif;
+  --sans:"Noto Sans TC","Helvetica Neue",Arial,sans-serif;
+  --mono:"IBM Plex Mono",Menlo,monospace;
+  --radius:4px;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{-webkit-text-size-adjust:100%;scroll-behavior:smooth}
+body{background:var(--paper);color:var(--ink);font-family:var(--sans);
+  font-size:16px;line-height:1.7;-webkit-font-smoothing:antialiased;padding-bottom:70px}
+a{color:var(--platinum);text-decoration:none;border-bottom:1px solid var(--rule)}
+a:hover{border-bottom-color:var(--platinum)}
+a:focus-visible{outline:2px solid var(--platinum);outline-offset:2px}
+.masthead{max-width:820px;margin:0 auto;padding:38px 20px 18px;border-bottom:2px solid var(--ink)}
+.back{font-family:var(--mono);font-size:11.5px;color:var(--ink-soft);border:none;display:inline-block;margin-bottom:14px}
+.back:hover{color:var(--platinum)}
+.eyebrow{font-family:var(--mono);font-size:11.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--platinum);margin-bottom:8px}
+.masthead h1{font-family:var(--serif);font-weight:900;font-size:clamp(26px,5vw,38px);line-height:1.15}
+.masthead .sub{margin-top:8px;color:var(--ink-soft);font-size:14.5px}
+.masthead .meta{margin-top:10px;font-family:var(--mono);font-size:11px;color:var(--ink-soft)}
+.xlink{margin-top:12px;font-size:.86rem;color:var(--ink-soft)}
+main{max-width:820px;margin:0 auto;padding:16px 20px}
+.principles{background:var(--test-bg);border:1px solid var(--rule);border-left:4px solid var(--amber);
+  border-radius:var(--radius);padding:14px 16px;margin-bottom:18px;font-size:.88rem;box-shadow:var(--shadow)}
+.principles h2{font-family:var(--mono);font-size:12px;letter-spacing:.12em;text-transform:uppercase;
+  color:var(--amber);margin-bottom:8px}
+.principles li{margin-left:1.2em;margin-bottom:4px;color:var(--ink-soft)}
+.principles b{color:var(--ink)}
+.conv{background:var(--surface);border:1px solid var(--rule);border-radius:var(--radius);
+  padding:14px 16px;margin-bottom:18px;box-shadow:var(--shadow);font-size:.86rem}
+.conv h2{font-family:var(--mono);font-size:12px;letter-spacing:.12em;text-transform:uppercase;
+  color:var(--marker);margin-bottom:8px}
+.conv h2.p{color:var(--platinum)}
+.conv h2.r{color:var(--resist)}
+.anchor{font-family:var(--mono);font-size:.82rem;background:var(--marker-bg);border-radius:var(--radius);
+  padding:8px 12px;margin-bottom:10px;color:var(--ink);overflow-x:auto}
+.hint{font-size:.82rem;color:var(--ink-soft);margin-bottom:8px}
+.crow{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin:8px 0}
+.crow label{font-size:.82rem;color:var(--ink-soft);font-family:var(--mono)}
+.pair{display:inline-flex;align-items:center;gap:6px;flex:0 0 auto}
+.crow select,.crow input{padding:7px 10px;border:1px solid var(--rule);border-radius:var(--radius);
+  font-size:.9rem;background:var(--surface);color:var(--ink);font-family:var(--sans)}
+.crow input{width:86px}
+.crow input:focus,.crow select:focus{outline:2px solid var(--platinum);outline-offset:-1px}
+.eqout{display:flex;gap:6px;flex-wrap:wrap;margin-top:8px}
+.eqout .cell{flex:1 1 30%;min-width:140px;background:var(--paper);border:1px solid var(--rule);
+  border-radius:var(--radius);padding:6px 10px;font-size:.84rem}
+.eqout .lb{font-family:var(--mono);font-size:10px;letter-spacing:.08em;text-transform:uppercase;
+  color:var(--ink-soft);display:block}
+.eqout .val{font-weight:700;font-size:1.02rem;color:var(--platinum)}
+.verdict{margin-top:10px;border-radius:var(--radius);padding:10px 12px;font-size:.88rem;border:1px solid var(--rule)}
+.verdict b{font-family:var(--mono);font-size:11.5px;letter-spacing:.1em;text-transform:uppercase;display:block;margin-bottom:3px}
+.v-ok{background:var(--platinum-bg);border-left:4px solid var(--platinum)}
+.v-ok b{color:var(--platinum)}
+.v-warn{background:var(--test-bg);border-left:4px solid var(--amber)}
+.v-warn b{color:var(--amber)}
+.v-bad{background:var(--resist-bg);border-left:4px solid var(--resist)}
+.v-bad b{color:var(--resist)}
+.gradeline{display:flex;gap:10px;align-items:center;margin:7px 0}
+.gb{flex:0 0 auto;width:40px;height:24px;border-radius:3px;color:#fff;font-weight:700;font-size:.8rem;
+  font-family:var(--mono);display:flex;align-items:center;justify-content:center}
+.g0{background:var(--ink-soft)}.g1{background:var(--g1)}.g2{background:var(--g2)}.g3{background:var(--g3)}.g4{background:var(--g4)}
+.gradeline .who{font-family:var(--mono);font-size:.8rem;color:var(--ink-soft);min-width:74px}
+.gradeline .det{font-size:.85rem;color:var(--ink-soft)}
+.finalgrade{margin-top:10px;padding:11px 13px;border-radius:var(--radius);background:var(--paper);border:1px solid var(--rule)}
+.finalgrade .lb{font-family:var(--mono);font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-soft)}
+.finalgrade .act{margin-top:4px;font-size:.9rem}
+.finalgrade .act b{color:var(--platinum)}
+.cmp{background:var(--surface);border:1px solid var(--rule);border-radius:var(--radius);
+  padding:14px 16px;margin-bottom:18px;box-shadow:var(--shadow);font-size:.86rem}
+.cmp h2{font-family:var(--mono);font-size:12px;letter-spacing:.12em;text-transform:uppercase;
+  color:var(--platinum);margin-bottom:8px}
+.tw{overflow-x:auto}
+.cmp table{width:100%;border-collapse:collapse;margin:6px 0;min-width:460px}
+.cmp th,.cmp td{border:1px solid var(--rule-soft);padding:5px 8px;text-align:left;font-size:.82rem;vertical-align:top}
+.cmp th{background:var(--paper);font-family:var(--mono);font-size:11px;letter-spacing:.06em}
+.cmp td.n{font-family:var(--mono);white-space:nowrap}
+.cnote{font-size:.78rem;color:var(--ink-soft);margin-top:10px;border-top:1px solid var(--rule-soft);padding-top:8px}
+.cnote b{color:var(--resist)}
+footer{max-width:820px;margin:20px auto 0;padding:14px 20px 0;font-size:.74rem;color:var(--ink-soft);
+  border-top:1px solid var(--rule)}
+@media print{body{background:#fff;padding-bottom:0}.conv,.cmp{box-shadow:none}}
+</style>
+</head>
+<body>
+
+<header class="masthead">
+  <a class="back" href="../">← 回工具總覽</a>
+  <div class="eyebrow">Onco-tools · Hepatotoxicity</div>
+  <h1>肝毒性判讀:R 值分型 × 分級 × 減量判準</h1>
+  <div class="sub">ICI 治療中肝功能異常的三個計算:先分型(肝細胞型或膽汁鬱積型)、再分級(取各判準最高者)、最後用酵素半衰期判斷持平是「還在傷」還是「只是清得慢」。</div>
+  <div class="meta"><b>依據</b> CTCAE v5 · ASCO 2021 · DILI R-value 慣例 &nbsp;|&nbsp; <b>整理</b> 2026-09</div>
+  <div class="xlink">↔ 器官別處置請見 <a href="../irae/">irAE 器官分級處置速查</a>;藥物毒殺型肺損傷請見 <a href="../adc-ild/">ADC 相關急性 ILD 速查</a></div>
+</header>
+
+<main>
+
+<div class="principles">
+  <h2>⚖ 三句話先讀</h2>
+  <li><b>分型先於分級。</b>只看 ALT 分級而不算 R 值,膽汁鬱積型會被歸成「輕度肝炎」,走上一條會失敗的處置路徑。</li>
+  <li><b>分級取各判準中最高的那一級。</b>ALT 6×(G3)而 Tbil 正常,仍是 G3,不是 G1,不可開始減量。</li>
+  <li><b>減量看 ALT。</b>它半衰期最短,是唯一能回答「此刻還在不在傷」的指標;ALP 與 GGT 講的是過去數週。</li>
+</div>
+
+<section class="conv">
+  <h2 class="p">① R 值分型(先做這個)</h2>
+  <div class="anchor">R = (ALT ÷ ULN<sub>ALT</sub>) ÷ (ALP ÷ ULN<sub>ALP</sub>)</div>
+  <div class="hint">R ≥ 5 肝細胞型 · R ≤ 2 膽汁鬱積型 · 2–5 混合型。R 是分型工具,不是嚴重度指標。</div>
+  <div class="crow">
+    <span class="pair"><label>ALT</label><input id="r_alt" type="number" value="419" min="0" step="1"></span>
+    <span class="pair"><label>ULN</label><input id="r_altu" type="number" value="40" min="1" step="1"></span>
+    <span class="pair"><label>ALP</label><input id="r_alp" type="number" value="807" min="0" step="1"></span>
+    <span class="pair"><label>ULN</label><input id="r_alpu" type="number" value="120" min="1" step="1"></span>
+  </div>
+  <div class="eqout">
+    <div class="cell"><span class="lb">ALT 倍數</span><span class="val" id="r_x1">—</span></div>
+    <div class="cell"><span class="lb">ALP 倍數</span><span class="val" id="r_x2">—</span></div>
+    <div class="cell"><span class="lb">R 值</span><span class="val" id="r_val">—</span></div>
+  </div>
+  <div id="r_verdict" class="verdict v-ok"><b>型態</b><span id="r_txt">—</span></div>
+  <div class="cnote">膽汁鬱積型成立時,下一步是影像(MRCP)排除阻塞,不是直接開類固醇。<b>ALP 高而 GGT 正常</b>要往骨骼、懷孕或腸道來源想,那不是肝膽問題。</div>
+</section>
+
+<section class="conv">
+  <h2 class="p">② CTCAE 分級(取最高者)</h2>
+  <div class="hint">CTCAE hepatitis 分級只用 AST、ALT 與總膽紅素,<b>不含 ALP 與 GGT</b>。所以膽管炎型對這套分級是隱形的 —— 先用上面的 R 值分型才抓得到。</div>
+  <div class="crow">
+    <span class="pair"><label>AST</label><input id="g_ast" type="number" value="134" min="0" step="1"></span>
+    <span class="pair"><label>ULN</label><input id="g_astu" type="number" value="40" min="1" step="1"></span>
+    <span class="pair"><label>ALT</label><input id="g_alt" type="number" value="419" min="0" step="1"></span>
+    <span class="pair"><label>ULN</label><input id="g_altu" type="number" value="40" min="1" step="1"></span>
+  </div>
+  <div class="crow">
+    <span class="pair"><label>T-Bil</label><input id="g_tb" type="number" value="7.88" min="0" step="0.01"></span>
+    <span class="pair"><label>ULN</label><input id="g_tbu" type="number" value="1.2" min="0.1" step="0.1"></span>
+  </div>
+  <div id="g_lines"></div>
+  <div class="finalgrade">
+    <span class="lb">最終分級(取最高)</span>
+    <div class="gradeline" style="margin:5px 0 0"><span class="gb" id="g_badge">—</span><span class="det" id="g_driver"></span></div>
+    <div class="act" id="g_act"></div>
+  </div>
+  <div class="cnote">G1 是<b>兩項都要</b>在界內才成立(AST/ALT &lt;3× <b>且</b> Tbil &lt;1.5×);G2 以上取兩者較高的那一級。減量的前提是改善至 ≤G1,再 4–6 週緩慢減。</div>
+</section>
+
+<section class="conv">
+  <h2 class="r">③ 減量判準:實測 vs「損傷已停止」的預期衰減</h2>
+  <div class="anchor">預期值 = 前次值 × 0.5<sup>(間隔天數 ÷ 半衰期)</sup></div>
+  <div class="hint">若損傷已完全停止,數值應循自身半衰期衰減。實測落後預期 = 仍有輸入;實測持平或回升 = 一定有實質原因。</div>
+  <div class="crow">
+    <span class="pair"><label>指標</label><select id="d_marker">
+      <option value="2">ALT(t½ 約 47 小時)</option>
+      <option value="0.7">AST(t½ 約 17 小時)</option>
+      <option value="6">ALP(t½ 約 5–7 天)</option>
+      <option value="8.5">GGT(t½ 約 7–10 天)</option>
+    </select></span>
+  </div>
+  <div class="crow">
+    <span class="pair"><label>前次</label><input id="d_prev" type="number" value="419" min="0" step="1"></span>
+    <span class="pair"><label>本次</label><input id="d_now" type="number" value="231" min="0" step="1"></span>
+    <span class="pair"><label>間隔(天)</label><input id="d_days" type="number" value="3" min="0.5" step="0.5"></span>
+  </div>
+  <div class="eqout">
+    <div class="cell"><span class="lb">預期值</span><span class="val" id="d_exp">—</span></div>
+    <div class="cell"><span class="lb">實測 ÷ 預期</span><span class="val" id="d_ratio">—</span></div>
+    <div class="cell"><span class="lb">經過幾個半衰期</span><span class="val" id="d_nh">—</span></div>
+  </div>
+  <div id="d_verdict" class="verdict v-ok"><b>判定</b><span id="d_txt">—</span></div>
+  <div class="cnote">ALT 半衰期不到兩天,<b>持平或回升不可能是動力學延遲</b>。回升緊跟在某次減量之後 = 劑量不足;在滿劑量下仍持平 = 往非免疫成因找(病毒再活化、藥物、類固醇性脂肪肝)。</div>
+</section>
+
+<section class="conv">
+  <h2>④ 歸零預估:還要多久才會正常</h2>
+  <div class="hint">用來設定期待值,避免把「還沒正常」誤讀成「還沒好」。</div>
+  <div class="crow">
+    <span class="pair"><label>指標</label><select id="n_marker">
+      <option value="8.5">GGT(t½ 7–10 天)</option>
+      <option value="6">ALP(t½ 5–7 天)</option>
+      <option value="2">ALT(t½ 約 2 天)</option>
+    </select></span>
+    <span class="pair"><label>目前值</label><input id="n_cur" type="number" value="2845" min="0" step="1"></span>
+    <span class="pair"><label>ULN</label><input id="n_uln" type="number" value="50" min="1" step="1"></span>
+  </div>
+  <div class="eqout">
+    <div class="cell"><span class="lb">目前為上限幾倍</span><span class="val" id="n_x">—</span></div>
+    <div class="cell"><span class="lb">需幾個半衰期</span><span class="val" id="n_h">—</span></div>
+    <div class="cell"><span class="lb">估計天數</span><span class="val" id="n_d">—</span></div>
+  </div>
+  <div class="cnote">即使今天病灶完全停止,GGT 從五十倍上限落回正常仍需數週至兩個月。<b>不可拿它當加藥或延後減量的理由。</b></div>
+</section>
+
+<section class="cmp">
+  <h2>五個指標,三種機制,三種時間尺度</h2>
+  <div class="tw">
+  <table>
+    <thead><tr><th>指標</th><th>釋出機制</th><th>反映什麼</th><th class="n">半衰期</th><th class="n">停止後歸零</th></tr></thead>
+    <tbody>
+      <tr><td>AST</td><td>漏出(細胞質+粒線體)</td><td>肝細胞損傷,非肝專一</td><td class="n">約 17 小時</td><td class="n">1–2 天</td></tr>
+      <tr><td>ALT</td><td>漏出(僅細胞質)</td><td>肝細胞損傷,肝專一</td><td class="n">約 47 小時</td><td class="n">約 1 週</td></tr>
+      <tr><td>T-Bil</td><td>功能逆流</td><td>排泄功能</td><td class="n">數小時<br>delta 型 17–20 天</td><td class="n">數天,尾巴可拖數週</td></tr>
+      <tr><td>ALP</td><td>膽鹽誘導合成後溶出</td><td>膽管上皮酵素質量</td><td class="n">約 5–7 天</td><td class="n">2–3 週</td></tr>
+      <tr><td>GGT</td><td>膽鹽誘導+藥物誘導後溶出</td><td>膽管上皮酵素質量</td><td class="n">約 7–10 天</td><td class="n">6–8 週</td></tr>
+    </tbody>
+  </table>
+  </div>
+  <div class="cnote">ALP 與 GGT <b>不是漏出來的</b>:膽鹽既誘導細胞合成酵素,又以清潔劑作用把酵素從膜上溶下,所以它們量的是「被誘導出來的酵素質量」,不是即時的細胞死亡。這是它們落後的機轉原因 —— <b>ALP 見頂晚於病情好轉是消退的正常型態,不是惡化</b>。恢復期卡住的膽紅素尾巴多半是 delta 膽紅素(與白蛋白共價結合,半衰期隨白蛋白走),不代表膽汁鬱積還在。</div>
+</section>
+
+<div class="principles">
+  <h2>⚠ 四個常踩的陷阱</h2>
+  <li><b>只看 ALT 分級,沒算 R 值</b> —— 膽管型被歸成輕度肝炎,於是用了會失敗的路徑。</li>
+  <li><b>追 ALP 或 GGT 正常化而一路加重免疫抑制</b> —— 免疫相關膽管炎的酵素下降率約 79%,真正正常化僅約 8.5%。趨勢在降就是有效。</li>
+  <li><b>ALT 兩週內正常就想停藥</b> —— 酵素講的是肝細胞損傷,不是免疫反應的狀態。四到六週減量的依據不是酵素動力學。</li>
+  <li><b>把腸炎的 infliximab 反射帶到肝臟</b> —— 同一個藥在腸道是標準二線,在肝臟因肝毒性被指引擋掉。</li>
+</div>
+
+</main>
+
+<footer>
+  <p>分級依據:CTCAE v5(AST/ALT increased、Blood bilirubin increased);處置依據:ASCO Guideline 2021(J Clin Oncol 2021;39:4073)、NCCN、ESMO 2022。R 值為藥物性肝損傷型態分類的慣用式。</p>
+  <p style="margin-top:4px">半衰期為文獻常引數值,個體差異大;ULN 各實驗室不同,計算前請改成貴院實際參考值。「歸零天數」為單指數衰減的粗估,不計持續輸入。</p>
+  <p style="margin-top:4px">⚠ 教學/速查用途,非取代臨床判斷與原文指引;個案處置請依最新版 guideline 與院內規範。</p>
+</footer>
+
+<script>
+function num(id){ var v=parseFloat(document.getElementById(id).value); return isFinite(v)?v:0; }
+function set(id,t){ document.getElementById(id).textContent=t; }
+
+// ---- ① R value ----
+function calcR(){
+  var alt=num("r_alt"), altu=num("r_altu")||1, alp=num("r_alp"), alpu=num("r_alpu")||1;
+  var x1=alt/altu, x2=alp/alpu;
+  set("r_x1", x1.toFixed(2)+"×"); set("r_x2", x2.toFixed(2)+"×");
+  var box=document.getElementById("r_verdict");
+  if(!alp||!alt){ set("r_val","—"); box.className="verdict v-warn"; set("r_txt","需要同時有 ALT 與 ALP 才能分型。只有 ALT 時無法判斷是不是膽汁鬱積型。"); return; }
+  var R=x1/x2; set("r_val", R.toFixed(2));
+  if(R>=5){ box.className="verdict v-ok"; set("r_txt","肝細胞型(R ≥ 5)。以 ALT/AST 為主的損傷,類固醇反應一般較好。"); }
+  else if(R<=2){ box.className="verdict v-bad"; set("r_txt","膽汁鬱積型(R ≤ 2)。下一步是影像排除阻塞;若為免疫相關膽管炎,類固醇反應較差,考慮早期加 UDCA,並把「正常化」從治療目標拿掉。"); }
+  else { box.className="verdict v-warn"; set("r_txt","混合型(2 < R < 5)。依主導酵素與影像判讀,兩種路徑的考量都要納入。"); }
+}
+
+// ---- ② CTCAE grade ----
+function gradeTx(r){ if(r<=1)return 0; if(r<=3)return 1; if(r<=5)return 2; if(r<=20)return 3; return 4; }
+function gradeBil(r){ if(r<=1)return 0; if(r<=1.5)return 1; if(r<=3)return 2; if(r<=10)return 3; return 4; }
+var ACT={0:"生化正常。",
+ 1:"<b>續用 ICI</b>;每週 1–2 次追蹤。",
+ 2:"<b>暫停 ICI</b>;持續或惡化 → prednisone 0.5–1 mg/kg。",
+ 3:"<b>永久停用(多數)</b>;IV methylprednisolone 1–2 mg/kg;48–72h 無改善 → MMF。",
+ 4:"<b>永久停用</b>;住院;IV methylprednisolone 2 mg/kg;肝膽科共管。"};
+function calcG(){
+  var items=[
+    {nm:"AST", r:num("g_ast")/(num("g_astu")||1), g:gradeTx(num("g_ast")/(num("g_astu")||1))},
+    {nm:"ALT", r:num("g_alt")/(num("g_altu")||1), g:gradeTx(num("g_alt")/(num("g_altu")||1))},
+    {nm:"T-Bil", r:num("g_tb")/(num("g_tbu")||1), g:gradeBil(num("g_tb")/(num("g_tbu")||1))}
+  ];
+  document.getElementById("g_lines").innerHTML = items.map(function(it){
+    return '<div class="gradeline"><span class="gb g'+it.g+'">G'+it.g+'</span>'+
+           '<span class="who">'+it.nm+'</span>'+
+           '<span class="det">'+it.r.toFixed(2)+'× ULN</span></div>';
+  }).join("");
+  var max=0, drivers=[];
+  items.forEach(function(it){ if(it.g>max) max=it.g; });
+  items.forEach(function(it){ if(it.g===max) drivers.push(it.nm); });
+  var b=document.getElementById("g_badge");
+  b.className="gb g"+max; b.textContent="G"+max;
+  set("g_driver", max===0 ? "三項皆在正常範圍" : "由 "+drivers.join(" / ")+" 決定");
+  document.getElementById("g_act").innerHTML = ACT[max] +
+    (max>=2 ? ' <span style="color:var(--resist)">未改善至 ≤G1 前不可開始減量。</span>' : '');
+}
+
+// ---- ③ decay vs expected ----
+function calcD(){
+  var th=parseFloat(document.getElementById("d_marker").value);
+  var prev=num("d_prev"), now=num("d_now"), days=num("d_days");
+  if(!prev||!days){ set("d_exp","—"); set("d_ratio","—"); set("d_nh","—"); return; }
+  var exp=prev*Math.pow(0.5, days/th), ratio=now/exp, nh=days/th;
+  set("d_exp", exp.toFixed(exp<10?1:0)); set("d_ratio", ratio.toFixed(2)); set("d_nh", nh.toFixed(1));
+  var box=document.getElementById("d_verdict");
+  if(now>=prev){
+    box.className="verdict v-bad";
+    set("d_txt","持平或回升。因為半衰期短於觀察間隔,這不可能是清除延遲,一定有持續或新增的輸入。若緊跟在減量之後 → 劑量不足;若在滿劑量下 → 找非免疫成因。");
+  } else if(ratio<=1.15){
+    box.className="verdict v-ok";
+    set("d_txt","貼合甚至快於預期衰減。代表損傷已停止,目前只是清除。可照指引節奏減量。");
+  } else if(ratio<=2){
+    box.className="verdict v-warn";
+    set("d_txt","在下降但慢於預期。代表仍有低強度的持續輸入,免疫抑制只壓住一部分。放慢減量速度,不必急著加藥。");
+  } else {
+    box.className="verdict v-bad";
+    set("d_txt","下降幅度遠低於預期。實質輸入仍明顯,重新評估診斷與劑量,並排除感染與藥物性成因。");
+  }
+}
+
+// ---- ④ time to normal ----
+function calcN(){
+  var th=parseFloat(document.getElementById("n_marker").value);
+  var cur=num("n_cur"), uln=num("n_uln")||1;
+  if(cur<=uln){ set("n_x","已在正常範圍"); set("n_h","—"); set("n_d","—"); return; }
+  var x=cur/uln, h=Math.log(x)/Math.log(2);
+  set("n_x", x.toFixed(1)+"×"); set("n_h", h.toFixed(1));
+  set("n_d", Math.round(h*th*0.85)+"–"+Math.round(h*th*1.18)+" 天");
+}
+
+function all(){ calcR(); calcG(); calcD(); calcN(); }
+document.querySelectorAll("input,select").forEach(function(el){
+  el.addEventListener("input", all); el.addEventListener("change", all);
+});
+all();
+</script>
+</body>
+</html>
