@@ -331,7 +331,7 @@ function bsaCalc(){
 var IRAE=[
 {id:"skin",inc:{c:"~40–50%",p:"~30–40%(白斑 ~8%,黑色素瘤)",m:"~60%"},ic:"🩹",nm:"皮膚",en:"Maculopapular rash / pruritus / bullous",
  wk:"檢查:BSA 估算(九分法/手掌法,見下圖)、黏膜受累、水疱/表皮剝離(Nikolsky)、嗜酸性球;疑 SJS/TEN/DRESS 即皮膚科會診+切片",
- ex:bsaWidget,
+ ex:bsaWidget, up:"2026-09-09",
  g:[["G1","<10% BSA(有無症狀皆可)","<b>續用 ICI</b>;潤膚劑+外用類固醇(中效)±口服抗組織胺"],
     ["G2","10–30% BSA(有無症狀皆可,影響工具性 ADL);<b>>30% 但僅輕微/無症狀亦為 G2</b>","<b>續用或考慮暫停</b>;強效外用類固醇;不緩解 → prednisone 0.5–1 mg/kg"],
     ["G3",">30% BSA 且中重度症狀、影響自我照護 ADL","<b>暫停 ICI</b>;prednisone 0.5–1(可至 1–2)mg/kg;皮膚科會診"],
@@ -427,7 +427,7 @@ function render(){
       return '<div class="grade"><div class="gb '+badgeClass(x[0])+'">'+x[0]+'</div>'+
         '<div class="gd"><div class="def">'+x[1]+'</div><div class="act">'+x[2]+'</div></div></div>';
     }).join("");
-    return '<div class="organ" id="o-'+o.id+'"><div class="ohead" onclick="tg(\''+o.id+'\')">'+
+    return '<div class="organ" id="o-'+o.id+'"'+(o.up?' data-up="'+o.up+'"':'')+'><div class="ohead" onclick="tg(\''+o.id+'\')">'+
       '<span class="ic">'+o.ic+'</span><span class="t"><div class="nm">'+o.nm+'</div>'+
       '<div class="en">'+o.en+'</div></span><span class="arrow">▶</span></div>'+
       '<div class="obody"><div class="inc">'+
@@ -497,7 +497,7 @@ var RKTXT={high:"會過期",med:"中",low:"穩定"};
   });
   document.querySelectorAll(".organ .obody").forEach(function(el){
     var d=document.createElement("div"); d.className="cmeta";
-    d.innerHTML='<span class="rk high">會過期</span><span>來源:ASCO 2021 · NCCN · ESMO 2022</span><span>更新 2026-09-06</span>';
+    d.innerHTML='<span class="rk high">會過期</span><span>來源:ASCO 2021 · NCCN · ESMO 2022</span><span>更新 '+(el.parentNode.getAttribute("data-up")||"2026-09-06")+'</span>';
     el.appendChild(d);
   });
 })();
