@@ -1,0 +1,629 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>黑色素瘤分期圖譜（AJCC 第 8 版）</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700&family=Noto+Serif+TC:wght@600;900&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#ECEFEA;--surface:#F8F9F6;--ink:#231A24;--muted:#675E68;--line:#CFD4CC;
+  --melanin:#7A4A2B;--lymph:#1D7468;--distant:#5A4A9C;--warn:#A8620B;--fig:#D9CFC4;--on:#fff;
+  --serif:"Noto Serif TC","Songti TC","PMingLiU",serif;
+  --sans:"Noto Sans TC","PingFang TC","Microsoft JhengHei",system-ui,sans-serif;
+  box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:#17131A;--surface:#211C25;--ink:#EEE8EE;--muted:#A99FAB;--line:#3A333F;
+  --melanin:#D09364;--lymph:#5CC2B2;--distant:#A99BE8;--warn:#E5A550;--fig:#3D343C;--on:#17131A;}}
+:root[data-theme="dark"]{
+  --bg:#17131A;--surface:#211C25;--ink:#EEE8EE;--muted:#A99FAB;--line:#3A333F;
+  --melanin:#D09364;--lymph:#5CC2B2;--distant:#A99BE8;--warn:#E5A550;--fig:#3D343C;--on:#17131A;}
+*,*::before,*::after{box-sizing:inherit}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--sans);font-size:15px;line-height:1.65;padding-bottom:84px}
+h1,h2,h3{font-family:var(--serif);margin:0;line-height:1.25}
+h1{font-weight:900;font-size:clamp(28px,6vw,44px);letter-spacing:.02em}
+h2{font-size:20px;font-weight:600}
+h3{font-size:15px;font-weight:600;margin-top:18px}
+p{margin:.4em 0}
+.wrap{max-width:1120px;margin:0 auto;padding:20px 16px}
+header p{color:var(--muted);max-width:40em}
+.layout{display:grid;gap:20px;margin-top:18px}
+@media(min-width:880px){.layout{grid-template-columns:minmax(360px,440px) 1fr;align-items:start}
+  .mapcol{position:sticky;top:12px}}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:6px;padding:16px}
+.card + .card{margin-top:14px}
+.sec-t{border-left:5px solid var(--melanin)}
+.sec-n{border-left:5px solid var(--lymph)}
+.sec-m{border-left:5px solid var(--distant)}
+.sec-r{border:2px solid var(--ink)}
+.hint{color:var(--muted);font-size:13px}
+.modes{display:grid;grid-template-columns:repeat(3,1fr);gap:6px}
+.modes button{font:inherit;font-weight:500;padding:9px 4px;border-radius:4px;border:1.5px solid var(--line);background:transparent;color:var(--ink);cursor:pointer}
+.modes button[aria-pressed="true"][data-mode="primary"]{background:var(--melanin);border-color:var(--melanin);color:var(--on)}
+.modes button[aria-pressed="true"][data-mode="node"]{background:var(--lymph);border-color:var(--lymph);color:var(--on)}
+.modes button[aria-pressed="true"][data-mode="distant"]{background:var(--distant);border-color:var(--distant);color:var(--on)}
+.figs{display:grid;grid-template-columns:1fr 1fr;gap:4px;margin-top:10px}
+.figs figure{margin:0;text-align:center}
+.figs figcaption{font-family:var(--serif);font-weight:600;font-size:14px}
+svg.body{width:100%;height:auto;display:block;touch-action:manipulation}
+.rg{fill:var(--fig);stroke:var(--surface);stroke-width:1.5;transition:fill .15s}
+.mode-primary .rg{cursor:pointer}
+.mode-primary .rg:hover{fill:color-mix(in srgb,var(--melanin) 40%,var(--fig))}
+.rg.sel{fill:var(--melanin)}
+.rg.reg-hint{fill:color-mix(in srgb,var(--lymph) 22%,var(--fig))}
+.mk{display:none;cursor:pointer}
+.mk.show{display:block}
+.mk circle.dot{stroke-width:2;fill:var(--surface)}
+.mk.nd circle.dot{stroke:var(--lymph)}
+.mk.ds circle.dot{stroke:var(--distant)}
+.mk.nd.sel circle.dot{fill:var(--lymph)}
+.mk.nd.sel.nonreg circle.dot{fill:var(--distant);stroke:var(--distant)}
+.mk.ds.sel circle.dot{fill:var(--distant)}
+.mk.nd.expected circle.dot{stroke-dasharray:3 2}
+.mk circle.hit{fill:transparent}
+.mk text{font-size:8px;fill:var(--ink);font-family:var(--sans);pointer-events:none}
+.sidelab{font-size:10px;fill:var(--muted);font-family:var(--sans)}
+:focus-visible{outline:3px solid var(--warn);outline-offset:2px}
+svg :focus-visible{outline:none;stroke:var(--warn);stroke-width:3}
+.chips{display:flex;flex-wrap:wrap;gap:6px;margin:6px 0}
+.chip{font:inherit;font-size:14px;padding:6px 12px;border-radius:999px;border:1.5px solid var(--line);background:transparent;color:var(--ink);cursor:pointer}
+.chip[aria-pressed="true"]{background:var(--ink);border-color:var(--ink);color:var(--bg)}
+label.f{display:block;font-weight:500;margin-top:12px}
+input[type=number],select,textarea{font:inherit;color:var(--ink);background:var(--bg);border:1.5px solid var(--line);border-radius:4px;padding:8px 10px;width:100%;max-width:340px}
+textarea{max-width:none;min-height:110px;font-size:13px;line-height:1.5}
+.nodeitem{border:1px solid var(--line);border-radius:4px;padding:10px;margin-top:8px}
+.nodeitem.nonreg{border-color:var(--distant)}
+.nodeitem header{display:flex;justify-content:space-between;align-items:center;gap:8px;font-weight:700}
+.step{display:inline-flex;align-items:center;gap:0;border:1.5px solid var(--line);border-radius:4px;overflow:hidden}
+.step button{font:inherit;width:36px;height:34px;border:0;background:var(--bg);color:var(--ink);cursor:pointer;font-size:18px}
+.step span{min-width:36px;text-align:center;font-weight:700}
+.linkbtn{font:inherit;font-size:13px;background:none;border:0;color:var(--muted);text-decoration:underline;cursor:pointer;padding:4px}
+.row{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin-top:8px}
+label.ck{display:flex;gap:8px;align-items:flex-start;margin:6px 0;cursor:pointer}
+label.ck input{margin-top:5px;width:17px;height:17px;accent-color:var(--lymph)}
+.tnm{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:10px}
+.tnm div{border:1px solid var(--line);border-radius:4px;padding:8px 10px}
+.tnm b{display:block;font-family:var(--serif);font-size:24px;font-weight:900;line-height:1.2}
+.tnm .t b{color:var(--melanin)}.tnm .n b{color:var(--lymph)}.tnm .m b{color:var(--distant)}
+.tnm small{color:var(--muted);font-size:12px;line-height:1.4;display:block}
+.stages{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:10px}
+.stages div{padding:10px;border-radius:4px;background:var(--bg)}
+.stages b{font-family:var(--serif);font-size:30px;font-weight:900;display:block;line-height:1.1}
+.ladder{display:grid;grid-template-columns:repeat(11,1fr);gap:2px;margin-top:12px}
+.ladder span{text-align:center;font-size:11px;font-weight:700;padding:7px 0;background:var(--bg);color:var(--muted);border-radius:2px}
+.ladder span.on{background:var(--ink);color:var(--bg);transform:scaleY(1.25)}
+.miss{border-left:4px solid var(--warn);padding:6px 10px;margin-top:12px;background:color-mix(in srgb,var(--warn) 10%,transparent)}
+.miss ul,.todo{margin:4px 0;padding-left:1.2em}
+.todo li{margin:6px 0}
+.tag{display:inline-block;font-size:12px;font-weight:700;padding:0 7px;border-radius:3px;border:1px solid currentColor;margin-right:6px}
+.tag.s{color:var(--melanin)}.tag.l{color:var(--lymph)}.tag.i{color:var(--distant)}.tag.p{color:var(--warn)}
+.btn{font:inherit;font-weight:700;padding:9px 16px;border-radius:4px;border:2px solid var(--ink);background:var(--ink);color:var(--bg);cursor:pointer}
+.btn.ghost{background:transparent;color:var(--ink)}
+.bar{position:fixed;left:0;right:0;bottom:0;background:var(--ink);color:var(--bg);padding:10px 16px calc(10px + env(safe-area-inset-bottom,0px));display:flex;justify-content:space-between;align-items:center;gap:12px;z-index:5}
+.bar .tn{font-weight:500;font-size:14px}
+.bar .st{font-family:var(--serif);font-weight:900;font-size:22px;white-space:nowrap}
+details summary{cursor:pointer;font-weight:500;margin-top:12px}
+.tbl{overflow-x:auto}
+table{border-collapse:collapse;font-size:13px;width:100%;min-width:420px}
+th,td{border:1px solid var(--line);padding:5px 8px;text-align:left;vertical-align:top}
+th{background:var(--bg)}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+</head>
+<body>
+<div class="wrap">
+<header>
+  <h1>黑色素瘤分期圖譜</h1>
+  <p>依 AJCC 第 8 版 cutaneous melanoma。在人體圖上標出原發部位、轉移淋巴結與遠端轉移，補齊下方欄位，頁面即時算出 TNM、臨床與病理分期，並列出還缺哪些資料與下一步檢查。</p>
+  <div class="row">
+    <button class="btn" data-act="example">載入範例：左頭皮＋左頸淋巴</button>
+    <button class="btn ghost" data-act="reset">全部清除</button>
+  </div>
+</header>
+
+<div class="layout">
+  <div class="mapcol">
+    <div class="card" id="mapcard">
+      <div class="modes" role="group" aria-label="標記模式">
+        <button data-mode="primary" aria-pressed="true">原發部位</button>
+        <button data-mode="node" aria-pressed="false">淋巴結</button>
+        <button data-mode="distant" aria-pressed="false">遠端轉移</button>
+      </div>
+      <p class="hint" id="modehint"></p>
+      <div class="figs" id="figs"></div>
+      <p class="hint">左右以病人為準。虛線圈為此原發部位預期的引流淋巴區。</p>
+    </div>
+  </div>
+
+  <div class="formcol">
+    <section class="card sec-t">
+      <h2>原發腫瘤 T</h2>
+      <div class="chips" id="tstatus"></div>
+      <div id="tInvasive">
+        <label class="f" for="siteSel">原發部位</label>
+        <select id="siteSel"></select>
+        <p class="hint" id="siteNote"></p>
+        <label class="f" for="thick">Breslow 厚度（mm，記到 0.1）</label>
+        <input id="thick" type="number" inputmode="decimal" min="0" step="0.1" placeholder="例如 2.4">
+        <p class="hint" id="thickNote"></p>
+        <label class="f">潰瘍 ulceration（病理判定）</label>
+        <div class="chips" id="ulc"></div>
+        <details>
+          <summary>病理報告其他應記錄項目（不改變 T 分類）</summary>
+          <label class="f" for="mit">Mitotic rate（/mm²）</label>
+          <input id="mit" type="number" inputmode="numeric" min="0" step="1">
+          <label class="f" for="subtype">組織亞型</label>
+          <select id="subtype">
+            <option value="">未填</option>
+            <option>Superficial spreading</option><option>Nodular</option>
+            <option>Lentigo maligna melanoma</option><option>Acral lentiginous</option>
+            <option>Desmoplastic</option><option>其他</option>
+          </select>
+          <p class="hint">另應包含：周邊與深部切緣、microsatellites、lymphovascular invasion、neurotropism、regression、TIL。第 8 版已不再用 mitotic rate 區分 T1a／T1b，但仍是重要預後因子。</p>
+        </details>
+      </div>
+    </section>
+
+    <section class="card sec-n">
+      <h2>區域淋巴結 N</h2>
+      <p class="hint">在圖上切到「淋巴結」模式點選，或用下方按鈕加入。</p>
+      <div class="chips" id="nodechips"></div>
+      <div id="nodelist"></div>
+      <div id="nodeEvalBox">
+        <label class="f">沒有淋巴結轉移時，評估方式為</label>
+        <div class="chips" id="nodeEval"></div>
+      </div>
+      <h3>Microsatellite／satellite／in-transit 轉移</h3>
+      <label class="ck"><input type="checkbox" data-msi="micro"><span>Microsatellite（鏡下，與原發灶不相連）</span></label>
+      <label class="ck"><input type="checkbox" data-msi="sat"><span>Satellite（原發灶 2 cm 內肉眼可見）</span></label>
+      <label class="ck"><input type="checkbox" data-msi="transit"><span>In-transit（距原發灶 &gt;2 cm，至區域淋巴區之間）</span></label>
+    </section>
+
+    <section class="card sec-m">
+      <h2>遠端轉移 M</h2>
+      <div class="chips" id="distchips"></div>
+      <label class="f">血清 LDH</label>
+      <div class="chips" id="ldh"></div>
+      <p class="hint">M 分類取最高者：M1a 皮膚／軟組織／非區域淋巴結，M1b 肺，M1c 非 CNS 內臟，M1d CNS。LDH 正常加 (0)、升高加 (1)。</p>
+    </section>
+
+    <section class="card sec-r" id="result">
+      <h2>分期結果</h2>
+      <div class="tnm">
+        <div class="t"><b id="oT">–</b><small id="oTd"></small></div>
+        <div class="n"><b id="oN">–</b><small id="oNd"></small></div>
+        <div class="m"><b id="oM">–</b><small id="oMd"></small></div>
+      </div>
+      <div class="stages">
+        <div><span class="hint">臨床分期 cTNM</span><b id="oC">–</b></div>
+        <div><span class="hint">病理分期 pTNM</span><b id="oP">–</b></div>
+      </div>
+      <p class="hint" id="stageNote"></p>
+      <div class="ladder" id="ladder" aria-hidden="true"></div>
+      <p class="hint" id="surv"></p>
+      <div id="missing"></div>
+      <h3>需完成的細節與下一步</h3>
+      <ul class="todo" id="todo"></ul>
+      <h3>分期摘要</h3>
+      <textarea id="summary" readonly></textarea>
+      <div class="row"><button class="btn ghost" data-act="copy">複製摘要</button><span class="hint" id="copied"></span></div>
+    </section>
+
+    <section class="card">
+      <h2>AJCC 第 8 版對照表</h2>
+      <details><summary>T 分類</summary><div class="tbl"><table>
+        <tr><th>T</th><th>厚度</th><th>潰瘍</th></tr>
+        <tr><td>Tis</td><td>原位</td><td>–</td></tr>
+        <tr><td>T1a</td><td>&lt;0.8 mm</td><td>無</td></tr>
+        <tr><td>T1b</td><td>&lt;0.8 mm 有潰瘍；或 0.8–1.0 mm</td><td>有／不論</td></tr>
+        <tr><td>T2a／T2b</td><td>&gt;1.0–2.0 mm</td><td>無／有</td></tr>
+        <tr><td>T3a／T3b</td><td>&gt;2.0–4.0 mm</td><td>無／有</td></tr>
+        <tr><td>T4a／T4b</td><td>&gt;4.0 mm</td><td>無／有</td></tr>
+      </table></div></details>
+      <details><summary>N 分類</summary><div class="tbl"><table>
+        <tr><th>N</th><th>轉移淋巴結</th><th>MSI*</th></tr>
+        <tr><td>N1a／N1b</td><td>1 顆：臨床隱匿／臨床可偵測</td><td>無</td></tr>
+        <tr><td>N1c</td><td>0 顆</td><td>有</td></tr>
+        <tr><td>N2a／N2b</td><td>2–3 顆：皆隱匿／至少 1 顆臨床可偵測</td><td>無</td></tr>
+        <tr><td>N2c</td><td>1 顆</td><td>有</td></tr>
+        <tr><td>N3a／N3b</td><td>≥4 顆：皆隱匿／至少 1 顆臨床可偵測或任何 matted nodes</td><td>無</td></tr>
+        <tr><td>N3c</td><td>≥2 顆或 matted nodes</td><td>有</td></tr>
+      </table></div><p class="hint">*MSI：microsatellite、satellite 或 in-transit 轉移。</p></details>
+      <details><summary>病理分期 III 期細分</summary><div class="tbl"><table>
+        <tr><th>T</th><th>IIIA</th><th>IIIB</th><th>IIIC</th><th>IIID</th></tr>
+        <tr><td>T0</td><td>–</td><td>N1b, N1c</td><td>N2b, N2c, N3b, N3c</td><td>–</td></tr>
+        <tr><td>T1a／T1b／T2a</td><td>N1a, N2a</td><td>N1b, N1c, N2b</td><td>N2c, N3a–c</td><td>–</td></tr>
+        <tr><td>T2b／T3a</td><td>–</td><td>N1a–N2b</td><td>N2c, N3a–c</td><td>–</td></tr>
+        <tr><td>T3b／T4a</td><td>–</td><td>–</td><td>任何 ≥N1</td><td>–</td></tr>
+        <tr><td>T4b</td><td>–</td><td>–</td><td>N1a–N2c</td><td>N3a–c</td></tr>
+      </table></div></details>
+      <p class="hint">僅供教學與討論。不適用於結膜、葡萄膜及黏膜黑色素瘤。檢查與治療建議為一般原則摘要，請以最新 NCCN／院內指引與健保規範為準。</p>
+      <p class="hint">分期表 adapted from AJCC Cancer Staging Manual 8th ed.（Gershenwald et al., <i>CA Cancer J Clin</i> 2017;67:472）；工作流程參考 NCCN Melanoma: Cutaneous v2.2026。更新 2026-09-22。</p>
+    </section>
+  </div>
+</div>
+</div>
+
+<div class="bar" aria-live="polite"><span class="tn" id="barTnm">尚未輸入</span><span class="st" id="barStage"></span></div>
+
+<script>
+(function(){
+"use strict";
+var $=function(id){return document.getElementById(id)};
+var NS="http://www.w3.org/2000/svg";
+
+/* ---------- data ---------- */
+var REGIONS=[
+ {k:"scalp",front:"頭皮（前／頂）",back:"頭皮（後／枕）",g:"hn",shape:{f:["hrect",78,8,22,18],b:["hrect",78,8,22,52]}},
+ {k:"face",front:"臉部／耳",back:null,g:"hn",shape:{f:["hrect",78,26,22,42]}},
+ {k:"neck",front:"前頸",back:"後頸",g:"hn",shape:{f:["poly",[[90,60],[100,60],[100,79],[89,80]]],b:["poly",[[90,58],[100,58],[100,79],[89,80]]]}},
+ {k:"utrunk",front:"胸部",back:"上背",g:"utrunk",shape:{f:["poly",[[100,79],[88,81],[62,92],[66,150],[100,150]]]}},
+ {k:"ltrunk",front:"腹部",back:"下背／臀",g:"ltrunk",shape:{f:["poly",[[100,151],[66,151],[62,216],[100,216]]]}},
+ {k:"uarm",front:"上臂",back:"上臂（後）",g:"arm",shape:{f:["poly",[[60,94],[47,101],[40,164],[54,167],[63,122]]]}},
+ {k:"farm",front:"前臂",back:"前臂（後）",g:"arm",shape:{f:["poly",[[40,166],[54,169],[49,232],[36,230]]]}},
+ {k:"hand",front:"手掌／指（acral）",back:"手背／指甲",g:"arm",acral:{f:true,b:true},shape:{f:["ell",42,247,8,13]}},
+ {k:"thigh",front:"大腿",back:"大腿（後）",g:"leg",shape:{f:["poly",[[62,218],[99,218],[93,320],[68,320]]]}},
+ {k:"leg",front:"小腿",back:"小腿（後）",g:"leg",shape:{f:["poly",[[68,322],[93,322],[88,408],[72,408]]]}},
+ {k:"foot",front:"足背／趾甲",back:"足底／足跟（acral）",g:"leg",acral:{f:false,b:true},shape:{f:["ell",79,421,12,9]}}
+];
+var BASINS=[
+ {k:"parotid",zh:"腮腺／耳前",view:"front",x:77,y:47},
+ {k:"cervical",zh:"頸部（含鎖骨上）",view:"front",x:87,y:73},
+ {k:"axillary",zh:"腋下",view:"front",x:68,y:108},
+ {k:"epitro",zh:"滑車上",view:"front",x:46,y:171},
+ {k:"inguinal",zh:"腹股溝",view:"front",x:79,y:213},
+ {k:"occipital",zh:"枕部／耳後",view:"back",x:86,y:57},
+ {k:"popliteal",zh:"膕窩",view:"back",x:80,y:322}
+];
+var DIST=[
+ {k:"skin",zh:"遠端皮膚／軟組織（含肌肉）",m:1},
+ {k:"nrln",zh:"非區域淋巴結",m:1},
+ {k:"lung",zh:"肺",m:2,view:"front",x:100,y:112},
+ {k:"liver",zh:"肝",m:3,view:"front",x:90,y:160},
+ {k:"visc",zh:"其他內臟（腸胃道、腎上腺等）",m:3,view:"front",x:110,y:180},
+ {k:"bone",zh:"骨",m:3,view:"back",x:100,y:135},
+ {k:"cns",zh:"腦／CNS",m:4,view:"front",x:100,y:22}
+];
+var MCAT=["M0","M1a","M1b","M1c","M1d"];
+var LADDER=["0","IA","IB","IIA","IIB","IIC","IIIA","IIIB","IIIC","IIID","IV"];
+var SURV={IA:[99,98],IB:[97,94],IIA:[94,88],IIB:[87,82],IIC:[82,75],IIIA:[93,88],IIIB:[83,77],IIIC:[69,60],IIID:[32,24]};
+var SIDE={L:"左",R:"右"};
+
+var s;
+function fresh(){return {mode:"primary",tStatus:"invasive",site:null,thick:"",ulc:null,mit:"",subtype:"",
+  nodeEval:null,nodes:{},msi:{micro:false,sat:false,transit:false},dist:{},ldh:null};}
+s=fresh();
+
+/* ---------- helpers ---------- */
+function el(tag,attrs,parent){var e=document.createElementNS(NS,tag);for(var a in attrs)e.setAttribute(a,attrs[a]);if(parent)parent.appendChild(e);return e;}
+function mirror(shape){
+  if(shape[0]==="poly")return ["poly",shape[1].map(function(p){return [200-p[0],p[1]]})];
+  if(shape[0]==="ell")return ["ell",200-shape[1],shape[2],shape[3],shape[4]];
+  return ["hrect",200-shape[1]-shape[3],shape[2],shape[3],shape[4]];
+}
+function siteInfo(id){
+  if(!id)return null;var p=id.split("|");
+  var r=REGIONS.filter(function(x){return x.k===p[0]})[0];
+  var lab=p[1]==="front"?r.front:r.back;
+  return {r:r,view:p[1],side:p[2],label:SIDE[p[2]]+"側"+lab,acral:!!(r.acral&&r.acral[p[1]==="front"?"f":"b"])};
+}
+function basinInfo(id){var p=id.split("|");var b=BASINS.filter(function(x){return x.k===p[0]})[0];return {b:b,side:p[1],label:SIDE[p[1]]+b.zh};}
+function expectedBasins(){
+  var si=siteInfo(s.site);if(!si||s.tStatus!=="invasive")return null;
+  var sd=si.side,both=["L","R"],out=[];
+  function add(k,sides){sides.forEach(function(x){out.push(k+"|"+x)})}
+  if(si.r.g==="hn"){add("parotid",[sd]);add("occipital",[sd]);add("cervical",[sd]);}
+  else if(si.r.g==="utrunk"){add("axillary",both);add("cervical",both);}
+  else if(si.r.g==="ltrunk"){add("axillary",both);add("inguinal",both);}
+  else if(si.r.g==="arm"){add("axillary",[sd]);add("epitro",[sd]);}
+  else {add("inguinal",[sd]);add("popliteal",[sd]);}
+  return out;
+}
+function isRegional(id){
+  var n=s.nodes[id];if(n&&n.override!==null&&n.override!==undefined)return n.override;
+  var ex=expectedBasins();if(!ex)return true;return ex.indexOf(id)>=0;
+}
+
+/* ---------- map ---------- */
+function buildFigs(){
+  var box=$("figs");box.innerHTML="";
+  ["front","back"].forEach(function(view){
+    var fig=document.createElement("figure");
+    var cap=document.createElement("figcaption");cap.textContent=view==="front"?"正面":"背面";fig.appendChild(cap);
+    var svg=el("svg",{viewBox:"0 0 200 440","class":"body",role:"group","aria-label":cap.textContent+"人體圖"});
+    var defs=el("defs",{},svg);var cp=el("clipPath",{id:"head-"+view},defs);el("ellipse",{cx:100,cy:38,rx:22,ry:29},cp);
+    el("text",{x:30,y:436,"class":"sidelab"},svg).textContent=view==="front"?"右":"左";
+    el("text",{x:162,y:436,"class":"sidelab"},svg).textContent=view==="front"?"左":"右";
+    var order=["neck","utrunk","ltrunk","uarm","farm","hand","thigh","leg","foot","scalp","face"];
+    order.forEach(function(k){
+      var r=REGIONS.filter(function(x){return x.k===k})[0];
+      var lab=view==="front"?r.front:r.back;if(!lab)return;
+      var base=(view==="back"&&r.shape.b)?r.shape.b:r.shape.f;
+      [0,1].forEach(function(right){
+        var sh=right?mirror(base):base;
+        var side=view==="front"?(right?"L":"R"):(right?"R":"L");
+        var id=k+"|"+view+"|"+side,node;
+        if(sh[0]==="poly")node=el("polygon",{points:sh[1].map(function(p){return p.join(",")}).join(" ")},svg);
+        else if(sh[0]==="ell")node=el("ellipse",{cx:sh[1],cy:sh[2],rx:sh[3],ry:sh[4]},svg);
+        else node=el("rect",{x:sh[1],y:sh[2],width:sh[3],height:sh[4],"clip-path":"url(#head-"+view+")"},svg);
+        node.setAttribute("class","rg");node.setAttribute("data-site",id);
+        node.setAttribute("tabindex","0");node.setAttribute("role","button");
+        node.setAttribute("aria-label","原發部位："+SIDE[side]+"側"+lab);
+      });
+    });
+    BASINS.filter(function(b){return b.view===view}).forEach(function(b){
+      [0,1].forEach(function(right){
+        var x=right?200-b.x:b.x;var side=view==="front"?(right?"L":"R"):(right?"R":"L");
+        var g=el("g",{"class":"mk nd","data-node":b.k+"|"+side,tabindex:"0",role:"button","aria-label":"淋巴結："+SIDE[side]+b.zh},svg);
+        el("circle",{"class":"hit",cx:x,cy:b.y,r:14},g);el("circle",{"class":"dot",cx:x,cy:b.y,r:7},g);
+      });
+    });
+    DIST.filter(function(d){return d.view===view}).forEach(function(d){
+      var g=el("g",{"class":"mk ds","data-dist":d.k,tabindex:"0",role:"button","aria-label":"遠端轉移："+d.zh},svg);
+      el("circle",{"class":"hit",cx:d.x,cy:d.y,r:14},g);
+      el("rect",{"class":"dot",x:d.x-7,y:d.y-7,width:14,height:14,rx:2,style:"stroke-width:2;stroke:var(--distant)"},g);
+      var t=el("text",{x:d.x+10,y:d.y+3},g);t.textContent=d.zh.slice(0,2).replace("／","");
+    });
+    fig.appendChild(svg);box.appendChild(fig);
+  });
+}
+function updateMap(){
+  $("mapcard").className="card mode-"+s.mode;
+  document.querySelectorAll(".modes button").forEach(function(b){b.setAttribute("aria-pressed",String(b.dataset.mode===s.mode))});
+  $("modehint").textContent={primary:"點選身體區塊標出原發病灶。",node:"點圓圈標出有轉移的淋巴區，可複選。",distant:"點方塊標出遠端轉移部位，其餘部位見下方 M 區按鈕。"}[s.mode];
+  var ex=expectedBasins()||[];
+  document.querySelectorAll(".rg").forEach(function(r){r.classList.toggle("sel",s.tStatus==="invasive"&&r.dataset.site===s.site)});
+  document.querySelectorAll(".mk.nd").forEach(function(g){
+    var id=g.dataset.node,sel=!!s.nodes[id];
+    g.classList.toggle("show",s.mode==="node"||sel);g.classList.toggle("sel",sel);
+    g.classList.toggle("nonreg",sel&&!isRegional(id));g.classList.toggle("expected",ex.indexOf(id)>=0);
+  });
+  document.querySelectorAll(".mk.ds").forEach(function(g){
+    var sel=!!s.dist[g.dataset.dist];g.classList.toggle("show",s.mode==="distant"||sel);g.classList.toggle("sel",sel);
+    var r=g.querySelector("rect");r.style.fill=sel?"var(--distant)":"var(--surface)";
+  });
+}
+
+/* ---------- form pieces ---------- */
+function chipset(box,opts,cur,attr){
+  box.innerHTML="";opts.forEach(function(o){var b=document.createElement("button");b.className="chip";b.type="button";
+    b.textContent=o[1];b.setAttribute("data-"+attr,String(o[0]));b.setAttribute("aria-pressed",String(String(cur)===String(o[0])));box.appendChild(b);});
+}
+function buildSiteSelect(){
+  var sel=$("siteSel");sel.innerHTML='<option value="">請在圖上點選，或由此選擇</option>';
+  ["front","back"].forEach(function(v){REGIONS.forEach(function(r){var lab=v==="front"?r.front:r.back;if(!lab)return;
+    ["L","R"].forEach(function(sd){var o=document.createElement("option");o.value=r.k+"|"+v+"|"+sd;o.textContent=SIDE[sd]+"側"+lab;sel.appendChild(o);});});});
+}
+function renderForm(){
+  chipset($("tstatus"),[["invasive","侵襲性原發灶"],["tis","原位 Tis"],["t0","找不到原發灶 T0"],["tx","無法評估 TX"]],s.tStatus,"tstatus");
+  $("tInvasive").style.display=s.tStatus==="invasive"?"":"none";
+  $("siteSel").value=s.site||"";
+  chipset($("ulc"),[["true","有"],["false","無"],["null","報告未載明"]],String(s.ulc),"ulc");
+  chipset($("ldh"),[["normal","正常"],["high","升高"],["null","未驗"]],String(s.ldh),"ldh");
+  chipset($("nodeEval"),[["clinical","僅理學檢查／影像（未做 SLNB）"],["slnbNeg","SLNB 陰性"]],s.nodeEval,"nodeeval");
+  var nc=$("nodechips");nc.innerHTML="";
+  var ex=expectedBasins();
+  BASINS.forEach(function(b){["L","R"].forEach(function(sd){var id=b.k+"|"+sd;
+    if(ex&&ex.indexOf(id)<0&&!s.nodes[id])return;
+    var c=document.createElement("button");c.className="chip";c.type="button";c.textContent=SIDE[sd]+b.zh;
+    c.setAttribute("data-node",id);c.setAttribute("aria-pressed",String(!!s.nodes[id]));nc.appendChild(c);});});
+  if(ex){var h=document.createElement("span");h.className="hint";h.textContent="僅列預期引流區；其他淋巴區請在圖上點選。";nc.appendChild(h);}
+  var dc=$("distchips");dc.innerHTML="";
+  DIST.forEach(function(d){var c=document.createElement("button");c.className="chip";c.type="button";c.textContent=d.zh+"　"+MCAT[d.m];
+    c.setAttribute("data-dist",d.k);c.setAttribute("aria-pressed",String(!!s.dist[d.k]));dc.appendChild(c);});
+  var nl=$("nodelist");nl.innerHTML="";
+  Object.keys(s.nodes).forEach(function(id){
+    var n=s.nodes[id],bi=basinInfo(id),reg=isRegional(id);
+    var d=document.createElement("div");d.className="nodeitem"+(reg?"":" nonreg");
+    d.innerHTML='<header><span>'+bi.label+'</span><button class="linkbtn" data-rmnode="'+id+'">移除</button></header>'+
+     '<div class="row"><span>轉移顆數</span><span class="step"><button data-cnt="-1" data-id="'+id+'" aria-label="減一">−</button><span>'+n.count+'</span><button data-cnt="1" data-id="'+id+'" aria-label="加一">＋</button></span></div>'+
+     '<div class="chips"><button class="chip" data-det="occult" data-id="'+id+'" aria-pressed="'+(n.det==="occult")+'">臨床隱匿（SLNB 發現）</button>'+
+     '<button class="chip" data-det="clinical" data-id="'+id+'" aria-pressed="'+(n.det==="clinical")+'">臨床可偵測（觸診／影像）</button></div>'+
+     '<label class="ck"><input type="checkbox" data-matted="'+id+'"'+(n.matted?" checked":"")+'><span>Matted nodes（沾黏成團）</span></label>'+
+     '<p class="hint">'+(reg?"視為區域淋巴結，計入 N。":"不在此原發部位的預期引流區，視為非區域淋巴結，計入 M1a。")+
+     ' <button class="linkbtn" data-override="'+id+'">'+(reg?"改列為非區域":"lymphoscintigraphy 證實引流，改列為區域")+'</button></p>';
+    nl.appendChild(d);
+  });
+  $("nodeEvalBox").style.display=regionalNodes().length?"none":"";
+  document.querySelectorAll("[data-msi]").forEach(function(c){c.checked=s.msi[c.dataset.msi]});
+  var si=siteInfo(s.site),note="";
+  if(si&&s.tStatus==="invasive"){
+    if(si.r.g==="hn")note="頭頸部引流路徑變異大，靠近中線者可能雙側引流；頂部以後多走枕部與後頸，前方多走腮腺與頸部 level I–III。SLNB 前建議 lymphoscintigraphy 加 SPECT/CT。";
+    else if(si.r.g==="utrunk"||si.r.g==="ltrunk")note="軀幹病灶可同時引流至多個淋巴區（雙側腋下、腹股溝或頸部），需以 lymphoscintigraphy 確認。";
+    else if(si.r.g==="arm")note="上肢主要引流至同側腋下；前臂與手部少數經滑車上淋巴結。";
+    else note="下肢主要引流至同側腹股溝；小腿後側與足跟少數經膕窩淋巴結。";
+    if(si.acral)note+=" Acral 部位：亞型多為 acral lentiginous，BRAF 突變率較低，建議一併檢測 KIT、NRAS。";
+  }
+  $("siteNote").textContent=note;
+}
+function regionalNodes(){return Object.keys(s.nodes).filter(isRegional)}
+
+/* ---------- staging ---------- */
+function calcT(){
+  if(s.tStatus==="tis")return {T:"Tis",d:"原位黑色素瘤",miss:[]};
+  if(s.tStatus==="t0")return {T:"T0",d:"無原發灶證據（unknown primary 或完全 regression）",miss:[]};
+  if(s.tStatus==="tx")return {T:"TX",d:"原發灶厚度無法評估",miss:[]};
+  var miss=[];if(!s.site)miss.push("原發部位");
+  var v=parseFloat(s.thick);
+  if(isNaN(v)||v<=0){miss.push("Breslow 厚度");return {T:"TX",d:"尚未輸入厚度",miss:miss};}
+  var t=Math.round(v*10)/10,T,d;
+  if(t<0.8){if(s.ulc===null){T="T1";miss.push("潰瘍狀態（決定 T1a 或 T1b）");}else T=s.ulc?"T1b":"T1a";d="<0.8 mm";}
+  else if(t<=1.0){T="T1b";d="0.8–1.0 mm，不論潰瘍";if(s.ulc===null)miss.push("潰瘍狀態（不影響 T1b，但應記錄）");}
+  else{var b=t<=2?"T2":t<=4?"T3":"T4";d=t<=2?">1.0–2.0 mm":t<=4?">2.0–4.0 mm":">4.0 mm";
+    if(s.ulc===null){T=b;miss.push("潰瘍狀態（決定 "+b+"a 或 "+b+"b）");}else T=b+(s.ulc?"b":"a");}
+  d="厚度 "+t.toFixed(1)+" mm（"+d+"）"+(s.ulc===null?"":s.ulc?"，有潰瘍":"，無潰瘍");
+  return {T:T,d:d,miss:miss,t:t};
+}
+function calcN(){
+  var ids=regionalNodes(),total=0,clin=false,mat=false,unk=false,miss=[];
+  ids.forEach(function(id){var n=s.nodes[id];total+=n.count;if(n.det==="clinical")clin=true;if(n.matted)mat=true;if(!n.det){unk=true;miss.push(basinInfo(id).label+"的偵測方式（隱匿或臨床可偵測）");}});
+  var msi=s.msi.micro||s.msi.sat||s.msi.transit,N;
+  /* cN:區域轉移是否有「臨床可偵測」證據。true=觸診／影像淋巴結、matted、satellite、in-transit;
+     false=只有 SLNB 隱匿淋巴結或鏡下 microsatellite(純病理發現,臨床分期仍為 cN0);null=偵測方式未填 */
+  var cN=(clin||mat||s.msi.sat||s.msi.transit)?true:(unk?null:false);
+  if(mat)N=msi?"N3c":"N3b";
+  else if(total===0)N=msi?"N1c":"N0";
+  else if(total===1)N=msi?"N2c":(clin?"N1b":"N1a");
+  else if(total<=3)N=msi?"N3c":(clin?"N2b":"N2a");
+  else N=msi?"N3c":(clin?"N3b":"N3a");
+  if(total>0&&!mat&&!msi&&miss.length)N=N.slice(0,2);
+  var d=total?("區域轉移淋巴結 "+total+" 顆"+(clin?"，含臨床可偵測":"，皆臨床隱匿")+(mat?"，matted":"")):"無區域淋巴結轉移";
+  if(msi)d+="；有 MSI";
+  if(total===0&&!msi&&!s.nodeEval&&s.tStatus!=="tis")miss.push("區域淋巴結評估方式（未做 SLNB 或 SLNB 陰性）");
+  return {N:N,d:d,miss:miss,total:total,clin:clin,cN:cN};
+}
+function calcM(){
+  var m=0,sites=[];DIST.forEach(function(d){if(s.dist[d.k]){m=Math.max(m,d.m);sites.push(d.zh);}});
+  Object.keys(s.nodes).forEach(function(id){if(!isRegional(id)){m=Math.max(m,1);sites.push(basinInfo(id).label+"（非區域淋巴結）");}});
+  var miss=[];if(!m)return {M:"M0",d:"無遠端轉移",miss:miss,sites:sites};
+  var suf=s.ldh==="normal"?"(0)":s.ldh==="high"?"(1)":"";if(!suf)miss.push("血清 LDH（M 分類的 (0)/(1) 後綴）");
+  return {M:MCAT[m]+suf,d:sites.join("、"),miss:miss,sites:sites,m:m};
+}
+function stage3(T,N){
+  if(N.length<3)return null;
+  var low=["T1","T1a","T1b","T2a"],mid=["T2b","T3a"],high=["T3b","T4a"];
+  if(T==="T0"){if(N==="N1b"||N==="N1c")return "IIIB";if(["N2b","N2c","N3b","N3c"].indexOf(N)>=0)return "IIIC";return null;}
+  if(low.indexOf(T)>=0){if(N==="N1a"||N==="N2a")return "IIIA";if(["N1b","N1c","N2b"].indexOf(N)>=0)return "IIIB";return "IIIC";}
+  if(mid.indexOf(T)>=0){return (N==="N2c"||N[1]==="3")?"IIIC":"IIIB";}
+  if(high.indexOf(T)>=0)return "IIIC";
+  if(T==="T4b")return N[1]==="3"?"IIID":"IIIC";
+  if(T==="T2"||T==="T3")return (N==="N2c"||N[1]==="3")?"IIIC":null;
+  if(T==="T4")return N[1]==="3"?null:"IIIC";
+  return null;
+}
+function stages(T,N,M,n){
+  if(M!=="M0")return {c:"IV",p:"IV"};
+  /* 臨床分期只計臨床可偵測的區域轉移;SLNB 隱匿淋巴結與鏡下 microsatellite 屬病理分期(AJCC 8th) */
+  var c0={Tis:"0",T1a:"IA",T1b:"IB",T2a:"IB",T2b:"IIA",T3a:"IIA",T3b:"IIB",T4a:"IIB",T4b:"IIC"}[T]||null;
+  if(N!=="N0"){
+    var c=n.cN===true?"III":n.cN===false?c0:null;
+    return {c:c,p:stage3(T,N),cNote:n.cN===false?"區域轉移皆為 SLNB／鏡下發現：臨床分期以 cN0 計，病理分期才升為 III 期。":""};
+  }
+  /* 病理分期 N0 需經 SLNB 證實;僅 Tis 與 T1a 免除(AJCC 8th) */
+  if(s.tStatus==="invasive"&&c0&&T!=="T1a"&&s.nodeEval!=="slnbNeg")return {c:c0,p:null,pPend:true,
+    cNote:"病理分期需 SLNB 陰性才能定為 N0（Tis／T1a 除外）；未做 SLNB 時僅有臨床分期。"};
+  var p=c0;if(T==="T1b")p="IA";
+  return {c:c0,p:p};
+}
+
+function todos(t,n,m,st){
+  var L=[],T=t.T,si=siteInfo(s.site);
+  function add(tag,cls,txt){L.push('<span class="tag '+cls+'">'+tag+'</span>'+txt)}
+  if(s.tStatus==="invasive"){
+    add("病理","p","確認報告含 Breslow 厚度（0.1 mm）、潰瘍、mitotic rate、切緣、microsatellites、LVI、neurotropism、亞型。");
+    if(t.t!==undefined){
+      var mg=t.t<=1?"1 cm":t.t<=2?"1–2 cm":"2 cm";
+      add("手術","s","Wide local excision，建議臨床切緣 "+mg+(si&&si.r.g==="hn"?"；頭皮與臉部可依解剖與功能限制調整，頭皮需切至帽狀腱膜層。":(si&&si.acral?"；acral 或甲下病灶需評估功能保留式截指／趾。":"。")));
+    }
+    if(n.N==="N0"&&m.M==="M0"){
+      if(T==="T1a")add("淋巴","l","T1a 一般不建議 SLNB；若有高 mitotic rate、LVI、年輕等不良因子可討論。");
+      else if(T==="T1b"||T==="T1")add("淋巴","l","T1b：與病人討論並考慮 SLNB。");
+      else if(/^T[234]/.test(T)&&s.nodeEval!=="slnbNeg")add("淋巴","l","厚度 >1 mm：應討論並提供 SLNB，與 wide excision 同次進行；術前 lymphoscintigraphy"+(si&&si.r.g==="hn"?" 加 SPECT/CT":"")+"。");
+      if(s.nodeEval!=="slnbNeg"&&/^T([234]|1b)/.test(T))add("分期","p","未做 SLNB 時只有臨床分期（cN0）；病理分期須待 SLNB 結果，病歷應標註「未經病理淋巴評估」。");
+    }
+  }
+  if(s.tStatus==="tis")add("手術","s","原位病灶：切緣 0.5–1 cm；lentigo maligna 型常需更寬或分階段切除。不需 SLNB。");
+  if(s.tStatus==="t0"&&n.total)add("評估","p","原發灶不明的淋巴結轉移：完整皮膚、頭皮、甲床、黏膜與眼科檢查；分期依 T0 規則歸入 IIIB／IIIC。");
+  if(n.clin)add("淋巴","l","臨床可偵測淋巴結：以 FNA 或 core biopsy 取得病理確認；可切除者考慮 neoadjuvant 免疫治療後再行治療性淋巴廓清。");
+  if(n.total&&!n.clin)add("淋巴","l","SLN 陽性：可選擇區域淋巴結超音波追蹤取代立即 completion dissection（MSLT-II、DeCOG-SLT），並討論輔助治療。");
+  if(s.msi.sat||s.msi.transit||s.msi.micro)add("淋巴","l","MSI 陽性即屬 N1c 以上（stage III），應做全身影像並評估局部區域治療選項。");
+  if(st.c==="III"||(st.p&&st.p.indexOf("III")===0)){
+    add("影像","i","Baseline 橫斷面影像：胸腹骨盆 CT 或全身 PET/CT；IIIC 以上或有症狀者加腦部 MRI。"+(si&&si.r.g==="hn"?"頭頸原發另加頸部 CT。":""));
+    add("分子","p","BRAF V600 突變檢測，作為輔助治療（anti-PD-1 或 dabrafenib＋trametinib）選擇依據。");
+  }
+  if(st.p==="IIB"||st.p==="IIC")add("治療","p","IIB／IIC 復發風險不低於 IIIA–IIIB：可討論 anti-PD-1 輔助治療，並考慮 baseline 影像。");
+  if(st.c==="IV"){
+    add("影像","i","全身影像（PET/CT 或 CT）與腦部 MRI；盡可能取得轉移灶組織確認。");
+    add("檢驗","p","血清 LDH（決定 M 後綴並具預後意義）。");
+    add("分子","p","BRAF V600；acral、黏膜或 chronic sun-damaged 型加驗 KIT，必要時 NRAS／NGS。");
+    if(s.dist.cns)add("治療","i","M1d：會診神經外科與放射腫瘤科，評估 SRS 或手術，並優先考慮具顱內活性的全身性治療。");
+  }
+  if(!L.length)add("開始","p","先在圖上點選原發部位，或選擇 T 狀態。");
+  return L;
+}
+
+/* ---------- render ---------- */
+function render(){
+  renderForm();updateMap();
+  var t=calcT(),n=calcN(),m=calcM(),st=stages(t.T,n.N,m.M,n);
+  var has=!!(s.site||s.tStatus!=="invasive"||Object.keys(s.nodes).length||m.M!=="M0"||s.thick);
+  var pTxt=st.p||(st.pPend?"待 SLNB":"待定");
+  var tn=$("thickNote"),v=parseFloat(s.thick);
+  tn.textContent=(!isNaN(v)&&Math.abs(v*10-Math.round(v*10))>1e-9)?"依第 8 版四捨五入為 "+(Math.round(v*10)/10).toFixed(1)+" mm（如 0.75–0.84 記為 0.8）。":"";
+  var pre=s.tStatus==="invasive"&&t.T!=="TX"?"p":"";
+  $("oT").textContent=pre+t.T;$("oTd").textContent=t.d;
+  $("oN").textContent=n.N;$("oNd").textContent=n.d;
+  $("oM").textContent=m.M;$("oMd").textContent=m.d;
+  $("oC").textContent=st.c||"待定";$("oP").textContent=pTxt;
+  $("stageNote").textContent=has?(st.cNote||""):"";
+  var cur=st.p||(st.c==="III"?null:st.c);
+  var lad=$("ladder");lad.innerHTML="";LADDER.forEach(function(x){var sp=document.createElement("span");sp.textContent=x;if(x===cur)sp.className="on";lad.appendChild(sp);});
+  $("surv").textContent=SURV[cur]?"AJCC 第 8 版資料庫 melanoma-specific survival："+cur+" 期 5 年 "+SURV[cur][0]+"%、10 年 "+SURV[cur][1]+"%（資料多來自現代免疫與標靶輔助治療普及之前）。":"";
+  var miss=t.miss.concat(n.miss,m.miss);
+  if(!st.p&&n.N!=="N0"&&m.M==="M0"&&!miss.length)miss.push(t.T==="TX"?"T 分類（TX 無法細分 III 期）":"此 T／N 組合在 AJCC 表中未定義，請確認輸入");
+  $("missing").innerHTML=has&&miss.length?'<div class="miss"><b>還缺這些資料</b><ul>'+miss.map(function(x){return "<li>"+x+"</li>"}).join("")+"</ul></div>":"";
+  $("todo").innerHTML=todos(t,n,m,st).map(function(x){return "<li>"+x+"</li>"}).join("");
+  var si=siteInfo(s.site),lines=[];
+  lines.push("Cutaneous melanoma"+(s.tStatus==="invasive"&&si?"，原發部位："+si.label:"")+(s.subtype?"（"+s.subtype+"）":""));
+  lines.push("T："+pre+t.T+"｜"+t.d+(s.mit!==""?"；mitotic rate "+s.mit+"/mm²":""));
+  lines.push("N："+n.N+"｜"+n.d+(regionalNodes().length?"（"+regionalNodes().map(function(id){return basinInfo(id).label+" "+s.nodes[id].count+" 顆"}).join("、")+"）":""));
+  lines.push("M："+m.M+"｜"+m.d);
+  lines.push("AJCC 8th：臨床分期 "+(st.c||"待定")+"；病理分期 "+(st.pPend?"待 SLNB（未經病理淋巴評估）":pTxt)+(st.cNote&&st.p?"（"+st.cNote+"）":""));
+  if(miss.length)lines.push("待補："+miss.join("；"));
+  $("summary").value=lines.join("\n");
+  $("barTnm").textContent=has?(pre+t.T+"　"+n.N+"　"+m.M):"尚未輸入";
+  $("barStage").textContent=has?("Stage "+(st.p||st.c||"待定")):"";
+}
+
+/* ---------- events ---------- */
+function toggleNode(id){if(s.nodes[id])delete s.nodes[id];else s.nodes[id]={count:1,det:null,matted:false,override:null};}
+function act(tg){
+  var d=tg.dataset;
+  if(d.mode){s.mode=d.mode;}
+  else if(d.site){if(s.mode!=="primary")return false;s.tStatus="invasive";s.site=d.site;}
+  else if(d.node){toggleNode(d.node);}
+  else if(d.dist){s.dist[d.dist]=!s.dist[d.dist];}
+  else if(d.tstatus){s.tStatus=d.tstatus;}
+  else if(d.ulc){s.ulc=d.ulc==="null"?null:d.ulc==="true";}
+  else if(d.ldh){s.ldh=d.ldh==="null"?null:d.ldh;}
+  else if(d.nodeeval){s.nodeEval=d.nodeeval;}
+  else if(d.rmnode){delete s.nodes[d.rmnode];}
+  else if(d.cnt){var n=s.nodes[d.id];n.count=Math.max(1,Math.min(99,n.count+parseInt(d.cnt,10)));}
+  else if(d.det){s.nodes[d.id].det=d.det;}
+  else if(d.override){var o=s.nodes[d.override];o.override=!isRegional(d.override);}
+  else if(d.act==="reset"){s=fresh();$("thick").value="";$("mit").value="";$("subtype").value="";}
+  else if(d.act==="example"){s=fresh();s.site="scalp|front|L";s.thick="2.4";s.ulc=true;
+    s.nodes["cervical|L"]={count:2,det:"clinical",matted:false,override:null};$("thick").value="2.4";s.mode="node";}
+  else if(d.act==="copy"){var ta=$("summary");ta.select();var ok=false;
+    try{ok=document.execCommand("copy");}catch(e){}
+    if(!ok&&navigator.clipboard){navigator.clipboard.writeText(ta.value).then(function(){$("copied").textContent="已複製"},function(){$("copied").textContent="請長按文字手動複製"});}
+    else $("copied").textContent=ok?"已複製":"請長按文字手動複製";return false;}
+  else return false;
+  return true;
+}
+document.addEventListener("click",function(e){
+  var tg=e.target.closest("[data-mode],[data-site],[data-node],[data-dist],[data-tstatus],[data-ulc],[data-ldh],[data-nodeeval],[data-rmnode],[data-cnt],[data-det],[data-override],[data-act]");
+  if(tg&&act(tg))render();
+});
+document.addEventListener("keydown",function(e){
+  if((e.key==="Enter"||e.key===" ")&&e.target.closest&&e.target.closest("svg")){
+    var tg=e.target.closest("[data-site],[data-node],[data-dist]");if(tg){e.preventDefault();if(act(tg))render();}}
+});
+document.addEventListener("change",function(e){
+  var t=e.target;
+  if(t.id==="siteSel"){s.site=t.value||null;render();}
+  else if(t.id==="subtype"){s.subtype=t.value;render();}
+  else if(t.dataset.msi){s.msi[t.dataset.msi]=t.checked;render();}
+  else if(t.dataset.matted){s.nodes[t.dataset.matted].matted=t.checked;render();}
+});
+$("thick").addEventListener("input",function(e){s.thick=e.target.value;render();});
+$("mit").addEventListener("input",function(e){s.mit=e.target.value;render();});
+
+buildFigs();buildSiteSelect();render();
+})();
+</script>
+</body>
+</html>
