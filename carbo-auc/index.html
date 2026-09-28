@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>標準體重 × Carboplatin AUC 劑量計算</title>
+<style>
+:root{
+  --ink:#0C1F26; --ink-soft:#4A6068; --paper:#EDF1F1; --surface:#FFFFFF;
+  --rule:#C9D5D6; --rule-soft:#E4EAEA;
+  --platinum:#0E6E75; --resist:#9A4B22; --marker:#5A4A86; --amber:#8A6D00;
+  --platinum-bg:#EAF3F3; --resist-bg:#F6EEE9; --marker-bg:#F6F5FA; --test-bg:#F6F2E4;
+  --g1:#0E6E75; --g2:#8A6D00; --g3:#9A4B22; --g4:#8F2F2F;
+  --shadow:0 1px 0 rgba(12,31,38,.06), 0 12px 30px -18px rgba(12,31,38,.35);
+  --serif:"Noto Serif TC",Georgia,serif;
+  --sans:"Noto Sans TC","Helvetica Neue",Arial,sans-serif;
+  --mono:"IBM Plex Mono",Menlo,monospace;
+  --radius:4px;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{-webkit-text-size-adjust:100%;scroll-behavior:smooth}
+body{background:var(--paper);color:var(--ink);font-family:var(--sans);
+  font-size:16px;line-height:1.7;-webkit-font-smoothing:antialiased;padding-bottom:70px}
+a{color:var(--platinum);text-decoration:none;border-bottom:1px solid var(--rule)}
+a:hover{border-bottom-color:var(--platinum)}
+a:focus-visible{outline:2px solid var(--platinum);outline-offset:2px}
+.masthead{max-width:820px;margin:0 auto;padding:38px 20px 18px;border-bottom:2px solid var(--ink)}
+.back{font-family:var(--mono);font-size:11.5px;color:var(--ink-soft);border:none;display:inline-block;margin-bottom:14px}
+.back:hover{color:var(--platinum)}
+.eyebrow{font-family:var(--mono);font-size:11.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--platinum);margin-bottom:8px}
+.masthead h1{font-family:var(--serif);font-weight:900;font-size:clamp(26px,5vw,38px);line-height:1.15}
+.masthead .sub{margin-top:8px;color:var(--ink-soft);font-size:14.5px}
+.masthead .meta{margin-top:10px;font-family:var(--mono);font-size:11px;color:var(--ink-soft)}
+.xlink{margin-top:12px;font-size:.86rem;color:var(--ink-soft)}
+main{max-width:820px;margin:0 auto;padding:16px 20px}
+.principles{background:var(--test-bg);border:1px solid var(--rule);border-left:4px solid var(--amber);
+  border-radius:var(--radius);padding:14px 16px;margin-bottom:18px;font-size:.88rem;box-shadow:var(--shadow)}
+.principles h2{font-family:var(--mono);font-size:12px;letter-spacing:.12em;text-transform:uppercase;
+  color:var(--amber);margin-bottom:8px}
+.principles li{margin-left:1.2em;margin-bottom:4px;color:var(--ink-soft)}
+.principles b{color:var(--ink)}
+.conv{background:var(--surface);border:1px solid var(--rule);border-radius:var(--radius);
+  padding:14px 16px;margin-bottom:18px;box-shadow:var(--shadow);font-size:.86rem}
+.conv h2{font-family:var(--mono);font-size:12px;letter-spacing:.12em;text-transform:uppercase;
+  color:var(--marker);margin-bottom:8px}
+.conv h2.p{color:var(--platinum)}
+.conv h2.r{color:var(--resist)}
+.anchor{font-family:var(--mono);font-size:.82rem;background:var(--marker-bg);border-radius:var(--radius);
+  padding:8px 12px;margin-bottom:10px;color:var(--ink);overflow-x:auto}
+.hint{font-size:.82rem;color:var(--ink-soft);margin-bottom:8px}
+.crow{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin:8px 0}
+.crow label{font-size:.82rem;color:var(--ink-soft);font-family:var(--mono)}
+.pair{display:inline-flex;align-items:center;gap:6px;flex:0 0 auto}
+.crow select,.crow input{padding:7px 10px;border:1px solid var(--rule);border-radius:var(--radius);
+  font-size:.9rem;background:var(--surface);color:var(--ink);font-family:var(--sans)}
+.crow input{width:86px}
+.crow input:focus,.crow select:focus{outline:2px solid var(--platinum);outline-offset:-1px}
+.eqout{display:flex;gap:6px;flex-wrap:wrap;margin-top:8px}
+.eqout .cell{flex:1 1 30%;min-width:140px;background:var(--paper);border:1px solid var(--rule);
+  border-radius:var(--radius);padding:6px 10px;font-size:.84rem}
+.eqout .lb{font-family:var(--mono);font-size:10px;letter-spacing:.08em;text-transform:uppercase;
+  color:var(--ink-soft);display:block}
+.eqout .val{font-weight:700;font-size:1.02rem;color:var(--platinum)}
+.verdict{margin-top:10px;border-radius:var(--radius);padding:10px 12px;font-size:.88rem;border:1px solid var(--rule)}
+.verdict b{font-family:var(--mono);font-size:11.5px;letter-spacing:.1em;text-transform:uppercase;display:block;margin-bottom:3px}
+.v-ok{background:var(--platinum-bg);border-left:4px solid var(--platinum)}
+.v-ok b{color:var(--platinum)}
+.v-warn{background:var(--test-bg);border-left:4px solid var(--amber)}
+.v-warn b{color:var(--amber)}
+.v-bad{background:var(--resist-bg);border-left:4px solid var(--resist)}
+.v-bad b{color:var(--resist)}
+.gradeline{display:flex;gap:10px;align-items:center;margin:7px 0}
+.gb{flex:0 0 auto;width:40px;height:24px;border-radius:3px;color:#fff;font-weight:700;font-size:.8rem;
+  font-family:var(--mono);display:flex;align-items:center;justify-content:center}
+.g0{background:var(--ink-soft)}.g1{background:var(--g1)}.g2{background:var(--g2)}.g3{background:var(--g3)}.g4{background:var(--g4)}
+.gradeline .who{font-family:var(--mono);font-size:.8rem;color:var(--ink-soft);min-width:74px}
+.gradeline .det{font-size:.85rem;color:var(--ink-soft)}
+.finalgrade{margin-top:10px;padding:11px 13px;border-radius:var(--radius);background:var(--paper);border:1px solid var(--rule)}
+.finalgrade .lb{font-family:var(--mono);font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-soft)}
+.finalgrade .act{margin-top:4px;font-size:.9rem}
+.finalgrade .act b{color:var(--platinum)}
+.cmp{background:var(--surface);border:1px solid var(--rule);border-radius:var(--radius);
+  padding:14px 16px;margin-bottom:18px;box-shadow:var(--shadow);font-size:.86rem}
+.cmp h2{font-family:var(--mono);font-size:12px;letter-spacing:.12em;text-transform:uppercase;
+  color:var(--platinum);margin-bottom:8px}
+.tw{overflow-x:auto}
+.cmp table{width:100%;border-collapse:collapse;margin:6px 0;min-width:460px}
+.cmp th,.cmp td{border:1px solid var(--rule-soft);padding:5px 8px;text-align:left;font-size:.82rem;vertical-align:top}
+.cmp th{background:var(--paper);font-family:var(--mono);font-size:11px;letter-spacing:.06em}
+.cmp td.n{font-family:var(--mono);white-space:nowrap}
+.cnote{font-size:.78rem;color:var(--ink-soft);margin-top:10px;border-top:1px solid var(--rule-soft);padding-top:8px}
+.cnote b{color:var(--resist)}
+footer{max-width:820px;margin:20px auto 0;padding:14px 20px 0;font-size:.74rem;color:var(--ink-soft);
+  border-top:1px solid var(--rule)}
+@media print{body{background:#fff;padding-bottom:0}.conv,.cmp{box-shadow:none}}
+
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px 14px;margin:6px 0 4px}
+.fld{display:flex;flex-direction:column;gap:4px}
+.fld label{font-size:.8rem;color:var(--ink-soft);font-family:var(--mono)}
+.fld input,.fld select{padding:8px 10px;border:1px solid var(--rule);border-radius:var(--radius);font-size:1rem;background:var(--surface);color:var(--ink);font-family:var(--sans);width:100%}
+.fld input:focus,.fld select:focus{outline:2px solid var(--platinum);outline-offset:-1px}
+.seg{display:inline-flex;border:1px solid var(--rule);border-radius:var(--radius);overflow:hidden}
+.seg button{border:none;background:var(--surface);padding:8px 14px;font-size:.95rem;font-family:var(--sans);color:var(--ink-soft);cursor:pointer}
+.seg button+button{border-left:1px solid var(--rule)}
+.seg button[aria-pressed="true"]{background:var(--platinum);color:#fff;font-weight:600}
+.opt{margin-top:10px;font-size:.84rem}
+.opt summary{cursor:pointer;color:var(--marker);font-family:var(--mono);font-size:.8rem;letter-spacing:.04em}
+.dose{margin-top:12px;padding:14px 16px;border-radius:var(--radius);background:var(--platinum-bg);border:1px solid var(--rule);border-left:5px solid var(--platinum)}
+.dose .lb{font-family:var(--mono);font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-soft)}
+.dose .big{font-family:var(--serif);font-weight:900;font-size:clamp(28px,6vw,40px);color:var(--platinum);line-height:1.2;font-variant-numeric:tabular-nums}
+.dose .how{font-family:var(--mono);font-size:.82rem;color:var(--ink);margin-top:4px;overflow-wrap:anywhere}
+.cmp tr.pick td{background:var(--platinum-bg);font-weight:600}
+.eqout .val{font-variant-numeric:tabular-nums}
+.warns{margin-top:10px;display:flex;flex-direction:column;gap:8px}
+.warns:empty{display:none}
+.fx{font-family:var(--mono);font-size:.82rem;background:var(--marker-bg);border-radius:var(--radius);padding:8px 12px;margin:6px 0;overflow-wrap:anywhere}
+</style>
+</head>
+<body>
+
+<header class="masthead">
+  <a class="back" href="../">← 回工具總覽</a>
+  <div class="eyebrow">Onco-tools · Dosing</div>
+  <h1>標準體重 × Carboplatin AUC 劑量計算</h1>
+  <div class="sub">輸入身高、體重、年齡、肌酸酐與目標 AUC:算出標準體重(國健署 BMI 22 與 Devine 理想體重)、調整體重、Cockcroft-Gault 肌酸酐清除率,再用 Calvert 公式得到 carboplatin 劑量。下方並列三種體重算出的劑量,看體重選擇差多少。</div>
+  <div class="meta"><b>依據</b> Calvert 1989 · Cockcroft-Gault 1976 · Devine 1974 · NCI/CTEP 2010 GFR 上限與肌酸酐下限 &nbsp;|&nbsp; <b>整理</b> 2026-09</div>
+</header>
+
+<main>
+
+<section class="conv" aria-labelledby="h-in">
+  <h2 id="h-in" class="p">輸入</h2>
+  <div class="crow"><span class="seg" role="group" aria-label="性別"><button type="button" data-sex="m" aria-pressed="true">男</button><button type="button" data-sex="f" aria-pressed="false">女</button></span></div>
+  <div class="grid">
+    <div class="fld"><label for="age">年齡(歲)</label><input id="age" type="number" inputmode="numeric" min="18" max="110" value="60"></div>
+    <div class="fld"><label for="ht">身高(cm)</label><input id="ht" type="number" inputmode="decimal" min="100" max="230" step="0.1" value="165"></div>
+    <div class="fld"><label for="wt">實際體重(kg)</label><input id="wt" type="number" inputmode="decimal" min="20" max="300" step="0.1" value="70"></div>
+    <div class="fld"><label for="scr">血清肌酸酐(mg/dL)</label><input id="scr" type="number" inputmode="decimal" min="0.1" max="20" step="0.01" value="0.9"></div>
+    <div class="fld"><label for="auc">目標 AUC(mg/mL·min)</label><input id="auc" type="number" inputmode="decimal" min="0.5" max="10" step="0.5" value="5" list="aucs"><datalist id="aucs"><option value="2"><option value="4"><option value="5"><option value="6"></datalist></div>
+    <div class="fld"><label for="wsel">CrCl 採用的體重</label><select id="wsel"><option value="auto">自動(依下方規則)</option><option value="abw">實際體重</option><option value="ibw">理想體重(Devine)</option><option value="adj">調整體重</option></select></div>
+  </div>
+  <details class="opt"><summary>進階選項:實測 GFR、肌酸酐下限、GFR 上限</summary>
+    <div class="grid">
+      <div class="fld"><label for="mgfr">實測 GFR(mL/min,選填)</label><input id="mgfr" type="number" inputmode="decimal" min="1" max="250" step="1" placeholder="例:核醫 GFR"></div>
+      <div class="fld"><label for="floor">肌酸酐下限</label><select id="floor"><option value="0">不設(依實測值)</option><option value="0.6">低於 0.6 以 0.6 計(NCI/CTEP)</option><option value="0.7">低於 0.7 以 0.7 計(院內規範)</option><option value="0.8">低於 0.8 以 0.8 計(院內規範)</option></select></div>
+      <div class="fld"><label for="cap">GFR 上限</label><select id="cap"><option value="125">125 mL/min(NCI/CTEP 建議)</option><option value="0">不設上限</option></select></div>
+    </div>
+    <p class="hint" style="margin-top:6px">有實測 GFR 時,Calvert 公式改用實測值(公式原本就是以實測 GFR 建立)。NCI/CTEP 2010 對肌酸酐異常偏低者的建議是:以 0.6 mg/dL 為下限估算,或把估算 GFR 上限設為 125 mL/min;0.7、0.8 是部分醫院自訂的規範。</p>
+  </details>
+</section>
+
+<section class="conv" aria-labelledby="h-wt">
+  <h2 id="h-wt">體重與體型</h2>
+  <div class="eqout">
+    <div class="cell"><span class="lb">國健署標準體重(BMI 22)</span><span class="val" id="o_std">—</span></div>
+    <div class="cell"><span class="lb">理想體重 IBW(Devine)</span><span class="val" id="o_ibw">—</span></div>
+    <div class="cell"><span class="lb">實際 / 理想</span><span class="val" id="o_pct">—</span></div>
+    <div class="cell"><span class="lb">調整體重 AdjBW</span><span class="val" id="o_adj">—</span></div>
+    <div class="cell"><span class="lb">BMI</span><span class="val" id="o_bmi">—</span></div>
+    <div class="cell"><span class="lb">體表面積 BSA(Mosteller)</span><span class="val" id="o_bsa">—</span></div>
+  </div>
+  <p class="hint" style="margin-top:8px">國健署「標準體重」是一般健康衛教用;化療劑量計算用的是 Devine 理想體重,兩者數值不同,不要混用。</p>
+</section>
+
+<section class="conv" aria-labelledby="h-dose">
+  <h2 id="h-dose" class="p">Carboplatin 劑量</h2>
+  <div class="eqout">
+    <div class="cell"><span class="lb">採用體重</span><span class="val" id="o_wuse">—</span></div>
+    <div class="cell"><span class="lb">CrCl(Cockcroft-Gault)</span><span class="val" id="o_crcl">—</span></div>
+    <div class="cell"><span class="lb">代入 Calvert 的 GFR</span><span class="val" id="o_gfr">—</span></div>
+  </div>
+  <div class="dose" aria-live="polite">
+    <span class="lb">劑量 = AUC ×(GFR + 25)</span>
+    <div class="big" id="o_dose">—</div>
+    <div class="how" id="o_how"></div>
+  </div>
+  <div class="warns" id="warns"></div>
+</section>
+
+<section class="cmp" aria-labelledby="h-cmp">
+  <h2 id="h-cmp">三種體重算出的劑量</h2>
+  <div class="tw"><table>
+    <thead><tr><th>CrCl 用的體重</th><th>體重(kg)</th><th>CrCl(mL/min)</th><th>代入 GFR</th><th>劑量(mg)</th></tr></thead>
+    <tbody id="cmpBody"></tbody>
+  </table></div>
+  <p class="cnote">以同一位病人、同一個 AUC,只換 Cockcroft-Gault 用的體重。<b>肥胖或低體重時差距最大</b>,這正是各院規範要寫清楚用哪一種體重的原因。</p>
+</section>
+
+<section class="principles" aria-labelledby="h-rule">
+  <h2 id="h-rule">「自動」採用體重的規則</h2>
+  <ul>
+    <li>實際體重<b>低於</b>理想體重 → 用<b>實際體重</b>。</li>
+    <li>實際體重在理想體重的 <b>100–120%</b> → 用<b>理想體重</b>。</li>
+    <li>實際體重<b>超過理想體重 120%</b> → 用<b>調整體重</b> = IBW + 0.4 ×(實際 − IBW)。</li>
+    <li>這是藥學實務常見的慣例(0.4 係數與 120% 門檻),<b>並非出自特定指引</b>;請依貴院化療規範,必要時在上方手動指定。</li>
+  </ul>
+</section>
+
+<section class="cmp" aria-labelledby="h-fx">
+  <h2 id="h-fx">公式</h2>
+  <div class="fx">國健署標準體重 = 22 × 身高(m)²</div>
+  <div class="fx">Devine IBW:男 = 50 + 2.3 ×(身高 in − 60);女 = 45.5 + 2.3 ×(身高 in − 60);身高 in = cm ÷ 2.54</div>
+  <div class="fx">調整體重 AdjBW = IBW + 0.4 ×(實際體重 − IBW)</div>
+  <div class="fx">BSA(Mosteller)= √(身高 cm × 體重 kg ÷ 3600)</div>
+  <div class="fx">CrCl(Cockcroft-Gault)=(140 − 年齡)× 體重 ÷(72 × SCr);女性 × 0.85</div>
+  <div class="fx">Carboplatin 劑量(mg)= 目標 AUC ×(GFR + 25)</div>
+  <div class="fx">GFR 上限 125 mL/min → 最高劑量 = AUC × 150(AUC 6 → 900 mg、AUC 5 → 750 mg、AUC 4 → 600 mg)(NCI/CTEP 2010)</div>
+  <div class="fx">肌酸酐異常偏低:以 0.6 mg/dL 為下限估算,或 GFR 上限 125 mL/min(NCI/CTEP 2010)</div>
+</section>
+
+<section class="principles" aria-labelledby="h-pit">
+  <h2 id="h-pit">常見陷阱</h2>
+  <ul>
+    <li><b>把 eGFR(mL/min/1.73 m²)直接代入 Calvert</b> —— Calvert 要的是病人實際的 mL/min;每 1.73 m² 的值要先乘上病人 BSA ÷ 1.73 才能用。估算式整體傾向高估 GFR 與劑量(Craig 2012)。</li>
+    <li><b>肌酸酐很低就照算</b> —— 肌肉量少(高齡、惡病質、長期臥床)時肌酸酐偏低,Cockcroft-Gault 會高估清除率,劑量跟著偏高。</li>
+    <li><b>忘了 GFR 上限</b> —— 肌酸酐檢驗標準化(IDMS)後數值偏低,估算 GFR 容易偏高;NCI/CTEP 2010 建議代入 Calvert 的 GFR 不超過 125 mL/min。</li>
+    <li><b>AUC 的單位與方案</b> —— 目標 AUC 依方案而定,每週方案與三週方案差很多;以方案原文為準。</li>
+  </ul>
+</section>
+
+</main>
+
+<footer>
+  <p id="refs">出處:Calvert AH, et al. J Clin Oncol 1989;7:1748–56(PMID 2681557;公式亦載於 Paraplatin 美國仿單)· Cockcroft DW, Gault MH. Nephron 1976;16:31–41(PMID 1244564)· Devine BJ. Drug Intell Clin Pharm 1974;8:650–5(原文為 gentamicin 用藥討論,非體重公式推導研究,無 PMID;來源考證見 Pai MP, Paloucek FP. Ann Pharmacother 2000;34:1066–9,PMID 10981254)· Mosteller RD. N Engl J Med 1987;317:1098(PMID 3657876)· NCI/CTEP. Follow-up for Information Letter Regarding AUC-Based Dosing of Carboplatin, 2010-10-22(<a href="https://dctd.cancer.gov/research/ctep-trials/memos/carboplatin-dosing.pdf" rel="noopener">PDF</a>)· Craig AJ, et al. Br J Cancer 2012;107:1310–6(PMID 22935580)· 國民健康署成人健康體位標準(BMI 22)。</p>
+  <p style="margin-top:4px">⚠ 教學/速查用途,非處方指令;實際劑量請依方案原文、院內化療規範與藥師覆核。</p>
+</footer>
+
+<script>
+(function(){
+"use strict";
+var $=function(id){return document.getElementById(id);};
+var sex="m";
+function num(id){var v=parseFloat($(id).value);return isFinite(v)?v:NaN;}
+function f1(x){return (Math.round(x*10)/10).toFixed(1);}
+function f2(x){return (Math.round(x*100)/100).toFixed(2);}
+function r0(x){return String(Math.round(x));}
+function weights(ht,wt){
+  var m=ht/100,inch=ht/2.54;
+  var std=22*m*m;
+  var ibw=(sex==="m"?50:45.5)+2.3*(inch-60);
+  var adj=ibw+0.4*(wt-ibw);
+  return {std:std,ibw:ibw,adj:adj,bmi:wt/(m*m),bsa:Math.sqrt(ht*wt/3600),pct:wt/ibw*100,inch:inch};
+}
+function autoPick(W,wt){
+  if(wt<W.ibw)return {k:"abw",why:"實際體重低於理想體重"};
+  if(wt<=1.2*W.ibw)return {k:"ibw",why:"實際體重在理想體重 100–120%"};
+  return {k:"adj",why:"實際體重超過理想體重 120%"};
+}
+function crcl(age,w,scr){var c=(140-age)*w/(72*scr);return sex==="f"?c*0.85:c;}
+var LABEL={abw:"實際體重",ibw:"理想體重",adj:"調整體重"};
+function warn(cls,title,text){return '<div class="verdict '+cls+'"><b>'+title+'</b>'+text+'</div>';}
+function calc(){
+  var age=num("age"),ht=num("ht"),wt=num("wt"),scr0=num("scr"),auc=num("auc"),mgfr=num("mgfr");
+  var floor=parseFloat($("floor").value)||0,cap=parseFloat($("cap").value)||0,sel=$("wsel").value;
+  var ok=[age,ht,wt,scr0,auc].every(function(x){return isFinite(x)&&x>0;});
+  var ids=["o_std","o_ibw","o_pct","o_adj","o_bmi","o_bsa","o_wuse","o_crcl","o_gfr","o_dose"];
+  if(!ok){ids.forEach(function(i){$(i).textContent="—";});$("o_how").textContent="請填齊年齡、身高、體重、肌酸酐與 AUC";$("cmpBody").innerHTML="";$("warns").innerHTML="";return null;}
+  var W=weights(ht,wt),scr=Math.max(scr0,floor),pick=sel==="auto"?autoPick(W,wt):{k:sel,why:"手動指定"};
+  var wmap={abw:wt,ibw:W.ibw,adj:W.adj},wuse=wmap[pick.k];
+  var cc=crcl(age,wuse,scr),useM=isFinite(mgfr)&&mgfr>0,g=useM?mgfr:cc,capped=false;
+  if(cap>0&&g>cap){g=cap;capped=true;}
+  var dose=auc*(g+25);
+  $("o_std").textContent=f1(W.std)+" kg";$("o_ibw").textContent=f1(W.ibw)+" kg";$("o_pct").textContent=r0(W.pct)+" %";
+  $("o_adj").textContent=f1(W.adj)+" kg";$("o_bmi").textContent=f1(W.bmi);$("o_bsa").textContent=f2(W.bsa)+" m²";
+  $("o_wuse").textContent=LABEL[pick.k]+" "+f1(wuse)+" kg";$("o_crcl").textContent=f1(cc)+" mL/min";
+  $("o_gfr").textContent=f1(g)+" mL/min"+(useM?"(實測)":"")+(capped?"(已套上限)":"");
+  $("o_dose").textContent=r0(dose)+" mg";
+  $("o_how").textContent=f1(auc)+" ×("+f1(g)+" + 25)= "+f1(dose)+" mg"+(pick.k&&!useM?" · 體重:"+LABEL[pick.k]+"("+pick.why+")":"")+(useM?" · 使用實測 GFR":"");
+  var rows=["abw","ibw","adj"].map(function(k){var c=crcl(age,wmap[k],scr),gg=useM?mgfr:c;if(cap>0&&gg>cap)gg=cap;
+    return '<tr class="'+(k===pick.k?"pick":"")+'" data-k="'+k+'"><td>'+LABEL[k]+(k===pick.k?" ← 採用":"")+'</td><td class="n">'+f1(wmap[k])+'</td><td class="n">'+f1(c)+'</td><td class="n">'+f1(gg)+'</td><td class="n">'+r0(auc*(gg+25))+'</td></tr>';});
+  $("cmpBody").innerHTML=rows.join("");
+  var w=[];
+  if(capped)w.push(warn("v-warn","已套 GFR 上限",(useM?"實測":"估算")+" GFR 超過 "+cap+" mL/min,以 "+cap+" 計;本 AUC 的最高劑量 = "+f1(auc)+" × 150 = "+r0(auc*150)+" mg。"));
+  if(scr0<0.6&&floor===0)w.push(warn("v-warn","肌酸酐異常偏低",scr0+" mg/dL 可能反映肌肉量少,Cockcroft-Gault 會高估清除率。NCI/CTEP 建議以 0.6 mg/dL 為下限估算,或 GFR 上限 125 mL/min(進階選項)。"));
+  if(floor>0&&scr0<floor)w.push(warn("v-warn","已套肌酸酐下限","實測 "+scr0+" mg/dL,依設定以 "+floor+" mg/dL 計算。"));
+  if(W.inch<60)w.push(warn("v-warn","身高低於 152.4 cm","Devine 公式以 5 呎(152.4 cm)為基準,低於此身高時理想體重會被低估,解讀要小心。"));
+  if(W.bmi>=30)w.push(warn("v-warn","肥胖(BMI ≥ 30)","體重選擇對劑量影響最大,請對照下表三種體重的差距,並依院內規範決定。"));
+  if(age>=80)w.push(warn("v-warn","高齡","年齡 ≥ 80 歲時肌肉量常偏低,Cockcroft-Gault 可能高估腎功能。"));
+  if(cc<30&&!useM)w.push(warn("v-bad","腎功能明顯下降","CrCl < 30 mL/min,估算誤差大;建議取得實測 GFR 並與藥師討論。"));
+  $("warns").innerHTML=w.join("");
+  return {W:W,pick:pick.k,wuse:wuse,crcl:cc,gfr:g,capped:capped,dose:dose};
+}
+document.querySelectorAll("[data-sex]").forEach(function(b){b.addEventListener("click",function(){sex=b.dataset.sex;
+  document.querySelectorAll("[data-sex]").forEach(function(x){x.setAttribute("aria-pressed",String(x===b));});calc();});});
+["age","ht","wt","scr","auc","mgfr"].forEach(function(id){$(id).addEventListener("input",calc);});
+["wsel","floor","cap"].forEach(function(id){$(id).addEventListener("change",calc);});
+
+calc();
+})();
+</script>
+</body>
+</html>
