@@ -114,6 +114,32 @@ footer{max-width:820px;margin:20px auto 0;padding:14px 20px 0;font-size:.74rem;c
 .warns{margin-top:10px;display:flex;flex-direction:column;gap:8px}
 .warns:empty{display:none}
 .fx{font-family:var(--mono);font-size:.82rem;background:var(--marker-bg);border-radius:var(--radius);padding:8px 12px;margin:6px 0;overflow-wrap:anywhere}
+.kv{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:0 18px;margin:12px 0 0;font-size:.86rem}
+.kv div{display:flex;justify-content:space-between;gap:8px;border-bottom:1px solid var(--rule-soft);padding:4px 0}
+.kv dt{color:var(--ink-soft)} .kv dd{margin:0;font-weight:600;font-variant-numeric:tabular-nums;text-align:right;white-space:nowrap}
+.fold{background:var(--surface);border:1px solid var(--rule);border-radius:var(--radius);margin-bottom:10px;padding:0 16px;font-size:.86rem}
+.fold summary{cursor:pointer;padding:11px 0;font-family:var(--mono);font-size:12px;letter-spacing:.08em;color:var(--platinum)}
+.fold[open]{padding-bottom:12px}
+.fold table{width:100%;border-collapse:collapse;margin:4px 0 8px;min-width:440px}
+.fold th,.fold td{border:1px solid var(--rule-soft);padding:5px 8px;text-align:left;font-size:.82rem}
+.fold th{background:var(--paper);font-family:var(--mono);font-size:11px}
+.fold td.n{font-family:var(--mono);white-space:nowrap}
+.fold tr.pick td{background:var(--platinum-bg);font-weight:600}
+.plist{margin:6px 0 0 1.2em;color:var(--ink-soft)} .plist li{margin-bottom:4px} .plist b{color:var(--ink)}
+footer summary{cursor:pointer}
+.step h2{display:flex;align-items:center;gap:10px;font-size:13px}
+.step .no{display:inline-flex;align-items:center;justify-content:center;width:24px;height:24px;border-radius:50%;background:var(--ink);color:#fff;font-family:var(--mono);font-size:12px;letter-spacing:0}
+.step h2.p .no{background:var(--platinum)}
+.pickrow{display:flex;flex-wrap:wrap;gap:10px 18px;align-items:flex-end;margin:12px 0 6px}
+.pickrow .fld{flex:0 1 220px}
+.picked{padding:8px 12px;border-radius:var(--radius);background:var(--platinum-bg);border-left:4px solid var(--platinum);font-weight:600}
+.picked .lb{font-family:var(--mono);font-size:10.5px;letter-spacing:.1em;color:var(--ink-soft);margin-right:8px}
+.ctab{width:100%;border-collapse:collapse;margin:8px 0 4px;min-width:440px}
+.ctab th,.ctab td{border:1px solid var(--rule-soft);padding:5px 8px;text-align:left;font-size:.82rem}
+.ctab th{background:var(--paper);font-family:var(--mono);font-size:11px}
+.ctab td.n{font-family:var(--mono);white-space:nowrap}
+.ctab tr.pick td{background:var(--platinum-bg);font-weight:600}
+.refh{font-family:var(--mono);font-size:12px;letter-spacing:.14em;color:var(--ink-soft);margin:22px 0 8px;text-transform:uppercase}
 </style>
 </head>
 <body>
@@ -122,82 +148,79 @@ footer{max-width:820px;margin:20px auto 0;padding:14px 20px 0;font-size:.74rem;c
   <a class="back" href="../">← 回工具總覽</a>
   <div class="eyebrow">Onco-tools · Dosing</div>
   <h1>標準體重 × Carboplatin AUC 劑量計算</h1>
-  <div class="sub">輸入身高、體重、年齡、肌酸酐與目標 AUC:算出標準體重(國健署 BMI 22 與 Devine 理想體重)、調整體重、Cockcroft-Gault 肌酸酐清除率,再用 Calvert 公式得到 carboplatin 劑量。下方並列三種體重算出的劑量,看體重選擇差多少。</div>
+  <div class="sub">填入病人資料,即時得到 carboplatin 劑量;計算細節與公式可展開查看。</div>
   <div class="meta"><b>依據</b> Calvert 1989 · Cockcroft-Gault 1976 · Devine 1974 · NCI/CTEP 2010 GFR 上限與肌酸酐下限 &nbsp;|&nbsp; <b>整理</b> 2026-09</div>
 </header>
 
 <main>
 
-<section class="conv" aria-labelledby="h-in">
-  <h2 id="h-in" class="p">輸入</h2>
+<section class="conv step" aria-labelledby="h-s1">
+  <h2 id="h-s1"><span class="no">1</span>病人資料</h2>
   <div class="crow"><span class="seg" role="group" aria-label="性別"><button type="button" data-sex="m" aria-pressed="true">男</button><button type="button" data-sex="f" aria-pressed="false">女</button></span></div>
   <div class="grid">
     <div class="fld"><label for="age">年齡(歲)</label><input id="age" type="number" inputmode="numeric" min="18" max="110" value="60"></div>
     <div class="fld"><label for="ht">身高(cm)</label><input id="ht" type="number" inputmode="decimal" min="100" max="230" step="0.1" value="165"></div>
     <div class="fld"><label for="wt">實際體重(kg)</label><input id="wt" type="number" inputmode="decimal" min="20" max="300" step="0.1" value="70"></div>
     <div class="fld"><label for="scr">血清肌酸酐(mg/dL)</label><input id="scr" type="number" inputmode="decimal" min="0.1" max="20" step="0.01" value="0.9"></div>
-    <div class="fld"><label for="auc">目標 AUC(mg/mL·min)</label><input id="auc" type="number" inputmode="decimal" min="0.5" max="10" step="0.5" value="5" list="aucs"><datalist id="aucs"><option value="2"><option value="4"><option value="5"><option value="6"></datalist></div>
-    <div class="fld"><label for="wsel">CrCl 採用的體重</label><select id="wsel"><option value="auto">自動(依下方規則)</option><option value="abw">實際體重</option><option value="ibw">理想體重(Devine)</option><option value="adj">調整體重</option></select></div>
   </div>
-  <details class="opt"><summary>進階選項:實測 GFR、肌酸酐下限、GFR 上限</summary>
+</section>
+
+<section class="conv step" aria-labelledby="h-s2">
+  <h2 id="h-s2"><span class="no">2</span>體重</h2>
+  <dl class="kv">
+    <div><dt>國健署標準體重</dt><dd id="o_std">—</dd></div>
+    <div><dt>理想體重(Devine)</dt><dd id="o_ibw">—</dd></div>
+    <div><dt>實際 / 理想</dt><dd id="o_pct">—</dd></div>
+    <div><dt>調整體重</dt><dd id="o_adj">—</dd></div>
+    <div><dt>BMI</dt><dd id="o_bmi">—</dd></div>
+    <div><dt>BSA(Mosteller)</dt><dd id="o_bsa">—</dd></div>
+  </dl>
+  <div class="pickrow">
+    <div class="fld"><label for="wsel">算清除率用的體重</label><select id="wsel"><option value="auto">自動</option><option value="abw">實際體重</option><option value="ibw">理想體重(Devine)</option><option value="adj">調整體重</option></select></div>
+    <div class="picked"><span class="lb">採用</span><span id="o_wuse">—</span></div>
+  </div>
+  <p class="hint">自動:低於理想體重用實際體重;理想體重 100–120% 用理想體重;超過 120% 用調整體重 = IBW + 0.4 ×(實際 − IBW)。此為藥學慣例,非出自特定指引,請依院內規範。國健署標準體重為衛教用,不用於化療計算。</p>
+</section>
+
+<section class="conv step" aria-labelledby="h-s3">
+  <h2 id="h-s3"><span class="no">3</span>腎功能</h2>
+  <dl class="kv">
+    <div><dt>CrCl(Cockcroft-Gault)</dt><dd id="o_crcl">—</dd></div>
+    <div><dt>代入 Calvert 的 GFR</dt><dd id="o_gfr">—</dd></div>
+  </dl>
+  <details class="opt"><summary>實測 GFR、肌酸酐下限、GFR 上限</summary>
     <div class="grid">
       <div class="fld"><label for="mgfr">實測 GFR(mL/min,選填)</label><input id="mgfr" type="number" inputmode="decimal" min="1" max="250" step="1" placeholder="例:核醫 GFR"></div>
       <div class="fld"><label for="floor">肌酸酐下限</label><select id="floor"><option value="0">不設(依實測值)</option><option value="0.6">低於 0.6 以 0.6 計(NCI/CTEP)</option><option value="0.7">低於 0.7 以 0.7 計(院內規範)</option><option value="0.8">低於 0.8 以 0.8 計(院內規範)</option></select></div>
       <div class="fld"><label for="cap">GFR 上限</label><select id="cap"><option value="125">125 mL/min(NCI/CTEP 建議)</option><option value="0">不設上限</option></select></div>
     </div>
-    <p class="hint" style="margin-top:6px">有實測 GFR 時,Calvert 公式改用實測值(公式原本就是以實測 GFR 建立)。NCI/CTEP 2010 對肌酸酐異常偏低者的建議是:以 0.6 mg/dL 為下限估算,或把估算 GFR 上限設為 125 mL/min;0.7、0.8 是部分醫院自訂的規範。</p>
+    <p class="hint" style="margin-top:6px">有實測 GFR 時改用實測值。NCI/CTEP 2010:肌酸酐異常偏低者以 0.6 mg/dL 為下限估算,或 GFR 上限 125 mL/min;0.7、0.8 為部分醫院自訂。</p>
   </details>
 </section>
 
-<section class="conv" aria-labelledby="h-wt">
-  <h2 id="h-wt">體重與體型</h2>
-  <div class="eqout">
-    <div class="cell"><span class="lb">國健署標準體重(BMI 22)</span><span class="val" id="o_std">—</span></div>
-    <div class="cell"><span class="lb">理想體重 IBW(Devine)</span><span class="val" id="o_ibw">—</span></div>
-    <div class="cell"><span class="lb">實際 / 理想</span><span class="val" id="o_pct">—</span></div>
-    <div class="cell"><span class="lb">調整體重 AdjBW</span><span class="val" id="o_adj">—</span></div>
-    <div class="cell"><span class="lb">BMI</span><span class="val" id="o_bmi">—</span></div>
-    <div class="cell"><span class="lb">體表面積 BSA(Mosteller)</span><span class="val" id="o_bsa">—</span></div>
-  </div>
-  <p class="hint" style="margin-top:8px">國健署「標準體重」是一般健康衛教用;化療劑量計算用的是 Devine 理想體重,兩者數值不同,不要混用。</p>
-</section>
-
-<section class="conv" aria-labelledby="h-dose">
-  <h2 id="h-dose" class="p">Carboplatin 劑量</h2>
-  <div class="eqout">
-    <div class="cell"><span class="lb">採用體重</span><span class="val" id="o_wuse">—</span></div>
-    <div class="cell"><span class="lb">CrCl(Cockcroft-Gault)</span><span class="val" id="o_crcl">—</span></div>
-    <div class="cell"><span class="lb">代入 Calvert 的 GFR</span><span class="val" id="o_gfr">—</span></div>
+<section class="conv step" aria-labelledby="h-s4">
+  <h2 id="h-s4" class="p"><span class="no">4</span>劑量</h2>
+  <div class="grid" style="max-width:340px">
+    <div class="fld"><label for="auc">目標 AUC(mg/mL·min)</label><input id="auc" type="number" inputmode="decimal" min="0.5" max="10" step="0.5" value="5" list="aucs"><datalist id="aucs"><option value="2"><option value="4"><option value="5"><option value="6"></datalist></div>
   </div>
   <div class="dose" aria-live="polite">
-    <span class="lb">劑量 = AUC ×(GFR + 25)</span>
+    <span class="lb">Carboplatin 劑量 = AUC ×(GFR + 25)</span>
     <div class="big" id="o_dose">—</div>
     <div class="how" id="o_how"></div>
   </div>
   <div class="warns" id="warns"></div>
+  <details class="opt"><summary>三種體重算出的劑量比較</summary>
+    <div class="tw"><table class="ctab">
+      <thead><tr><th>清除率用的體重</th><th>體重(kg)</th><th>CrCl(mL/min)</th><th>代入 GFR</th><th>劑量(mg)</th></tr></thead>
+      <tbody id="cmpBody"></tbody>
+    </table></div>
+  </details>
 </section>
 
-<section class="cmp" aria-labelledby="h-cmp">
-  <h2 id="h-cmp">三種體重算出的劑量</h2>
-  <div class="tw"><table>
-    <thead><tr><th>CrCl 用的體重</th><th>體重(kg)</th><th>CrCl(mL/min)</th><th>代入 GFR</th><th>劑量(mg)</th></tr></thead>
-    <tbody id="cmpBody"></tbody>
-  </table></div>
-  <p class="cnote">以同一位病人、同一個 AUC,只換 Cockcroft-Gault 用的體重。<b>肥胖或低體重時差距最大</b>,這正是各院規範要寫清楚用哪一種體重的原因。</p>
-</section>
+<h2 class="refh">參考</h2>
 
-<section class="principles" aria-labelledby="h-rule">
-  <h2 id="h-rule">「自動」採用體重的規則</h2>
-  <ul>
-    <li>實際體重<b>低於</b>理想體重 → 用<b>實際體重</b>。</li>
-    <li>實際體重在理想體重的 <b>100–120%</b> → 用<b>理想體重</b>。</li>
-    <li>實際體重<b>超過理想體重 120%</b> → 用<b>調整體重</b> = IBW + 0.4 ×(實際 − IBW)。</li>
-    <li>這是藥學實務常見的慣例(0.4 係數與 120% 門檻),<b>並非出自特定指引</b>;請依貴院化療規範,必要時在上方手動指定。</li>
-  </ul>
-</section>
-
-<section class="cmp" aria-labelledby="h-fx">
-  <h2 id="h-fx">公式</h2>
+<details class="fold">
+  <summary>公式</summary>
   <div class="fx">國健署標準體重 = 22 × 身高(m)²</div>
   <div class="fx">Devine IBW:男 = 50 + 2.3 ×(身高 in − 60);女 = 45.5 + 2.3 ×(身高 in − 60);身高 in = cm ÷ 2.54</div>
   <div class="fx">調整體重 AdjBW = IBW + 0.4 ×(實際體重 − IBW)</div>
@@ -206,22 +229,22 @@ footer{max-width:820px;margin:20px auto 0;padding:14px 20px 0;font-size:.74rem;c
   <div class="fx">Carboplatin 劑量(mg)= 目標 AUC ×(GFR + 25)</div>
   <div class="fx">GFR 上限 125 mL/min → 最高劑量 = AUC × 150(AUC 6 → 900 mg、AUC 5 → 750 mg、AUC 4 → 600 mg)(NCI/CTEP 2010)</div>
   <div class="fx">肌酸酐異常偏低:以 0.6 mg/dL 為下限估算,或 GFR 上限 125 mL/min(NCI/CTEP 2010)</div>
-</section>
+</details>
 
-<section class="principles" aria-labelledby="h-pit">
-  <h2 id="h-pit">常見陷阱</h2>
-  <ul>
-    <li><b>把 eGFR(mL/min/1.73 m²)直接代入 Calvert</b> —— Calvert 要的是病人實際的 mL/min;每 1.73 m² 的值要先乘上病人 BSA ÷ 1.73 才能用。估算式整體傾向高估 GFR 與劑量(Craig 2012)。</li>
-    <li><b>肌酸酐很低就照算</b> —— 肌肉量少(高齡、惡病質、長期臥床)時肌酸酐偏低,Cockcroft-Gault 會高估清除率,劑量跟著偏高。</li>
-    <li><b>忘了 GFR 上限</b> —— 肌酸酐檢驗標準化(IDMS)後數值偏低,估算 GFR 容易偏高;NCI/CTEP 2010 建議代入 Calvert 的 GFR 不超過 125 mL/min。</li>
-    <li><b>AUC 的單位與方案</b> —— 目標 AUC 依方案而定,每週方案與三週方案差很多;以方案原文為準。</li>
+<details class="fold">
+  <summary>常見陷阱</summary>
+  <ul class="plist">
+    <li><b>eGFR(mL/min/1.73 m²)直接代入</b> —— 要先乘 BSA ÷ 1.73 換成病人實際的 mL/min;估算式整體傾向高估劑量(Craig 2012)。</li>
+    <li><b>肌酸酐很低照算</b> —— 高齡、惡病質、臥床者肌肉量少,Cockcroft-Gault 會高估清除率。</li>
+    <li><b>忘了 GFR 上限</b> —— 肌酸酐檢驗標準化(IDMS)後估算 GFR 容易偏高;NCI/CTEP 建議不超過 125 mL/min。</li>
+    <li><b>AUC 依方案</b> —— 每週與三週方案差很多,以方案原文為準。</li>
   </ul>
-</section>
+</details>
 
 </main>
 
 <footer>
-  <p id="refs">出處:Calvert AH, et al. J Clin Oncol 1989;7:1748–56(PMID 2681557;公式亦載於 Paraplatin 美國仿單)· Cockcroft DW, Gault MH. Nephron 1976;16:31–41(PMID 1244564)· Devine BJ. Drug Intell Clin Pharm 1974;8:650–5(原文為 gentamicin 用藥討論,非體重公式推導研究,無 PMID;來源考證見 Pai MP, Paloucek FP. Ann Pharmacother 2000;34:1066–9,PMID 10981254)· Mosteller RD. N Engl J Med 1987;317:1098(PMID 3657876)· NCI/CTEP. Follow-up for Information Letter Regarding AUC-Based Dosing of Carboplatin, 2010-10-22(<a href="https://dctd.cancer.gov/research/ctep-trials/memos/carboplatin-dosing.pdf" rel="noopener">PDF</a>)· Craig AJ, et al. Br J Cancer 2012;107:1310–6(PMID 22935580)· 國民健康署成人健康體位標準(BMI 22)。</p>
+  <details><summary>出處</summary><p id="refs">Calvert AH, et al. J Clin Oncol 1989;7:1748–56(PMID 2681557;公式亦載於 Paraplatin 美國仿單)· Cockcroft DW, Gault MH. Nephron 1976;16:31–41(PMID 1244564)· Devine BJ. Drug Intell Clin Pharm 1974;8:650–5(原文為 gentamicin 用藥討論,非體重公式推導研究,無 PMID;來源考證見 Pai MP, Paloucek FP. Ann Pharmacother 2000;34:1066–9,PMID 10981254)· Mosteller RD. N Engl J Med 1987;317:1098(PMID 3657876)· NCI/CTEP. Follow-up for Information Letter Regarding AUC-Based Dosing of Carboplatin, 2010-10-22(<a href="https://dctd.cancer.gov/research/ctep-trials/memos/carboplatin-dosing.pdf" rel="noopener">PDF</a>)· Craig AJ, et al. Br J Cancer 2012;107:1310–6(PMID 22935580)· 國民健康署成人健康體位標準(BMI 22)。</p></details>
   <p style="margin-top:4px">⚠ 教學/速查用途,非處方指令;實際劑量請依方案原文、院內化療規範與藥師覆核。</p>
 </footer>
 
@@ -274,7 +297,7 @@ function calc(){
   if(scr0<0.6&&floor===0)w.push(warn("v-warn","肌酸酐異常偏低",scr0+" mg/dL 可能反映肌肉量少,Cockcroft-Gault 會高估清除率。NCI/CTEP 建議以 0.6 mg/dL 為下限估算,或 GFR 上限 125 mL/min(進階選項)。"));
   if(floor>0&&scr0<floor)w.push(warn("v-warn","已套肌酸酐下限","實測 "+scr0+" mg/dL,依設定以 "+floor+" mg/dL 計算。"));
   if(W.inch<60)w.push(warn("v-warn","身高低於 152.4 cm","Devine 公式以 5 呎(152.4 cm)為基準,低於此身高時理想體重會被低估,解讀要小心。"));
-  if(W.bmi>=30)w.push(warn("v-warn","肥胖(BMI ≥ 30)","體重選擇對劑量影響最大,請對照下表三種體重的差距,並依院內規範決定。"));
+  if(W.bmi>=30)w.push(warn("v-warn","肥胖(BMI ≥ 30)","體重選擇對劑量影響最大;展開下方「三種體重算出的劑量比較」看差距,並依院內規範決定。"));
   if(age>=80)w.push(warn("v-warn","高齡","年齡 ≥ 80 歲時肌肉量常偏低,Cockcroft-Gault 可能高估腎功能。"));
   if(cc<30&&!useM)w.push(warn("v-bad","腎功能明顯下降","CrCl < 30 mL/min,估算誤差大;建議取得實測 GFR 並與藥師討論。"));
   $("warns").innerHTML=w.join("");
