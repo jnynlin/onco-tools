@@ -110,6 +110,7 @@ main{max-width:820px;margin:0 auto;padding:16px 20px}
 .bsa figure{margin:0;text-align:center}
 .bsa figcaption{font-family:var(--mono);font-size:10.5px;color:var(--ink-soft);margin-top:2px}
 .bsa svg{width:140px;height:auto;display:block;margin:0 auto}
+.bsa.hypo ol.flow{margin:6px 0 0 1.2em;padding:0}.bsa.hypo ol.flow li{margin:0 0 7px;line-height:1.55}.bsa.hypo .src{margin-top:8px;font-family:var(--mono);font-size:10.5px;color:var(--ink-soft)}
 .bz{fill:#FFFFFF;stroke:#C9D5D6;stroke-width:1.3;cursor:pointer;transition:fill .12s}
 .bz:hover{stroke:#0E6E75;stroke-width:1.8}
 .bz.on{fill:#9A4B22;fill-opacity:.48;stroke:#9A4B22}
@@ -328,6 +329,20 @@ function bsaCalc(){
   var tier=document.getElementById("bsaTier"); tier.className="tier "+r[0]; tier.innerHTML=r[1];
   document.getElementById("bsaNote").innerHTML=r[2];
 }
+function hypoWidget(){
+  return '<div class="bsa hypo"><h4>垂體炎(hypophysitis)診斷流程與治療</h4>'+
+  '<ol class="flow">'+
+  '<li><b>何時懷疑</b>|ICI 治療中(ipilimumab/併用最常見,多在 8–12 週;PD-1 單藥可更晚)出現<b>頭痛、疲倦乏力、噁心、食慾差、低血壓、低血鈉</b>、性慾低下/停經;視野缺損罕見(腫大壓迫)。症狀不特異,<b>疲倦 + 低鈉即應查</b>。</li>'+
+  '<li><b>檢查(同日抽)</b>|<b>早晨 8 時 cortisol + ACTH</b>、TSH + fT4、LH/FSH + testosterone(男)或 estradiol(女)、prolactin、Na/K/血糖。<b>MRI 腦下垂體(含增強)</b>:腺體腫大、均勻強化、柄增厚;MRI 正常<b>不能排除</b>(ipilimumab 系列約 1/4 正常;<b>PD-1 單藥多為孤立 ACTH 缺乏、MRI 常正常</b>)。需排除蝶鞍轉移(乳癌、肺癌)與原有腺瘤。</li>'+
+  '<li><b>判讀</b>|<b>中樞性腎上腺功能低下</b>= cortisol 低 + ACTH 低或「不相稱地正常」(原發腎上腺炎 ACTH 會高,罕見);<b>中樞性甲低</b>= fT4 低 + TSH 低或正常(與 ICI 甲狀腺炎的 TSH 升高相區分);性腺軸在 ipilimumab/併用常同時受累,PD-1 單藥則多只有 ACTH 軸;尿崩症極少(有的話想別的病)。</li>'+
+  '<li><b>治療:先腎上腺、再甲狀腺</b>|① <b>Hydrocortisone 生理劑量</b>(例 15–20 mg 早 + 5–10 mg 午後;或 prednisone 5 mg/日)— <b>抽完 cortisol/ACTH 當天即給,不等結果、不等 MRI</b>(給藥後 cortisol 就測不準,所以先抽再給;病人不穩到連抽血都等不了時可先給 dexamethasone 4 mg IV,不干擾 cortisol 檢驗);② 確認中樞性甲低後再加 <b>levothyroxine</b>(以 fT4 調劑量,<b>不看 TSH</b>);③ 性腺軸補充非急,穩定後由內分泌科評估。<b>先補甲狀腺素會誘發腎上腺危象</b>。</li>'+
+  '<li><b>高劑量類固醇只在</b>|劇烈頭痛、視野缺損、MRI 明顯腫大(mass effect):prednisone 1 mg/kg(或 methylpred)1–2 週後減至生理劑量;高劑量<b>不會讓內分泌功能恢復</b>,不要為了「治垂體」而用。</li>'+
+  '<li><b>ICI 怎麼辦</b>|G2(有症狀、需補充):補充後穩定<b>多可續用或暫停數週再續</b>;G3–4(腎上腺危象、嚴重低鈉、住院):暫停至穩定,<b>之後多數可恢復 ICI</b>;不是永久停藥的理由。</li>'+
+  '<li><b>腎上腺危象(急診)</b>|低血壓、嘔吐、意識改變、低鈉高鉀:<b>hydrocortisone 100 mg IV/IM 立即</b>,之後 50 mg q6h 或 200 mg/日連續輸注;生理食鹽水復甦;查血糖;不要等檢驗。</li>'+
+  '<li><b>衛教與追蹤</b>|壓力劑量規則(發燒/生病日口服加倍;嘔吐無法口服 → IM hydrocortisone 100 mg 並就醫)、隨身醫療警示卡、家屬會打針。內分泌科 6–8 週內追蹤;每 3 個月評估各軸。<b>ACTH 軸多為永久</b>(終身補充),甲狀腺與性腺軸約半數可恢復,逐步試減。</li>'+
+  '</ol>'+
+  '<div class="src">依 CTCAE v5 垂體炎分級;ASCO 2021 / ESMO 2022 / NCCN irAE 管理指引整理;劑量為成人常用值,請依病人與院內處方集調整。更新 2026-10-08。</div></div>';
+}
 var IRAE=[
 {id:"skin",inc:{c:"~40–50%",p:"~30–40%(白斑 ~8%,黑色素瘤)",m:"~60%"},ic:"🩹",nm:"皮膚",en:"Maculopapular rash / pruritus / bullous",
  wk:"檢查:BSA 估算(九分法/手掌法,見下圖)、黏膜受累、水疱/表皮剝離(Nikolsky)、嗜酸性球;疑 SJS/TEN/DRESS 即皮膚科會診+切片",
@@ -363,7 +378,8 @@ var IRAE=[
  rf:"難治二線(48h):<b>infliximab</b>、<b>MMF</b>、<b>IVIG</b>、cyclophosphamide(擇一,依院內經驗)",
  pl:"G1–2 影像常為 <b>OP(organizing pneumonia)pattern</b>;放射線照野內變化想到 radiation recall。"},
 {id:"endo",inc:{c:"hypophysitis ~3–5%(劑量依賴)/甲低 ~4%",p:"甲低 ~7–9%/hypophysitis <1%/T1DM ~0.2–1%",m:"甲狀腺 ~15–20%/hypophysitis ~6–10%"},ic:"🦋",nm:"內分泌",en:"Thyroid / hypophysitis / adrenal / T1DM",
- wk:"檢查:TSH/fT4(每 4–6 週)、ACTH+早晨 cortisol、電解質/血糖;疑垂體炎 → 腦下垂體 MRI+全軸荷爾蒙",
+ wk:"檢查:TSH/fT4(每 4–6 週)、ACTH+早晨 cortisol、電解質/血糖;疑垂體炎 → 腦下垂體 MRI+全軸荷爾蒙(流程見下)",
+ ex:hypoWidget, up:"2026-10-08",
  g:[["G1","無症狀生化異常","<b>續用 ICI</b>;監測;甲狀腺 TSH>10 即補 levothyroxine"],
     ["G2","有症狀,需荷爾蒙補充","<b>多可續用</b>;補充治療為主(見下);垂體炎頭痛明顯時暫停"],
     ["G3","嚴重症狀(腎上腺危象/DKA/黏液水腫)","<b>暫停至穩定</b>;住院;壓力劑量 hydrocortisone / insulin/DKA protocol"],
