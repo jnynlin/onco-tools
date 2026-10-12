@@ -64,6 +64,7 @@ th{background:var(--paper);font-family:var(--mono);font-size:11px;letter-spacing
 .data .cell{flex:1 1 30%;min-width:150px;background:var(--paper);border:1px solid var(--rule);border-radius:var(--radius);padding:7px 10px;font-size:.82rem}
 .data .cell .num{font-weight:700;font-size:1.15rem;color:var(--platinum);display:block}
 .data .cell .lb{font-family:var(--mono);font-size:10px;letter-spacing:.06em;text-transform:uppercase;color:var(--ink-soft)}
+.mono{font-family:var(--mono);font-size:.92em}
 .hedge{font-size:.8rem;color:var(--ink-soft);background:var(--marker-bg);border-radius:var(--radius);padding:8px 11px;margin-top:8px}
 .hedge b{color:var(--marker)}
 .warn{font-size:.85rem;background:var(--resist-bg);border-left:4px solid var(--resist);border-radius:var(--radius);padding:9px 12px;margin-top:8px}
@@ -79,8 +80,8 @@ footer p{margin-bottom:6px} footer b{color:var(--ink)}
 <header class="masthead">
   <div class="eyebrow">Onco-Tools · ADC-related Interstitial Lung Disease</div>
   <h1>ADC 相關急性 ILD／肺炎速查</h1>
-  <div class="sub">抗體藥物複合體(ADC,以 T-DXd 資料最完整)之間質性肺病／肺炎 —— 機轉、影像、CTCAE 分級與病程處置。與 irAE 肺炎機轉不同:<b>ADC-ILD 是藥物毒殺、非自體免疫</b>。</div>
-  <div class="meta"><b>資料</b> T-DXd 匯總試驗(Powell 2022)· Fleischner 2021 · CTCAE v5 · ENHERTU 仿單 &nbsp;|&nbsp; <b>整理</b> 2026-08(引用皆逐篇查證)</div>
+  <div class="sub">抗體藥物複合體(ADC)之間質性肺病／肺炎 —— 機轉、影像、CTCAE 分級與病程處置。與 irAE 肺炎機轉不同:<b>ADC-ILD 是藥物毒殺、非自體免疫</b>。<br><b>⚠ 機轉與病程以 T-DXd 資料為主(最完整);但停藥門檻逐藥不同,見下方逐藥對照表。</b></div>
+  <div class="meta"><b>資料</b> Powell 2022(n=1,150)· Fujiwara 2026(n=381 裁定)· Baba 2023(n=130)· Fleischner 2021 · CTCAE v5.0/v6.0 · ENHERTU 仿單 v28(2026-05-15)· PADCEV 仿單 v18(2026-08-04) &nbsp;|&nbsp; <b>整理</b> 2026-08,<b>2026-10-12 全面覆核改版</b>(引用皆逐篇查證)</div>
   <div class="xlink">↔ 對照免疫性肺炎請見 <a href="../irae/">irAE 器官分級處置速查</a></div>
 </header>
 <main>
@@ -88,17 +89,38 @@ footer p{margin-bottom:6px} footer b{color:var(--ink)}
   <div class="principles">
     <h2>⚖ 一眼摘要(先讀)</h2>
     <li><b>對因治療 = 停藥</b>。ADC-ILD 是 payload 直接毒殺肺泡,不是免疫驅動 —— payload 毒殺無法逆轉,能動的是「停藥 + 壓續發發炎」。</li>
-    <li><b>只要有症狀(≥G2)一律永久停藥</b>;<b>G1(無症狀、只有影像)也要先停藥</b>。</li>
+    <li><b>⚠ 停藥門檻逐藥不同,不可當成全類規則</b>。<b>T-DXd:≥G2(任何有症狀)即永久停用</b>(黑框警示);<b>enfortumab vedotin:G2 是暫停+考慮減量,≥G3 才永久停用</b>。兩者都在 G1(無症狀、只有影像)就要先停藥觀察。<b>把 T-DXd 的門檻套到 EV 上,會在 G2 就斷掉一個一線組合。</b></li>
     <li>類固醇是壓「續發發炎/DAD」,<b>屬對症、非對因</b>(和 irAE「類固醇=壓驅動本身」不同)。</li>
     <li><b>致死病例來得早、且多為 DAD 型影像</b>;延遲辨識是壞結局主因 → <b>定期 HRCT 監測</b> + 衛教病人回報咳/喘/發燒。</li>
     <li>類固醇前先<b>排除感染</b>(含 PJP、病毒);影像上 ADC-ILD 與 irAE 肺炎<b>常無法區分</b>,靠用藥史/時序定因。</li>
   </div>
 
   <div class="card">
+    <h2 class="r">⚠️ 逐藥對照:停藥門檻與發生率(仿單直讀,含版本)</h2>
+    <p>本頁其餘章節的機轉、影像與病程數字以 <b>T-DXd</b> 為主,因為它的資料最完整。但<b>處置門檻不能跨藥沿用</b> —— 下表兩欄的 G2 動作完全相反。</p>
+    <table>
+      <tr><th></th><th>T-DXd(ENHERTU)</th><th>Enfortumab vedotin(PADCEV)</th></tr>
+      <tr><td><b>G1</b></td><td>暫停至恢復 G0;≤28 天→原劑量,&gt;28 天→減一階。可考慮 ≥0.5 mg/kg/day prednisolone</td><td>仿單劑量調整表<b>未列 G1 條目</b></td></tr>
+      <tr><td><b>G2</b></td><td><b>永久停用</b>(逐字:<i>Permanently discontinue ENHERTU in all patients with Grade 2 or higher ILD/pneumonitis</i>)</td><td><b>暫停 + 考慮減量</b>(逐字:<i>Withhold PADCEV for Grade 2 pneumonitis/ILD and consider dose reduction</i>)</td></tr>
+      <tr><td><b>G3–4</b></td><td>永久停用</td><td><b>永久停用</b>(逐字:<i>Permanently discontinue PADCEV in all patients with Grade 3 or 4 pneumonitis/ILD</i>)</td></tr>
+      <tr><td><b>類固醇劑量</b></td><td>仿單明列(見下方分級管理)</td><td><b>仿單完全未給全身性類固醇劑量</b>(全文 prednisone/methylprednisolone 零命中;唯一的 corticosteroid 是皮膚反應用外用)→ 實務上借用檢查點肺炎或 T-DXd 的劑量,此為<b>外推</b></td></tr>
+    </table>
+    <h3 style="font-size:.9rem;margin:10px 0 4px">發生率(PADCEV 仿單 §5.3)</h3>
+    <table>
+      <tr><th>族群</th><th>任何級</th><th>G3–4</th><th>致死</th><th>中位發病(範圍)</th></tr>
+      <tr><td>EV 單藥 <span class="mono">n=720</span></td><td>3%</td><td>0.8%</td><td>未列</td><td>2.9 月(0.6–6)</td></tr>
+      <tr><td>EV + pembrolizumab,晚期 <span class="mono">n=564</span></td><td>10%</td><td>4%</td><td>0.4%(2 例)</td><td>4 月(0.3–26)</td></tr>
+      <tr><td>EV + pembrolizumab,肌肉侵犯 <span class="mono">n=570</span></td><td>7%</td><td>1.8%</td><td>未列</td><td>3.2 月(0.7–13)</td></tr>
+    </table>
+    <div class="hedge"><b>仿單版本(數字會隨改版變動,故標註)</b>:PADCEV setid <span class="mono">b5631d3e</span> <b>version 18,生效 2026-08-04</b>;ENHERTU setid <span class="mono">7e67e73e</span> <b>version 28,生效 2026-05-15</b>。兩者皆於 <b>2026-10-11 自 DailyMed 直讀核對</b>。<br><b>⚠ 本頁曾引用的舊版數字已汰換</b>:肌肉侵犯族群在較早的仿單版本為 n=167、4.2%、無 G3–4、無死亡、中位 2.5 月 —— 舊數字會讓<b>根治性情境看起來零嚴重事件</b>,實際是 G3–4 1.8%。引用仿單數字務必同時記版本與生效日。</div>
+  </div>
+
+  <div class="card">
     <h2>🩺 依 CTCAE 分級:症狀 × 影像 × 處置(點選 G1–G5)</h2>
+    <div class="hedge"><b>讀這張表前要知道的三件事(CTCAE v5.0/v6.0 逐字核對)</b>:① <b>影像不進分級</b> —— <span class="mono">Pneumonitis</span> 詞條五級全部只看症狀、介入、日常功能與氧氣需求,<b>沒有任何一級用到影像範圍、分布或型態</b>;本表把影像並列,是因為影像決定你怎麼想這個病,不是因為它決定級數。② 常見的「G1=asymptomatic; radiographic findings only」是<b>指引的轉述,不是 CTCAE 原文</b>;原文是 <span class="mono">Asymptomatic; clinical or diagnostic observations only; intervention not indicated</span>。③ CTCAE <b>另有一把按影像範圍分級的尺</b>(<span class="mono">Pulmonary fibrosis</span>:&lt;25% / 25–50% / &gt;50–75% / &gt;75% 肺容積),<b>但沒有任何一個 ADC 用它分級</b>,全部用 <span class="mono">Pneumonitis</span>。而 CTCAE <b>根本沒有 interstitial lung disease 這個詞條</b> —— 這就是為什麼仿單只能寫「ILD/pneumonitis」。</div>
     <div class="gsel" id="gsel"></div>
     <div class="gpanel" id="gpanel"></div>
-    <div class="hedge"><b>分級=依症狀/功能</b>:CTCAE v5 —— G1 無症狀(僅影像);G2 有症狀、影響工具性日常;G3 症狀嚴重、需氧、影響自我照顧;G4 危及生命呼吸衰竭、需插管/氣切;G5 死亡。<span class="ref">(CTCAE v5;處置依 ENHERTU 仿單與 Swain 2022 共識)</span></div>
+    <div class="hedge"><b>分級=依症狀/功能</b>:CTCAE v5 —— G1 無症狀(僅影像);G2 有症狀、影響工具性日常;G3 症狀嚴重、需氧、影響自我照顧;G4 危及生命呼吸衰竭、需插管/氣切;G5 死亡。<span class="ref">(分級依 CTCAE v5.0;處置依 <b>ENHERTU 仿單 v28</b> 與 <b>PADCEV 仿單 v18</b> 逐字,脈衝劑量出自 Powell 2022 Table 1,<b>非仿單</b>)</span></div>
   </div>
 
   <div class="card">
@@ -114,6 +136,7 @@ footer p{margin-bottom:6px} footer b{color:var(--ink)}
     <p>類固醇使用:G2–4 事件 <b>80.2%(85/106)</b>、G5 <b>84.6%(22/26)</b> 於發病 90 天內至少用過一劑。</p>
     <div class="warn"><b>試驗自承兩個限制(直接影響解讀)</b>:① <b>類固醇管理不理想</b>——辨識延遲、劑量常不符建議;② 裁決委員會判定的<b>發病日比研究者更早</b>(53.2% 事件,中位差 43 天)→ 現場常低估/太晚處理。**啟示:結局好壞的關鍵是「夠早發現、夠早停藥」,不是類固醇本身。**</div>
     <div class="hedge"><b>數字要小心對照</b>:上表 G1 再挑戰復發率(3/47≈6.4%)出自 Powell 2022(n=1,150);另一份較新的 T-DXd 再治療匯總(Ann Oncol 2025,不同且更大的 n≈2,145 族群)報告復發約 33%(多為低度、可處理)—— 兩者<b>族群/觀察窗不同,不可混為一談或平均</b>。整體而言,較新/真實世界資料傾向「監測改善後觀察到的嚴重度較低」,但確切新數字尚未逐字核實,故本頁不列。<span class="ref">主源:Powell CA 等. ESMO Open 2022;7(4):100554. PMID 35963179</span></div>
+    <div class="hedge"><b>第二個獨立系列(更大、更新):Fujiwara 2026</b>(<i>Oncologist</i> 2026;31(10):oyag340,PMID 42704682;日本上市後全病例監測的裁決後分析)—— 2,801 人中 421 例送審、<b>381 例裁定為 T-DXd 相關 ILD</b>。影像型態:OP <b>67.7%</b>、HP 14.2%、<b>DAD 12.6%</b>;最差級別 G1–2 占 <b>78.2%</b>;<b>G5 共 30 例(7.9%),其中 26 例為 DAD 型</b>;整體恢復 <b>83.5%</b>;<b>類固醇僅用於 54.6%</b>,其中 79.3% 有反應。<br><b>兩個系列同向</b>:Baba 的 8/11 致死為 DAD、Fujiwara 的 26/30 致死為 DAD —— <b>DAD 不成比例致命,已不是單一系列的觀察</b>。<span class="ref">本條引自該文結構式摘要,每個數字逐字對照;全文未取得。</span></div>
   </div>
 
   <div class="card">
@@ -158,14 +181,15 @@ footer p{margin-bottom:6px} footer b{color:var(--ink)}
       <li><b>抗 VEGF 的理論顧慮</b>:VEGF 是肺泡/內皮的修復因子,理論上急性肺泡損傷期抗 VEGFR 可能不利修復。<span class="ref"><b>但這是純機轉推測、非臨床有害訊號</b>——少數 acute ADC-ILD 用 nintedanib 的個案報告其實<b>顯示改善、非變差</b>。</span></li>
       <li><b>機轉對得上的情境</b>:若殘留/進展成<b>進展性肺纖維化(PPF)</b><sup>[Raghu 2022]</sup>,則落回「不分病因的 PF-ILD」傘下,nintedanib 有 <b>INBUILD</b> 級外推支持<sup>[Flaherty 2019]</sup>(SSc-ILD 有 SENSCIS、IPF 有 INPULSIS)—— 但 ADC-ILD 停藥後多為 one-hit,真的持續進展成纖維化較少見,且仍屬外推。</li>
     </ul>
-    <div class="warn"><b>結論</b>:別在急性 ADC-ILD 反射性加 nintedanib(第一步永遠是<b>停藥</b>);保留給「確實在纖維化並進展」的殘留,並知道那是外推、非直接證據。</div>
+    <div class="warn"><b>一句話版</b>:nintedanib 失敗在<b>作用節點</b> —— 它打的是纖維增生修復軸,不是這個病進入的那一步;型態不符是<b>第二個、獨立</b>的失敗原因。<br><b>結論</b>:別在急性 ADC-ILD 反射性加 nintedanib(第一步永遠是<b>停藥</b>);保留給「確實在纖維化並進展」的殘留,並知道那是外推、非直接證據。</div>
   </div>
 
   <div class="card">
-    <h2>💊 分級管理細節(T-DXd／ENHERTU 仿單 + Swain 2022 共識)</h2>
+    <h2>💊 分級管理細節(T-DXd:ENHERTU 仿單 v28 / 2026-05-15)</h2>
     <ul>
       <li><b>Grade 1(無症狀)</b>:暫停 ENHERTU 直到恢復至 G0 —— <b>28 天內</b>恢復可原劑量續用;<b>>28 天</b>恢復則減一階;可考慮類固醇 ≥0.5 mg/kg/day prednisolone 當量。</li>
       <li><b>Grade ≥2(任何有症狀)</b>:<b>永久停用 ENHERTU</b>;立即 <b>≥1 mg/kg/day prednisolone</b> 當量,持續 <b>≥14 天</b>後<b>緩減 ≥4 週</b>。</li>
+      <li><b>Grade 3–4(重症/ARDS 型)</b>:住院;<b>脈衝 methylprednisolone 500–1000 mg/day × 3 天</b>,其後 ≥1 mg/kg/day prednisone 當量 ≥14 天,再緩減 ≥4 週。<br><span class="mono" style="font-size:.78rem">出處要分清楚:這句<b>不在 FDA 仿單裡</b>。它逐字出自 Powell 2022 <b>Table 1</b>(標題為 <i>Recommended guidelines for management of T-DXd–induced ILD</i>,該表自身引 Li BT 等 NEJM 2022 的試驗協定指引)。把它寫成「仿單規定」是常見的掛錯出處。</span></li>
       <li>全程:排除感染;類固醇 >4 週考慮 PJP 預防、血糖/骨/胃保護。</li>
     </ul>
     <div class="hedge"><b>類別風險比較(勿過度概化)</b>:與 <b>T-DM1</b> 頭對頭,T-DXd 的 ILD 明顯較高(DESTINY-Breast03:全級別 <b>16.7% vs 3.4%</b>)<sup>[Cortés 2022]</sup>。但「deruxtecan 類 > MMAE 類」<b>未定論</b> —— 有 NSCLC meta 反而發現 <b>vedotin/MMAE 的 grade≥3 肺炎更高(5.23% vs 1.88%)</b><sup>[Li 2025]</sup>。故勿一概宣稱「deruxtecan 最毒」;T-DXd 全級別發生率確實名列前茅,但跨藥比較尚未定論。</div>
@@ -173,28 +197,28 @@ footer p{margin-bottom:6px} footer b{color:var(--ink)}
 
 </main>
 <footer>
-  <p><b>主要出處(皆逐篇查證)</b>:Powell CA 等. <i>ESMO Open</i> 2022;7(4):100554(PMID 35963179,病程數字)· Baba T 等. <i>Int J Clin Oncol</i> 2023;28:1585(PMID 37787866,影像)· Naidoo J 等. <i>JCO</i> 2017;35:709(PMID 27646942)· Johkoh T 等(Fleischner). <i>Radiology</i> 2021;298:550(PMID 33434111)· Kumagai K 等. <i>Cancer Sci</i> 2020;111:4636(PMID 33051938,機轉)· Koganemaru S 等. <i>Mol Cancer Ther</i> 2025;24:242 · Larsen BT 等. <i>Am J Surg Pathol</i> 2019;43:1331(PMID 31162288)· Swain SM 等. <i>Cancer Treat Rev</i> 2022;106:102378(PMID 35430509,管理共識)· ENHERTU 美國仿單(USPI,以最新版本為準)· Flaherty KR 等(INBUILD). <i>NEJM</i> 2019(PMID 31566307)· Raghu G 等(PPF). <i>AJRCCM</i> 2022(PMID 35486072)· Cortés J 等(DESTINY-Breast03). <i>NEJM</i> 2022(PMID 35320644)· Li Y 等. <i>Thorac Cancer</i> 2025(PMID 41268683).</p>
+  <p><b>主要出處(皆逐篇查證)</b>:Powell CA 等. <i>ESMO Open</i> 2022;7(4):100554(PMID 35963179,病程數字)· Baba T 等. <i>Int J Clin Oncol</i> 2023;28:1585(PMID 37787866,影像)· Naidoo J 等. <i>JCO</i> 2017;35:709(PMID 27646942)· Johkoh T 等(Fleischner). <i>Radiology</i> 2021;298:550(PMID 33434111)· Kumagai K 等. <i>Cancer Sci</i> 2020;111:4636(PMID 33051938,機轉)· Koganemaru S 等. <i>Mol Cancer Ther</i> 2025;24:242 · Larsen BT 等. <i>Am J Surg Pathol</i> 2019;43:1331(PMID 31162288)· Swain SM 等. <i>Cancer Treat Rev</i> 2022;106:102378(PMID 35430509,管理共識)· <b>ENHERTU 美國仿單</b>:DailyMed setid 7e67e73e-ddf4-4e4d-8b50-09d7514910b6,<b>version 28,生效 2026-05-15</b>(2026-10-11 直讀)· <b>PADCEV 美國仿單</b>:setid b5631d3e-4604-4363-8f20-11dfc5a4a8ed,<b>version 18,生效 2026-08-04</b>(2026-10-11 直讀)· Fujiwara Y 等. <i>Oncologist</i> 2026;31(10):oyag340(PMID 42704682,381 例裁定系列)· Flaherty KR 等(INBUILD). <i>NEJM</i> 2019(PMID 31566307)· Raghu G 等(PPF). <i>AJRCCM</i> 2022(PMID 35486072)· Cortés J 等(DESTINY-Breast03). <i>NEJM</i> 2022(PMID 35320644)· Li Y 等. <i>Thorac Cancer</i> 2025(PMID 41268683).</p>
   <p>⚠ 教學／速查用途,<b>非取代臨床判斷與最新版原文仿單/指引</b>;個案處置請依最新 ENHERTU 仿單、多科團隊與院內規範。分級以 CTCAE v5 為準。</p>
-  <p class="ref">Onco-Tools · adc-ild · 整理 2026-08 · 內容經逐篇原始文獻查證(RED/YELLOW/GREEN 稽核)</p>
+  <p class="ref">Onco-Tools · adc-ild · 整理 2026-08 · <b>2026-10-12 覆核改版</b>(新增逐藥停藥門檻對照、EV 發生率、CTCAE 結構三點、Fujiwara 2026、G3–4 脈衝劑量出處切割)· 內容經逐篇原始文獻查證(RED/YELLOW/GREEN 稽核)</p>
 </footer>
 <script>
 var G=[
  {g:"G1",cls:"b1",tag:"var(--g1)",label:"G1 無症狀",
   sx:"<b>無症狀</b>,僅影像/檢查發現(常於例行療效評估 CT 意外發現)。",
   img:"淡薄、範圍局限、雙側周邊/下肺為主的 GGO;<b>無蜂窩</b>。",
-  mx:"<b>暫停用藥</b>直到恢復 G0:28 天內恢復→原劑量續用;>28 天→減一階。可考慮類固醇 ≥0.5 mg/kg/day。"},
+  mx:"<b>T-DXd</b>:暫停直到恢復 G0 —— 28 天內恢復→原劑量續用;&gt;28 天→減一階;可考慮類固醇 ≥0.5 mg/kg/day。<br><b>EV</b>:仿單劑量調整表<b>未列 G1 條目</b>;實務上仍建議暫停觀察並排除感染。"},
  {g:"G2",cls:"b2",tag:"var(--g2)",label:"G2 有症狀·可自理",
   sx:"<b>有症狀</b>(咳、喘、發燒),影響<b>工具性日常</b>(如煮飯、購物);仍能自我照顧。",
   img:"範圍較廣的 GGO ± consolidation(OP 型常見)。",
-  mx:"<b>永久停藥</b> + 立即 <b>≥1 mg/kg/day prednisolone</b>,≥14 天後緩減 ≥4 週。先排除感染。"},
+  mx:"<b>⚠ 此級兩藥動作相反</b>。<b>T-DXd:永久停用</b> + 立即 <b>≥1 mg/kg/day prednisolone</b>,≥14 天後緩減 ≥4 週。<br><b>EV:暫停 + 考慮減量</b>(仿單不在此級永久停用);EV 仿單未給全身性類固醇劑量,用的是外推劑量。<br>兩者皆先<b>排除感染</b>。"},
  {g:"G3",cls:"b3",tag:"var(--g3)",label:"G3 嚴重·需氧",
   sx:"<b>症狀嚴重</b>,影響<b>自我照顧</b>;<b>需氧氣</b>。",
   img:"廣泛 GGO + consolidation。",
-  mx:"<b>永久停藥</b> + 住院 + 高劑量類固醇(可 IV methylprednisolone);持續惡化依 G4。"},
+  mx:"<b>兩藥皆永久停用</b>(T-DXd 與 EV 在 ≥G3 一致)。住院 + 高劑量類固醇;ARDS 型可用<b>脈衝 methylprednisolone 500–1000 mg/day × 3 天</b>再接 ≥1 mg/kg/day(此劑量出自 <b>Powell 2022 Table 1</b>,<b>非 FDA 仿單</b>)。持續惡化依 G4。"},
  {g:"G4",cls:"b4",tag:"var(--g4)",label:"G4 危及生命",
   sx:"<b>危及生命的呼吸衰竭</b>,需緊急處置(插管/氣切)。",
   img:"瀰漫雙側 GGO + consolidation,<b>DAD/AIP 型</b>。",
-  mx:"<b>永久停藥</b> + ICU + <b>脈衝類固醇</b>;支持治療。"},
+  mx:"<b>兩藥皆永久停用</b> + ICU + <b>脈衝 methylprednisolone 500–1000 mg/day × 3 天</b>(Powell 2022 Table 1);肺保護性通氣、排除感染、支持治療。"},
  {g:"G5",cls:"b5",tag:"var(--g5)",label:"G5 死亡",
   sx:"死亡。",
   img:"致死病例<b>多為 DAD 型</b>(8/11 致死案),且<b>發病較早</b>(中位 3.2 月)。",
