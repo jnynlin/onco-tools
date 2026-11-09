@@ -190,7 +190,7 @@ footer .warn{color:var(--resist)}
   <p class="sub">橫紋肌肉瘤、尤文氏肉瘤、非四肢(中軸)骨肉瘤共用同一條骨架:誘導化療 → 局部控制 → 鞏固 → (維持)。選一個疾病,週軸與方案表隨之切換。小兒合作組織的劑量搬到成人要先過一次毒性與劑量強度檢核。</p>
   <div class="meta">
     <span>依據 <b>COG · EpSSG · EURAMOS · NCCN Bone / STS 現行版</b></span>
-    <span>更新 <b>2026-11-09</b></span>
+    <span>更新 <b>2026-11-10</b></span>
     <span>範圍 <b>初診斷全身治療與局部控制;復發另列</b></span>
   </div>
 </header>
@@ -298,10 +298,10 @@ const DATA = {
       {c:'ind', col:'1/13', k:'誘導 · wk 1–12', n:'VAC → VI → VAC → VI', d:'vincristine 每週;第 12 週評估反應'},
       {c:'loc', col:'13/19', k:'wk 13 起', n:'放射治療', d:'36 / 41.4 / 50.4 Gy;>5 cm 肉眼殘留 59.4 Gy;化療續行'},
       {c:'con', col:'19/43', k:'鞏固 · 至 wk 42', n:'VAC/VI 續行至 14 循環', d:'第二次評估 wk 24;殘留病灶可考慮延遲切除'},
-      {c:'mnt', col:'43/67', k:'維持(歐洲 RMS2005)', n:'Vinorelbine + 口服低劑量 cyclophosphamide × 6 個月', d:'高風險(歐洲定義)完全緩解者;5 年 OS 86.5% vs 73.7%'}
+      {c:'mnt', col:'43/67', k:'維持 · wk 43–66', n:'Vinorelbine + 口服低劑量 cyclophosphamide × 6 個月', d:'RMS2005(歐洲高風險完全緩解者)5 年 OS 86.5% vs 73.7%;COG 中風險自 ARST1431 起亦全部接維持'}
     ],
     ticks: [[1,'wk 0'],[13,'12','loc'],[25,'24'],[37,'36'],[43,'42'],[55,'54'],[67,'66','end']],
-    note: '低風險:VA 或 VAC 約 22 週,cyclophosphamide 減量或省略(5 年 EFS 約 90%)。高風險(轉移):VAC/VI 骨架加 temsirolimus(ARST1431)為陰性,骨架不變。放療起始週與劑量依所用 protocol 版本,此處為 COG 現行數字。成人多形性 RMS 不走小兒方案,比照高惡性度軟組織肉瘤以 anthracycline 為主。',
+    note: '低風險:VA 或 VAC 約 22 週,cyclophosphamide 減量或省略(5 年 EFS 約 90%)。中風險(COG):VAC/VI 骨架加 temsirolimus(ARST1431)為陰性,骨架不變;ARST1431 兩臂在 42 週後都接 6 個月 vinorelbine + 口服 cyclophosphamide 維持,維持治療已納入 COG 中風險骨幹。轉移型預後仍差,目前沒有方案證實改善。放療起始週與劑量依所用 protocol 版本,此處為 COG 現行數字。成人多形性 RMS 不走小兒方案,比照高惡性度軟組織肉瘤以 anthracycline 為主。',
     reg: [
       {blk:'VAC', rows:[
         ['Vincristine','1.5 mg/m²(上限 2 mg)','每週 × 誘導期,之後 d1','神經毒性累積;與 azole 交互作用'],
@@ -315,7 +315,9 @@ const DATA = {
         ['Cyclophosphamide 口服','25 mg/m²/d','每日連續','低劑量節拍式']]},
       {blk:'復發', cls:'g', rows:[
         ['Vincristine + Irinotecan + Temozolomide','1.5 · 50 × 5 · 100 × 5 mg/m²','q3w','VIT;隨機二期 ORR 約 4 成餘(數字以原文為準)'],
-        ['Cyclophosphamide + Topotecan','依 protocol','—','既有救援組合']]}
+        ['Vinorelbine + 口服 Cyclophosphamide','25 mg/m² d1,8,15 · 25 mg/m²/d','q4w','既有救援組合;ARST0921 加 temsirolimus 的隨機二期見證據表'],
+        ['Cyclophosphamide + Topotecan','依 protocol','—','既有救援組合'],
+        ['VI + Regorafenib','—','—','FaR-RMS CT3 復發隨機(VIrR vs VIrT)2025-08-01 因跨越無效邊界關閉收案;regorafenib 不是復發 RMS 的方向']]}
     ]
   },
   os: {
@@ -355,7 +357,8 @@ const EV = [
   ['RMS2005','31562043','Bisogno G, Lancet Oncol 2019。維持治療 vinorelbine + 口服 cyclophosphamide,5 年 OS 86.5% vs 73.7%。'],
   ['ARST0531','30091945','Hawkins DS, JCO 2018。VAC/VI 與 VAC 相當,血液毒性較低;兩臂 cyclophosphamide 皆 1.2 g/m²。'],
   ['ARST1431','38936378','Gupta AA, Lancet Oncol 2024。VAC/VI 加 temsirolimus 陰性(3 年 EFS 64.8% vs 66.8%),毒性較高。'],
-  ['FaR-RMS','38473359','Chisholm J, Cancers 2024。現行國際多臂多階段平台試驗,全年齡。'],
+  ['ARST0921','31513481','Mascarenhas L, JCO 2019。首次復發:vinorelbine + 口服 cyclophosphamide 加 temsirolimus vs 加 bevacizumab,6 個月 EFS 69.1% vs 54.6%,temsirolimus 勝出。'],
+  ['FaR-RMS','38473359','Chisholm J, Cancers 2024。現行國際多臂多階段平台試驗,全年齡;復發隨機 CT3(VI+regorafenib vs VI+temozolomide)2025-08-01 跨越無效邊界關閉。'],
   ['EURAMOS-1','27569442','Marina N, Lancet Oncol 2016(壞死率差者加 IE 無 EFS 益處);Bielack SS, JCO 2015 · PMID 26033801(IFN-α 維持無益)。MAP 仍是標準。'],
   ['EURO-B.O.S.S.','29218692','Ferrari S, Tumori 2018。41–65 歲骨肉瘤;未用 methotrexate 者預後較差。'],
   ['CABONE','32078813','Italiano A, Lancet Oncol 2020。Cabozantinib:骨肉瘤臂 ORR 12%、6 個月無惡化 33%;Ewing 臂 ORR 26%。'],
