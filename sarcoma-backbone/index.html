@@ -1,0 +1,410 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>骨與軟組織肉瘤 治療骨架</title>
+<meta name="description" content="橫紋肌肉瘤、尤文氏肉瘤、非四肢骨肉瘤的全身治療與局部控制骨架:一條週軸作主角,三病切換;AYA/成人血液腫瘤科教學速查。">
+<!--
+  設計鎖定(去 AI 味規範 階段一)
+  情境:腫瘤會議或床邊,主治醫師要在幾秒內看到「這個病、這個風險組」的治療骨架,再往下查劑量與出處。
+  隱喻:合作組織試驗的 treatment schema(roadmap)— 一條橫向週軸:誘導 → 局部控制 → 鞏固 → (維持)。
+  唯一主角:該週軸。三病是同一骨架上的切換鈕,不是三張等權卡。
+  強調色:platinum 一種;rust 只給「局部控制」事件;amber 只給「維持」。其餘灰階與細線分層。
+  設計稿:Claude Design canvas(2026-11-09)— 桌面/手機/比較/展開列四張版。
+  事實:fact-dr 查證 16 PMID(Europe PMC EXT_ID 往返),YELLOW 項目保留 hedge。
+-->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=Noto+Sans+TC:wght@400;500;700&family=Noto+Serif+TC:wght@600;900&display=swap">
+<style>
+:root{
+  --ink:#0C1F26; --ink-soft:#4A6068; --paper:#EDF1F1; --surface:#FFFFFF;
+  --rule:#C9D5D6; --rule-soft:#E4EAEA; --control:#F7FAFA;
+  --platinum:#0E6E75; --platinum-bg:#EAF3F3;
+  --resist:#9A4B22; --amber:#8A6D00; --amber-bg:#F6F2E4; --marker:#5A4A86;
+  --serif:"Noto Serif TC",Georgia,serif;
+  --sans:"Noto Sans TC","Helvetica Neue",Arial,sans-serif;
+  --mono:"IBM Plex Mono",monospace;
+  --radius:4px;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --ink:#E6ECEC; --ink-soft:#A3B3B6; --paper:#141A1C; --surface:#1C2427;
+    --rule:#3A4A4E; --rule-soft:#2A3639; --control:#202A2D;
+    --platinum:#5FB3B8; --platinum-bg:#1C3335;
+    --resist:#D08A5E; --amber:#CDB15A; --amber-bg:#2E2A1C; --marker:#A99BD6;
+  }
+}
+:root[data-theme="dark"]{
+  --ink:#E6ECEC; --ink-soft:#A3B3B6; --paper:#141A1C; --surface:#1C2427;
+  --rule:#3A4A4E; --rule-soft:#2A3639; --control:#202A2D;
+  --platinum:#5FB3B8; --platinum-bg:#1C3335;
+  --resist:#D08A5E; --amber:#CDB15A; --amber-bg:#2E2A1C; --marker:#A99BD6;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{-webkit-text-size-adjust:100%}
+body{font-family:var(--sans);line-height:1.65;color:var(--ink);background:var(--paper);font-size:15px;-webkit-font-smoothing:antialiased}
+a{color:var(--platinum)} a:hover{color:var(--ink)}
+.wrap{max-width:1120px;margin:0 auto;padding:0 24px 72px}
+@media (max-width:600px){.wrap{padding:0 16px 56px}}
+
+/* masthead */
+.masthead{padding:44px 0 22px;border-bottom:2px solid var(--ink);display:flex;flex-direction:column;gap:12px}
+.eyebrow{font-family:var(--mono);font-size:11px;letter-spacing:.22em;text-transform:uppercase;color:var(--platinum)}
+.masthead h1{font-family:var(--serif);font-weight:900;font-size:clamp(30px,4.6vw,44px);line-height:1.14;letter-spacing:-.01em;text-wrap:balance}
+.masthead .sub{max-width:66ch;color:var(--ink-soft);font-size:15px}
+.meta{display:flex;flex-wrap:wrap;gap:8px 26px;font-family:var(--mono);font-size:12px;color:var(--ink-soft)}
+.meta b{color:var(--ink);font-weight:500}
+@media (max-width:600px){.masthead{padding:28px 0 16px}.masthead .sub{font-size:13.5px}}
+
+/* the one control */
+.switch{display:flex;flex-wrap:wrap;align-items:flex-end;gap:8px;padding:22px 0 0}
+.switch button{font-family:var(--sans);text-align:left;cursor:pointer;min-width:180px;min-height:56px;padding:10px 16px 12px;border-radius:3px;border:1px solid var(--rule);background:var(--control);color:var(--ink-soft);transition:border-color .12s}
+.switch button:hover{border-color:var(--ink-soft)}
+.switch button .k{display:block;font-family:var(--mono);font-size:10.5px;letter-spacing:.12em;text-transform:uppercase;opacity:.8}
+.switch button .n{display:block;font-size:17px;font-weight:700;margin-top:2px}
+.switch button[aria-pressed="true"]{background:var(--ink);border-color:var(--ink);color:var(--paper);cursor:default}
+.switch .showing{margin:0 0 6px auto;font-family:var(--mono);font-size:12px;color:var(--ink-soft)}
+.switch .showing b{color:var(--ink);font-weight:500}
+@media (max-width:600px){
+  .switch{flex-direction:column;align-items:stretch;padding-top:16px;gap:6px}
+  .switch button{min-width:0;min-height:48px;display:flex;justify-content:space-between;align-items:center;padding:10px 14px}
+  .switch button .n{margin:0;font-size:16px} .switch .showing{margin:6px 0 0}
+}
+
+/* protagonist: week axis */
+.tl{padding:30px 0 6px;display:flex;flex-direction:column;gap:14px}
+.tl .head{display:flex;flex-wrap:wrap;align-items:baseline;gap:6px 18px}
+.tl h2{font-family:var(--serif);font-weight:600;font-size:24px;line-height:1.3}
+.tl .anchor{font-family:var(--mono);font-size:12px;color:var(--platinum);font-weight:600}
+.axis{background:var(--surface);border:1px solid var(--rule);border-radius:var(--radius);padding:22px 24px 18px;overflow-x:auto}
+.axis .inner{min-width:720px;display:flex;flex-direction:column;gap:8px}
+.bars{display:grid;gap:4px 0;align-items:stretch}
+.bar{border-radius:3px;padding:12px 14px;display:flex;flex-direction:column;justify-content:center;min-height:92px}
+.bar .k{font-family:var(--mono);font-size:10.5px;letter-spacing:.12em;text-transform:uppercase;opacity:.85}
+.bar .n{font-size:20px;font-weight:700;line-height:1.2;margin-top:2px}
+.bar .d{font-size:12.5px;margin-top:4px;opacity:.92}
+.bar.ind{background:var(--platinum);color:#fff}
+.bar.loc{background:var(--resist);color:#fff;text-align:center;padding:12px 6px}
+.bar.loc .n{font-size:14px;white-space:nowrap}.bar.loc .d{font-size:11.5px}
+.bar.con{background:var(--platinum-bg);color:var(--ink);border:1px solid var(--platinum)}
+.bar.con .k{color:var(--platinum);opacity:1}.bar.con .d{color:var(--ink-soft);opacity:1}
+.bar.mnt{background:var(--amber-bg);color:var(--ink);border:1px dashed var(--amber)}
+.bar.mnt .k{color:var(--amber);opacity:1}.bar.mnt .n{font-size:16px}.bar.mnt .d{color:var(--ink-soft);opacity:1}
+.ticks{display:grid;font-family:var(--mono);font-size:11px;color:var(--ink-soft);border-top:1px solid var(--rule);padding-top:6px}
+.ticks span.loc{color:var(--resist);font-weight:600}
+.ticks span.end{text-align:right}
+.tl .note{font-size:13px;color:var(--ink-soft)}
+@media (max-width:600px){
+  .tl{padding-top:24px;gap:10px}.tl h2{font-size:20px}
+  .axis{padding:16px 14px}
+  /* phone: axis turns vertical */
+  .axis .inner{min-width:0}
+  .bars{display:flex;flex-direction:column;gap:6px}
+  .bar{min-height:80px}.bar .n{font-size:18px}.bar.loc{text-align:left;padding:12px 14px}.bar.loc .n{font-size:16px;white-space:normal}
+  .ticks{display:none}
+}
+
+/* regimen tables */
+.sec{padding:26px 0 0;display:flex;flex-direction:column;gap:10px}
+.sec h3{font-family:var(--mono);font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--ink);font-weight:600;border-bottom:1px solid var(--rule);padding-bottom:6px}
+.tscroll{overflow-x:auto}
+table{width:100%;border-collapse:collapse;font-size:14px;min-width:720px}
+thead tr{font-family:var(--mono);font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-soft);text-align:left}
+th{padding:6px 10px 8px 0;font-weight:500}
+td{padding:10px 10px 10px 0;vertical-align:top;border-top:1px solid var(--rule-soft)}
+td:last-child,th:last-child{padding-right:0}
+tr.grp td{border-top:1px solid var(--rule)}
+td.blk{font-weight:700;color:var(--platinum);white-space:nowrap}
+td.blk.m{color:var(--amber)} td.blk.g{color:var(--ink-soft)}
+td.drug{font-weight:500}
+td.dose{font-family:var(--mono);font-size:13.5px}
+td.n{color:var(--ink-soft)}
+/* phone: definition-list layout */
+@media (max-width:600px){
+  table{min-width:0}
+  thead{display:none}
+  tr{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:2px 12px;padding:8px 0;border-top:1px solid var(--rule-soft)}
+  tr.grp{border-top:1px solid var(--rule)}
+  td{display:block;padding:0;border:0}
+  td.blk{grid-column:1/3;font-size:11px;font-family:var(--mono);letter-spacing:.08em;text-transform:uppercase}
+  td.dose{text-align:right;font-size:13px}
+  td.sch{grid-column:1/3;font-size:12.5px;color:var(--ink-soft)}
+  td.n{grid-column:1/3;font-size:12.5px}
+  td.n:empty{display:none}
+}
+
+/* shared lower: thin-rule columns */
+.cols{padding:34px 0 0;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:32px}
+.cols .c{display:flex;flex-direction:column;gap:8px}
+.cols h3{font-family:var(--mono);font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--ink);font-weight:600;border-bottom:1px solid var(--rule);padding-bottom:6px}
+.cols p{font-size:14px}.cols p.s{font-size:13px;color:var(--ink-soft)}
+@media (max-width:760px){.cols{grid-template-columns:1fr;gap:22px;padding-top:24px}}
+
+/* evidence */
+.ev{padding:34px 0 0;display:flex;flex-direction:column;gap:8px}
+.ev h3{font-family:var(--mono);font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--ink);font-weight:600;border-bottom:1px solid var(--rule);padding-bottom:6px}
+.ev ul{list-style:none;display:flex;flex-direction:column}
+.ev li{display:grid;grid-template-columns:132px minmax(0,1fr);gap:16px;padding:9px 0;border-bottom:1px solid var(--rule-soft);font-size:14px}
+.ev li .t{font-family:var(--mono);font-size:12px;color:var(--platinum);font-weight:600}
+.ev li .pm{font-family:var(--mono);font-size:11.5px;color:var(--ink-soft);white-space:nowrap}
+.ev li .pm a{color:inherit;text-decoration:none;border-bottom:1px dotted var(--rule)}
+.ev li .pm a:hover{color:var(--platinum)}
+@media (max-width:600px){.ev li{grid-template-columns:1fr;gap:2px}}
+
+/* compare */
+.cmp{padding:34px 0 0;display:flex;flex-direction:column;gap:12px}
+.cmp h3{font-family:var(--mono);font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--ink);font-weight:600;border-bottom:1px solid var(--rule);padding-bottom:6px}
+.cmp .lede{font-size:13.5px;color:var(--ink-soft)}
+.cmp .box{background:var(--surface);border:1px solid var(--rule);border-radius:var(--radius);padding:18px 22px 14px;overflow-x:auto}
+.cmp .g{min-width:760px;display:grid;grid-template-columns:150px minmax(0,1fr);gap:12px 18px;align-items:stretch}
+.cmp .lab{display:flex;flex-direction:column;justify-content:center;gap:2px;cursor:pointer}
+.cmp .lab:hover .nm{color:var(--platinum)}
+.cmp .lab .nm{font-size:16px;font-weight:700}
+.cmp .lab .mn{font-family:var(--mono);font-size:11px;color:var(--ink-soft)}
+.cmp .row{display:grid;grid-template-columns:repeat(66,minmax(0,1fr));gap:0 2px}
+.cmp .row > span{border-radius:3px;padding:8px 10px;font-size:13px;font-weight:600;display:flex;align-items:center;min-height:36px}
+.cmp .row .ind{background:var(--platinum);color:#fff}
+.cmp .row .loc{background:var(--resist);color:#fff;padding:8px 6px;font-size:12px}
+.cmp .row .con{background:var(--platinum-bg);border:1px solid var(--platinum)}
+.cmp .row .mnt{background:var(--amber-bg);border:1px dashed var(--amber)}
+.cmp .ax{display:grid;grid-template-columns:repeat(66,minmax(0,1fr));font-family:var(--mono);font-size:11px;color:var(--ink-soft);border-top:1px solid var(--rule);padding-top:6px}
+.cmp .ax .loc{color:var(--resist);font-weight:600}
+
+/* footer */
+footer{padding:30px 0 0;margin-top:34px;border-top:2px solid var(--ink);display:flex;flex-wrap:wrap;gap:8px 26px;font-family:var(--mono);font-size:12px;color:var(--ink-soft)}
+footer .warn{color:var(--resist)}
+.hidden{display:none !important}
+@media print{
+  body{background:#fff}.switch button{display:none}.switch button[aria-pressed="true"]{display:block}
+  .axis,.cmp .box{overflow:visible;border-color:#999}.hidden{display:none !important}
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header class="masthead">
+  <p class="eyebrow">onco-tools · 疾病治療決策速查 · AYA / 成人血液腫瘤科視角</p>
+  <h1>骨與軟組織肉瘤 治療骨架</h1>
+  <p class="sub">橫紋肌肉瘤、尤文氏肉瘤、非四肢(中軸)骨肉瘤共用同一條骨架:誘導化療 → 局部控制 → 鞏固 → (維持)。選一個疾病,週軸與方案表隨之切換。小兒合作組織的劑量搬到成人要先過一次毒性與劑量強度檢核。</p>
+  <div class="meta">
+    <span>依據 <b>COG · EpSSG · EURAMOS · NCCN Bone / STS 現行版</b></span>
+    <span>更新 <b>2026-11-09</b></span>
+    <span>範圍 <b>初診斷全身治療與局部控制;復發另列</b></span>
+  </div>
+</header>
+
+<nav class="switch" aria-label="選擇疾病" id="switch">
+  <button type="button" data-d="rms" aria-pressed="false"><span class="k">軟組織 · RMS</span><span class="n">橫紋肌肉瘤</span></button>
+  <button type="button" data-d="ewing" aria-pressed="true"><span class="k">骨/軟組織 · Ewing</span><span class="n">尤文氏肉瘤</span></button>
+  <button type="button" data-d="os" aria-pressed="false"><span class="k">骨 · Axial OS</span><span class="n">非四肢骨肉瘤</span></button>
+  <p class="showing">顯示:<b id="showing"></b> · 其他風險組見週軸下方</p>
+</nav>
+
+<section class="tl" id="tl" aria-live="polite">
+  <div class="head"><h2 id="tl-h2"></h2><span class="anchor" id="tl-anchor"></span></div>
+  <div class="axis"><div class="inner">
+    <div class="bars" id="bars"></div>
+    <div class="ticks" id="ticks"></div>
+  </div></div>
+  <p class="note" id="tl-note"></p>
+</section>
+
+<section class="sec" id="reg">
+  <h3>每循環劑量 · 以院內 protocol 為準</h3>
+  <div class="tscroll"><table>
+    <thead><tr><th>區塊</th><th>藥物</th><th>劑量</th><th>日程</th><th>注意</th></tr></thead>
+    <tbody id="regbody"></tbody>
+  </table></div>
+</section>
+
+<section class="cols">
+  <div class="c">
+    <h3>局部控制 · 三病共用的決策點</h3>
+    <p>切得乾淨就開刀;切不乾淨或代價太高才用放療補或取代。時間點固定在誘導化療之後、鞏固之前,這是三個病共同的骨架,也是中軸骨肉瘤最常卡住的一步。</p>
+    <p class="s">Ewing 放療可與化療並行;RMS 放療期間停 dactinomycin;骨肉瘤對光子放療相對不敏感,無法切除者先問質子/碳離子中心(北榮重離子 2023-05 起;長庚林口、高雄質子)。</p>
+  </div>
+  <div class="c">
+    <h3>搬到成人要先檢核</h3>
+    <p>小兒合作組織的劑量假設骨髓與器官儲備充足。成人與 AYA:間隔壓縮的 G-CSF 依從性、HD-MTX 清除、ifosfamide 腎與腦毒性、累積 anthracycline 與心功能、生育力保存,都要在第一循環前談完。</p>
+    <p class="s">年齡本身是 Ewing 與 RMS 的不良預後因子,但多半反映劑量強度打不滿,不是改方案的理由。</p>
+  </div>
+</section>
+
+<section class="cmp" aria-label="三病比較">
+  <h3>比較 · 三病放在同一條週軸</h3>
+  <p class="lede">同一個週刻度。深色=誘導,鏽色=局部控制,淺色=鞏固,虛線=維持。看寬度就看得出 Ewing 的密、RMS 的長、骨肉瘤的短而重。點疾病名可切換上方主軸。</p>
+  <div class="box"><div class="g">
+    <div class="lab" data-d="ewing" role="button" tabindex="0"><span class="nm">尤文氏肉瘤</span><span class="mn">28 週 · 14 循環 q2w</span></div>
+    <div class="row"><span class="ind" style="grid-column:1/13">VDC/IE × 6</span><span class="loc" style="grid-column:13/15" aria-label="局部控制"></span><span class="con" style="grid-column:15/29">VDC/IE × 8</span></div>
+    <div class="lab" data-d="rms" role="button" tabindex="0"><span class="nm">橫紋肌肉瘤</span><span class="mn">42 週 q3w(+24 週維持)</span></div>
+    <div class="row"><span class="ind" style="grid-column:1/13">VAC/VI × 4</span><span class="loc" style="grid-column:13/19">RT</span><span class="con" style="grid-column:19/43">VAC/VI 至 14 循環</span><span class="mnt" style="grid-column:43/67">維持 vinorelbine + 口服 CPM</span></div>
+    <div class="lab" data-d="os" role="button" tabindex="0"><span class="nm">非四肢骨肉瘤</span><span class="mn">29 週 MAP</span></div>
+    <div class="row"><span class="ind" style="grid-column:1/11">MAP × 2</span><span class="loc" style="grid-column:11/13" aria-label="手術"></span><span class="con" style="grid-column:13/30">MAP × 4</span></div>
+    <div></div>
+    <div class="ax"><span style="grid-column:1">wk 0</span><span class="loc" style="grid-column:11/19">10–13 局部控制</span><span style="grid-column:25">24</span><span style="grid-column:37">36</span><span style="grid-column:49">48</span><span style="grid-column:61/67;text-align:right">66</span></div>
+  </div></div>
+</section>
+
+<section class="ev">
+  <h3>關鍵證據 · 全部可追到原文(PMID 經 Europe PMC 往返核實)</h3>
+  <ul id="evlist"></ul>
+</section>
+
+<footer>
+  <span>會過期:劑量與試驗結果(每年對帳 NCCN)</span>
+  <span>穩定:治療骨架與局部控制時間點</span>
+  <span class="warn">教學速查,非處方依據;劑量以院內 protocol 與藥師覆核為準</span>
+</footer>
+
+</div>
+
+<script>
+// ---------- DATA (每病一包;數字出處見 ev 清單;YELLOW 項目保留 hedge 字句) ----------
+const DATA = {
+  ewing: {
+    showing: '局部型 · 標準風險',
+    h2: '局部型 · 間隔壓縮 VDC/IE,14 個循環,每 2 週',
+    anchor: 'AEWS0031 · 5 年 EFS 73% vs 65%(q3w)',
+    weeks: 28,
+    bars: [
+      {c:'ind', col:'1/13', k:'誘導 · 第 1–6 循環', n:'VDC → IE → VDC → IE → VDC → IE', d:'每 2 週一循環;每循環 G-CSF;第 6 循環後重新評估分期'},
+      {c:'loc', col:'13/15', k:'wk 13', n:'局部控制', d:'手術 ± RT'},
+      {c:'con', col:'15/29', k:'鞏固 · 第 7–14 循環', n:'VDC/IE 交替續行;doxorubicin 達累積上限後改 VC', d:'術後 RT(鏡下殘留約 50.4 Gy;無法切除約 55.8 Gy,以 protocol 為準)與化療並行'}
+    ],
+    ticks: [[1,'wk 0'],[5,'4'],[9,'8'],[13,'12','loc'],[17,'16'],[21,'20'],[25,'24'],[28,'28','end']],
+    note: '轉移型:同一骨架,但間隔壓縮未證實改善 EFS;肺轉移在化療結束後加全肺照射(劑量依年齡與 protocol)。Euro Ewing 2012 證實 VDC/IE 優於 VIDE,歐美標準已合流。高風險局部型(反應差或體積 ≥200 mL)busulfan-melphalan 高劑量鞏固有 R2 支持;肺轉移型 R3 則為陰性。',
+    reg: [
+      {blk:'VDC', rows:[
+        ['Vincristine','2 mg/m²(上限 2 mg)','d1','周邊神經病變;便祕'],
+        ['Doxorubicin','75 mg/m²(37.5 × 2)','d1–2','累積上限依 protocol(常見 375 mg/m²);dexrazoxane 依院規'],
+        ['Cyclophosphamide','1,200 mg/m²','d1 + mesna','出血性膀胱炎預防']]},
+      {blk:'IE', rows:[
+        ['Ifosfamide','1,800 mg/m²/d × 5(9 g/m²)','d1–5 + mesna','腎小管病變、腦病變;與 cyclophosphamide 非 1:1 換算(等骨髓毒性約 9 g ≈ 2.1 g/m²)'],
+        ['Etoposide','100 mg/m²/d × 5(500 mg/m²)','d1–5','次發性白血病風險']]},
+      {blk:'復發', cls:'g', rows:[
+        ['高劑量 ifosfamide','依 rEECur 臂別','—','rEECur 四臂隨機中勝出(ASCO 2022 口頭報告;全文發表狀態待查)'],
+        ['Irinotecan + Temozolomide','50 mg/m² d1–5 · 100 mg/m² d1–5','q3w','rEECur 臂別之一;門診可行'],
+        ['Topotecan + Cyclophosphamide','依 protocol','—','rEECur 臂別之一']]}
+    ]
+  },
+  rms: {
+    showing: '中風險 · 局部病灶',
+    h2: '中風險 · VAC/VI 交替 14 循環,每 3 週;歐洲 IVA 9 循環 + 維持',
+    anchor: '風險分組依 FOXO1 融合狀態,不再依組織型',
+    weeks: 67,
+    bars: [
+      {c:'ind', col:'1/13', k:'誘導 · wk 1–12', n:'VAC → VI → VAC → VI', d:'vincristine 每週;第 12 週評估反應'},
+      {c:'loc', col:'13/19', k:'wk 13 起', n:'放射治療', d:'36 / 41.4 / 50.4 Gy;>5 cm 肉眼殘留 59.4 Gy;化療續行'},
+      {c:'con', col:'19/43', k:'鞏固 · 至 wk 42', n:'VAC/VI 續行至 14 循環', d:'第二次評估 wk 24;殘留病灶可考慮延遲切除'},
+      {c:'mnt', col:'43/67', k:'維持(歐洲 RMS2005)', n:'Vinorelbine + 口服低劑量 cyclophosphamide × 6 個月', d:'高風險(歐洲定義)完全緩解者;5 年 OS 86.5% vs 73.7%'}
+    ],
+    ticks: [[1,'wk 0'],[13,'12','loc'],[25,'24'],[37,'36'],[43,'42'],[55,'54'],[67,'66','end']],
+    note: '低風險:VA 或 VAC 約 22 週,cyclophosphamide 減量或省略(5 年 EFS 約 90%)。高風險(轉移):VAC/VI 骨架加 temsirolimus(ARST1431)為陰性,骨架不變。放療起始週與劑量依所用 protocol 版本,此處為 COG 現行數字。成人多形性 RMS 不走小兒方案,比照高惡性度軟組織肉瘤以 anthracycline 為主。',
+    reg: [
+      {blk:'VAC', rows:[
+        ['Vincristine','1.5 mg/m²(上限 2 mg)','每週 × 誘導期,之後 d1','神經毒性累積;與 azole 交互作用'],
+        ['Dactinomycin','0.045 mg/kg(上限 2.5 mg)','d1','肝竇阻塞症候群;RT 期間停用'],
+        ['Cyclophosphamide','1,200 mg/m²','d1 + mesna','ARST0531 兩臂皆此劑量;生育力保存先談']]},
+      {blk:'VI', rows:[
+        ['Vincristine','1.5 mg/m²','d1',''],
+        ['Irinotecan','50 mg/m²/d × 5','d1–5','腹瀉:loperamide 早給;cefixime 預防依院規']]},
+      {blk:'維持', cls:'m', rows:[
+        ['Vinorelbine','25 mg/m²','d1, 8, 15 每 4 週','RMS2005;共 6 循環'],
+        ['Cyclophosphamide 口服','25 mg/m²/d','每日連續','低劑量節拍式']]},
+      {blk:'復發', cls:'g', rows:[
+        ['Vincristine + Irinotecan + Temozolomide','1.5 · 50 × 5 · 100 × 5 mg/m²','q3w','VIT;隨機二期 ORR 約 4 成餘(數字以原文為準)'],
+        ['Cyclophosphamide + Topotecan','依 protocol','—','既有救援組合']]}
+    ]
+  },
+  os: {
+    showing: '可切除為目標 · 高惡性度',
+    h2: 'MAP 29 週;差別不在化療,在局部控制做不做得到',
+    anchor: 'EURAMOS-1:反應差者加 IE 無益;IFN-α 維持無益',
+    weeks: 29,
+    bars: [
+      {c:'ind', col:'1/11', k:'術前 · wk 1–10', n:'AP → M M → AP → M M', d:'2 個 MAP 循環;HD-MTX 需 leucovorin 救援與血中濃度監測'},
+      {c:'loc', col:'11/13', k:'wk 11', n:'手術', d:'R0 為目標'},
+      {c:'con', col:'13/30', k:'術後 · 至 wk 29', n:'MAP 續行,不因壞死率改方案', d:'無法切除或 R1:高劑量 RT(光子效果有限;質子/碳離子為選項)'}
+    ],
+    ticks: [[1,'wk 0'],[5,'4'],[11,'10','loc'],[17,'16'],[23,'22'],[29,'29','end']],
+    note: '中軸部位的特性:骨盆 R0 切除率低、5 年存活約 2–4 成(回溯系列,轉移或未切除者更差);顱顏骨肉瘤轉移率較低、可切除性較高而整體預後較佳,但軟骨母細胞型並非一律良性,化療效益仍有爭議;脊椎以神經功能與切緣為限。40 歲以上常因毒性省略 HD-MTX,但 EURO-B.O.S.S.(41–65 歲)顯示未用 MTX 者預後較差,能耐受者不宜常規省略。',
+    reg: [
+      {blk:'AP', rows:[
+        ['Doxorubicin','75 mg/m²(37.5 × 2)','d1–2','MAP 全程累積 450 mg/m²;心臟超音波基線與追蹤;dexrazoxane 依院規'],
+        ['Cisplatin','120 mg/m²','d1(或 60 × 2)','聽力、腎功能;水化']]},
+      {blk:'M', rows:[
+        ['Methotrexate 高劑量','12 g/m²(上限 20 g)','4 小時輸注;AP 後第 3、4 週各一次','尿鹼化、leucovorin 救援至濃度 < 0.1 µM;glucarpidase 備援;避開 PPI、NSAID、TMP-SMX']]},
+      {blk:'成人 > 40', cls:'g', rows:[
+        ['AP(省略 MTX)','同上','每 3 週 × 6','臨床常見的妥協,非試驗支持;EURO-B.O.S.S. 中未用 MTX 者預後較差,能耐受者不宜常規省略']]},
+      {blk:'復發', cls:'g', rows:[
+        ['Regorafenib','160 mg/d d1–21 q4w','口服','REGOBONE 骨肉瘤世代;另一隨機二期(JCO 2019)為骨肉瘤專屬;皆未核准'],
+        ['Cabozantinib','60 mg/d','口服連續','CABONE 骨肉瘤臂 ORR 12%、6 個月無惡化 33%;未核准'],
+        ['Gemcitabine + Docetaxel / 高劑量 ifosfamide','依 protocol','—','化療救援選項']]}
+    ]
+  }
+};
+
+const EV = [
+  ['AEWS0031','23091096','Womer RB, JCO 2012。間隔壓縮 q2w vs q3w,5 年 EFS 73% vs 65%,毒性未增;局部控制定在第 13 週。'],
+  ['Euro Ewing 2012','36522207','Brennan B, Lancet 2022。VDC/IE 優於 VIDE(3 年 EFS 69% vs 58%),歐美標準合流。'],
+  ['Euro-EWING99-R1','24982464','Le Deley MC, JCO 2014。鞏固期 VAC vs VAI 3 年 EFS 78.2% vs 75.4%,非劣性未達統計定論。'],
+  ['Euro-EWING99-R2 / R3','30188789','Whelan J, JCO 2018(R2:高風險局部型 BuMel 改善 EFS/OS);Dirksen U, JCO 2019 · PMID 31553693(R3:肺轉移型 BuMel 無益)。'],
+  ['INT-0091','12594313','Grier HE, NEJM 2003。VDC 加 IE 改善非轉移 Ewing 的 EFS。'],
+  ['RMS2005','31562043','Bisogno G, Lancet Oncol 2019。維持治療 vinorelbine + 口服 cyclophosphamide,5 年 OS 86.5% vs 73.7%。'],
+  ['ARST0531','30091945','Hawkins DS, JCO 2018。VAC/VI 與 VAC 相當,血液毒性較低;兩臂 cyclophosphamide 皆 1.2 g/m²。'],
+  ['ARST1431','38936378','Gupta AA, Lancet Oncol 2024。VAC/VI 加 temsirolimus 陰性(3 年 EFS 64.8% vs 66.8%),毒性較高。'],
+  ['FaR-RMS','38473359','Chisholm J, Cancers 2024。現行國際多臂多階段平台試驗,全年齡。'],
+  ['EURAMOS-1','27569442','Marina N, Lancet Oncol 2016(壞死率差者加 IE 無 EFS 益處);Bielack SS, JCO 2015 · PMID 26033801(IFN-α 維持無益)。MAP 仍是標準。'],
+  ['EURO-B.O.S.S.','29218692','Ferrari S, Tumori 2018。41–65 歲骨肉瘤;未用 methotrexate 者預後較差。'],
+  ['CABONE','32078813','Italiano A, Lancet Oncol 2020。Cabozantinib:骨肉瘤臂 ORR 12%、6 個月無惡化 33%;Ewing 臂 ORR 26%。'],
+  ['碳離子 · 中軸','22359113','Matsunobu A, Cancer 2012。無法切除之軀幹骨肉瘤 78 例,中位 70.4 GyE / 16 次;局部復發 26.9%、遠端轉移 52.6%。'],
+  ['復發 Ewing 共識','40251761','Shah C, Cancer 2025。復發/再發 Ewing 的局部與轉移導向治療共識。']
+];
+
+// ---------- RENDER ----------
+const $ = s => document.querySelector(s);
+function esc(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')}
+function render(d){
+  const D = DATA[d];
+  $('#showing').textContent = D.showing;
+  $('#tl-h2').textContent = D.h2;
+  $('#tl-anchor').textContent = D.anchor;
+  $('#tl-note').textContent = D.note;
+  const bars = $('#bars'), ticks = $('#ticks');
+  bars.style.gridTemplateColumns = `repeat(${D.weeks}, minmax(0,1fr))`;
+  ticks.style.gridTemplateColumns = `repeat(${D.weeks}, minmax(0,1fr))`;
+  bars.innerHTML = D.bars.map(b => `<div class="bar ${b.c}" style="grid-column:${b.col}"><span class="k">${esc(b.k)}</span><span class="n">${esc(b.n)}</span><span class="d">${esc(b.d)}</span></div>`).join('');
+  ticks.innerHTML = D.ticks.map(t => `<span style="grid-column:${t[0]}"${t[2]?` class="${t[2]}"`:''}>${esc(t[1])}</span>`).join('');
+  $('#regbody').innerHTML = D.reg.map(g => g.rows.map((r,i) =>
+    `<tr${i===0?' class="grp"':''}>${i===0?`<td class="blk${g.cls?' '+g.cls:''}" rowspan="${g.rows.length}">${esc(g.blk)}</td>`:''}<td class="drug">${esc(r[0])}</td><td class="dose">${esc(r[1])}</td><td class="sch">${esc(r[2])}</td><td class="n">${esc(r[3])}</td></tr>`).join('')).join('');
+  document.querySelectorAll('#switch button').forEach(b => b.setAttribute('aria-pressed', String(b.dataset.d===d)));
+  document.querySelectorAll('.cmp .lab').forEach(l => l.setAttribute('aria-current', l.dataset.d===d ? 'true' : 'false'));
+  try{ history.replaceState(null,'','#'+d) }catch(e){}
+}
+// phone: rowspan breaks the grid layout; re-render blk per row via CSS can't — so duplicate blk into each row when narrow
+function renderResponsive(d){
+  render(d);
+  if (window.matchMedia('(max-width:600px)').matches){
+    const D = DATA[d];
+    $('#regbody').innerHTML = D.reg.map(g => g.rows.map((r,i) =>
+      `<tr${i===0?' class="grp"':''}>${i===0?`<td class="blk${g.cls?' '+g.cls:''}">${esc(g.blk)}</td>`:''}<td class="drug">${esc(r[0])}</td><td class="dose">${esc(r[1])}</td><td class="sch">${esc(r[2])}</td><td class="n">${esc(r[3])}</td></tr>`).join('')).join('');
+  }
+}
+let current = 'ewing';
+const h = (location.hash||'').replace('#','');
+if (DATA[h]) current = h;
+document.querySelectorAll('#switch button').forEach(b => b.addEventListener('click', () => { current=b.dataset.d; renderResponsive(current); }));
+document.querySelectorAll('.cmp .lab').forEach(l => {
+  const go = () => { current=l.dataset.d; renderResponsive(current); $('#tl').scrollIntoView({behavior:'smooth',block:'start'}); };
+  l.addEventListener('click', go);
+  l.addEventListener('keydown', e => { if(e.key==='Enter'||e.key===' '){ e.preventDefault(); go(); } });
+});
+let mq = window.matchMedia('(max-width:600px)').matches;
+window.addEventListener('resize', () => { const m = window.matchMedia('(max-width:600px)').matches; if (m!==mq){ mq=m; renderResponsive(current); } });
+$('#evlist').innerHTML = EV.map(e => `<li><span class="t">${esc(e[0])}</span><span>${esc(e[2])} <span class="pm"><a href="https://europepmc.org/abstract/MED/${e[1]}" target="_blank" rel="noopener">PMID ${e[1]}</a></span></span></li>`).join('');
+renderResponsive(current);
+</script>
+</body>
+</html>
