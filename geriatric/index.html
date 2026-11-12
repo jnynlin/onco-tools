@@ -1,0 +1,999 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Geriatric Oncology Assessment Toolkit</title>
+<style>
+  :root{
+    --bg:#2a2622;
+    --panel:#332e28;
+    --panel2:#3a352e;
+    --text:#e8e0d0;
+    --text-dim:#b5ac9a;
+    --accent:#8fae8f;
+    --accent2:#c9a86a;
+    --warn:#c98a6a;
+    --danger:#c96a6a;
+    --border:#4a4438;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    background:var(--bg);
+    color:var(--text);
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Helvetica,Arial,sans-serif;
+    line-height:1.6;
+  }
+  header{
+    padding:28px 20px 16px;
+    text-align:center;
+    border-bottom:1px solid var(--border);
+  }
+  header h1{
+    margin:0 0 6px;
+    font-size:1.5rem;
+    font-weight:600;
+    color:var(--text);
+  }
+  header p{
+    margin:0;
+    color:var(--text-dim);
+    font-size:0.92rem;
+  }
+  .disclaimer{
+    max-width:900px;
+    margin:16px auto 0;
+    padding:12px 16px;
+    background:#3d3225;
+    border:1px solid #5a4a30;
+    border-radius:8px;
+    color:var(--accent2);
+    font-size:0.85rem;
+  }
+  nav{
+    display:flex;
+    flex-wrap:wrap;
+    justify-content:center;
+    gap:8px;
+    padding:16px 12px;
+    max-width:900px;
+    margin:0 auto;
+  }
+  nav button{
+    background:var(--panel);
+    border:1px solid var(--border);
+    color:var(--text-dim);
+    padding:10px 16px;
+    border-radius:8px;
+    cursor:pointer;
+    font-size:0.9rem;
+    transition:all .15s;
+  }
+  nav button:hover{ color:var(--text); border-color:var(--accent); }
+  nav button.active{
+    background:var(--panel2);
+    color:var(--accent);
+    border-color:var(--accent);
+    font-weight:600;
+  }
+  main{
+    max-width:820px;
+    margin:0 auto;
+    padding:8px 16px 60px;
+  }
+  .tool{ display:none; }
+  .tool.active{ display:block; }
+  .tool-intro{
+    background:var(--panel);
+    border:1px solid var(--border);
+    border-radius:10px;
+    padding:16px 18px;
+    margin-bottom:18px;
+    font-size:0.9rem;
+    color:var(--text-dim);
+  }
+  .tool-intro b{ color:var(--text); }
+  .item{
+    background:var(--panel);
+    border:1px solid var(--border);
+    border-radius:10px;
+    padding:16px 18px;
+    margin-bottom:12px;
+  }
+  .item label.q{
+    display:block;
+    font-weight:600;
+    margin-bottom:10px;
+    color:var(--text);
+    font-size:0.95rem;
+  }
+  .options{ display:flex; flex-direction:column; gap:6px; }
+  .opt{
+    display:flex;
+    align-items:center;
+    gap:10px;
+    padding:8px 10px;
+    border-radius:6px;
+    cursor:pointer;
+    font-size:0.88rem;
+    color:var(--text-dim);
+  }
+  .opt:hover{ background:var(--panel2); }
+  .opt input{ accent-color:var(--accent); }
+  .opt.selected{ background:var(--panel2); color:var(--text); }
+  .grid2{ display:grid; grid-template-columns:1fr 1fr; gap:10px; }
+  input[type=number], select{
+    width:100%;
+    background:var(--panel2);
+    border:1px solid var(--border);
+    color:var(--text);
+    padding:8px 10px;
+    border-radius:6px;
+    font-size:0.9rem;
+  }
+  .result{
+    position:sticky;
+    bottom:0;
+    background:var(--panel2);
+    border:2px solid var(--accent);
+    border-radius:10px;
+    padding:16px 18px;
+    margin-top:18px;
+    text-align:center;
+  }
+  .result .score{
+    font-size:1.8rem;
+    font-weight:700;
+    color:var(--accent);
+  }
+  .result .interp{
+    margin-top:6px;
+    font-size:0.95rem;
+    color:var(--text);
+  }
+  .result .interp.flag{ color:var(--warn); }
+  .result .interp.high{ color:var(--danger); }
+  .footnote{
+    font-size:0.78rem;
+    color:var(--text-dim);
+    margin-top:6px;
+  }
+  .source{
+    text-align:center;
+    font-size:0.75rem;
+    color:var(--text-dim);
+    margin-top:24px;
+    padding-top:12px;
+    border-top:1px solid var(--border);
+  }
+  .source a{ color:var(--accent2); }
+  .cci-group-title{
+    font-size:0.8rem;
+    text-transform:uppercase;
+    letter-spacing:0.03em;
+    color:var(--accent2);
+    margin:14px 0 8px;
+  }
+  .cci-group-title:first-child{ margin-top:0; }
+  .subresult{
+    background:var(--panel);
+    border:1px solid var(--border);
+    border-radius:8px;
+    padding:10px 14px;
+    margin-bottom:12px;
+    font-size:0.85rem;
+    color:var(--text-dim);
+  }
+  .subresult b{ color:var(--accent); }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>Geriatric Oncology Assessment Toolkit</h1>
+  <p>G8 screening &middot; CARG chemotherapy toxicity &middot; Lee 4-year mortality index &middot; Fried frailty phenotype</p>
+</header>
+
+<div class="disclaimer">
+  Educational / screening aid only. Not a substitute for clinical judgment, a full Comprehensive Geriatric Assessment, or oncologist decision-making. Scoring criteria transcribed from original published sources (cited at the bottom of each tool) — verify against the source before clinical use. 老年腫瘤評估工具箱：G8 篩檢、CARG 化療毒性、Lee 四年死亡指數、Fried 衰弱表型、Charlson 共病、MNA-SF 營養。ASCO 2023 guideline (Dale W et al. J Clin Oncol 2023; PMID 37459573) recommends geriatric assessment for adults ≥65 receiving systemic therapy. Adapted for onco-tools · updated 2026-11-12 (CARG cancer-type scoring corrected; Lee index risk figures aligned to JAMA 2006).
+</div>
+
+<nav>
+  <button class="tab-btn active" data-tool="g8">G8 Screening</button>
+  <button class="tab-btn" data-tool="carg">CARG Toxicity</button>
+  <button class="tab-btn" data-tool="lee">Lee Index</button>
+  <button class="tab-btn" data-tool="fried">Fried Frailty</button>
+  <button class="tab-btn" data-tool="charlson">Charlson CCI</button>
+  <button class="tab-btn" data-tool="mna">MNA-SF</button>
+</nav>
+
+<main>
+
+<!-- ============ G8 ============ -->
+<section class="tool active" id="tool-g8">
+  <div class="tool-intro">
+    <b>G8 Geriatric Screening Tool</b> — 8-item screen to decide who needs a full Comprehensive Geriatric Assessment (CGA) before cancer treatment. Score range 0&ndash;17. <b>Score &le;14</b> suggests the patient would benefit from a full CGA.
+  </div>
+
+  <div class="item" data-item="g8a">
+    <label class="q">A. Has food intake declined over the past 3 months due to loss of appetite, digestive problems, or chewing/swallowing difficulties?</label>
+    <div class="options">
+      <label class="opt"><input type="radio" name="g8a" value="0"> Severe decrease in food intake (0)</label>
+      <label class="opt"><input type="radio" name="g8a" value="1"> Moderate decrease in food intake (1)</label>
+      <label class="opt"><input type="radio" name="g8a" value="2"> No decrease in food intake (2)</label>
+    </div>
+  </div>
+
+  <div class="item" data-item="g8b">
+    <label class="q">B. Weight loss during the last 3 months</label>
+    <div class="options">
+      <label class="opt"><input type="radio" name="g8b" value="0"> Weight loss &gt; 3 kg (0)</label>
+      <label class="opt"><input type="radio" name="g8b" value="1"> Does not know (1)</label>
+      <label class="opt"><input type="radio" name="g8b" value="2"> Weight loss between 1&ndash;3 kg (2)</label>
+      <label class="opt"><input type="radio" name="g8b" value="3"> No weight loss (3)</label>
+    </div>
+  </div>
+
+  <div class="item" data-item="g8c">
+    <label class="q">C. Mobility</label>
+    <div class="options">
+      <label class="opt"><input type="radio" name="g8c" value="0"> Bed or chair bound (0)</label>
+      <label class="opt"><input type="radio" name="g8c" value="1"> Able to get out of bed/chair but does not go out (1)</label>
+      <label class="opt"><input type="radio" name="g8c" value="2"> Goes out (2)</label>
+    </div>
+  </div>
+
+  <div class="item" data-item="g8e">
+    <label class="q">E. Neuropsychological problems</label>
+    <div class="options">
+      <label class="opt"><input type="radio" name="g8e" value="0"> Severe dementia or depression (0)</label>
+      <label class="opt"><input type="radio" name="g8e" value="1"> Mild dementia or depression (1)</label>
+      <label class="opt"><input type="radio" name="g8e" value="2"> No psychological problems (2)</label>
+    </div>
+  </div>
+
+  <div class="item" data-item="g8f">
+    <label class="q">F. Body Mass Index (kg/m&sup2;)</label>
+    <div class="options">
+      <label class="opt"><input type="radio" name="g8f" value="0"> BMI &lt; 19 (0)</label>
+      <label class="opt"><input type="radio" name="g8f" value="1"> BMI 19 to &lt;21 (1)</label>
+      <label class="opt"><input type="radio" name="g8f" value="2"> BMI 21 to &lt;23 (2)</label>
+      <label class="opt"><input type="radio" name="g8f" value="3"> BMI &ge;23 (3)</label>
+    </div>
+  </div>
+
+  <div class="item" data-item="g8h">
+    <label class="q">H. Takes more than 3 prescription medications per day?</label>
+    <div class="options">
+      <label class="opt"><input type="radio" name="g8h" value="0"> Yes (0)</label>
+      <label class="opt"><input type="radio" name="g8h" value="1"> No (1)</label>
+    </div>
+  </div>
+
+  <div class="item" data-item="g8p">
+    <label class="q">P. Compared with other people of the same age, how does the patient consider their health status?</label>
+    <div class="options">
+      <label class="opt"><input type="radio" name="g8p" value="0"> Not as good (0)</label>
+      <label class="opt"><input type="radio" name="g8p" value="0.5"> Does not know (0.5)</label>
+      <label class="opt"><input type="radio" name="g8p" value="1"> As good (1)</label>
+      <label class="opt"><input type="radio" name="g8p" value="2"> Better (2)</label>
+    </div>
+  </div>
+
+  <div class="item" data-item="g8age">
+    <label class="q">Age</label>
+    <div class="options">
+      <label class="opt"><input type="radio" name="g8age" value="0"> &gt;85 (0)</label>
+      <label class="opt"><input type="radio" name="g8age" value="1"> 80&ndash;85 (1)</label>
+      <label class="opt"><input type="radio" name="g8age" value="2"> &lt;80 (2)</label>
+    </div>
+  </div>
+
+  <div class="result">
+    <div class="score" id="g8-score">&mdash; / 17</div>
+    <div class="interp" id="g8-interp">Answer all 8 items</div>
+  </div>
+  <div class="source">Bellera CA et al. Screening older cancer patients: first evaluation of the G-8 geriatric screening tool. <i>Ann Oncol</i> 2012;23(8):2166–72 (PMID 22250183). Questionnaire per SIOG official distribution.</div>
+</section>
+
+<!-- ============ CARG ============ -->
+<section class="tool" id="tool-carg">
+  <div class="tool-intro">
+    <b>CARG Chemotherapy Toxicity Tool</b> — predicts risk of grade &ge;3 chemotherapy toxicity in patients &gt;65 starting chemotherapy. Score range 0&ndash;23. <b>0&ndash;5 low risk, 6&ndash;9 medium risk, 10&ndash;19 high risk.</b>
+  </div>
+
+  <div class="item" data-item="cAge">
+    <label class="q">Age</label>
+    <div class="options">
+      <label class="opt"><input type="radio" name="cAge" value="0"> &lt;72 years (0)</label>
+      <label class="opt"><input type="radio" name="cAge" value="2"> &ge;72 years (2)</label>
+    </div>
+  </div>
+
+  <div class="item" data-item="cCancer">
+    <label class="q">Cancer type</label>
+    <div class="options">
+      <label class="opt"><input type="radio" name="cCancer" value="2"> Gastrointestinal or genitourinary (2)</label>
+      <label class="opt"><input type="radio" name="cCancer" value="0"> Other cancer type (0)</label>
+    </div>
+  </div>
+
+  <div class="item" data-item="cDose">
+    <label class="q">Planned chemotherapy dose (first cycle)</label>
+    <div class="options">
+      <label class="opt"><input type="radio" name="cDose" value="0"> Dose-reduced upfront (0)</label>
+      <label class="opt"><input type="radio" name="cDose" value="2"> Standard dose (2)</label>
+    </div>
+  </div>
+
+  <div class="item" data-item="cDrugs">
+    <label class="q">Number of chemotherapy drugs planned</label>
+    <div class="options">
+      <label class="opt"><input type="radio" name="cDrugs" value="0"> One drug (0)</label>
+      <label class="opt"><input type="radio" name="cDrugs" value="2"> More than one drug (2)</label>
+    </div>
+  </div>
+
+  <div class="item" data-item="cHgb">
+    <label class="q">Hemoglobin</label>
+    <div class="options">
+      <label class="opt"><input type="radio" name="cHgb" value="0"> &ge;11 g/dL (male) or &ge;10 g/dL (female) (0)</label>
+      <label class="opt"><input type="radio" name="cHgb" value="3"> &lt;11 g/dL (male) or &lt;10 g/dL (female) (3)</label>
+    </div>
+  </div>
+
+  <div class="item" data-item="cCrCl">
+    <label class="q">Creatinine clearance</label>
+    <div class="options">
+      <label class="opt"><input type="radio" name="cCrCl" value="0"> &ge;34 mL/min (0)</label>
+      <label class="opt"><input type="radio" name="cCrCl" value="3"> &lt;34 mL/min (3)</label>
+    </div>
+  </div>
+
+  <div class="item" data-item="cHearing">
+    <label class="q">Hearing (self-reported, with hearing aid if used)</label>
+    <div class="options">
+      <label class="opt"><input type="radio" name="cHearing" value="0"> Excellent / good (0)</label>
+      <label class="opt"><input type="radio" name="cHearing" value="2"> Fair / poor / totally deaf (2)</label>
+    </div>
+  </div>
+
+  <div class="item" data-item="cFalls">
+    <label class="q">Number of falls in the past 6 months</label>
+    <div class="options">
+      <label class="opt"><input type="radio" name="cFalls" value="0"> None (0)</label>
+      <label class="opt"><input type="radio" name="cFalls" value="3"> One or more (3)</label>
+    </div>
+  </div>
+
+  <div class="item" data-item="cMeds">
+    <label class="q">Needs help taking medications</label>
+    <div class="options">
+      <label class="opt"><input type="radio" name="cMeds" value="0"> No (0)</label>
+      <label class="opt"><input type="radio" name="cMeds" value="1"> Yes (1)</label>
+    </div>
+  </div>
+
+  <div class="item" data-item="cWalk">
+    <label class="q">Walking one block</label>
+    <div class="options">
+      <label class="opt"><input type="radio" name="cWalk" value="0"> Not limited (0)</label>
+      <label class="opt"><input type="radio" name="cWalk" value="2"> Limited (2)</label>
+    </div>
+  </div>
+
+  <div class="item" data-item="cSocial">
+    <label class="q">Social activity limited due to physical or emotional health in past 4 weeks</label>
+    <div class="options">
+      <label class="opt"><input type="radio" name="cSocial" value="0"> Not decreased (0)</label>
+      <label class="opt"><input type="radio" name="cSocial" value="1"> Decreased (1)</label>
+    </div>
+  </div>
+
+  <div class="result">
+    <div class="score" id="carg-score">&mdash; / 23</div>
+    <div class="interp" id="carg-interp">Answer all 11 items</div>
+  </div>
+  <div class="source">Hurria A et al. Predicting chemotherapy toxicity in older adults with cancer: a prospective multicenter study. <i>J Clin Oncol</i> 2011;29(25):3457–65 (PMID 21810685; CARG Toxicity Tool).</div>
+</section>
+
+<!-- ============ Lee Index ============ -->
+<section class="tool" id="tool-lee">
+  <div class="tool-intro">
+    <b>Lee 4-Year Mortality Index</b> — estimates 4-year all-cause mortality risk in community-dwelling adults &ge;50, useful for weighing whether cancer-directed treatment is likely to provide benefit within the patient's expected lifespan (e.g. for indolent cancers / active surveillance decisions).
+  </div>
+
+  <div class="item" data-item="lAge">
+    <label class="q">Age</label>
+    <div class="options">
+      <label class="opt"><input type="radio" name="lAge" value="0"> &lt;60 (0)</label>
+      <label class="opt"><input type="radio" name="lAge" value="1"> 60&ndash;64 (1)</label>
+      <label class="opt"><input type="radio" name="lAge" value="2"> 65&ndash;69 (2)</label>
+      <label class="opt"><input type="radio" name="lAge" value="3"> 70&ndash;74 (3)</label>
+      <label class="opt"><input type="radio" name="lAge" value="4"> 75&ndash;79 (4)</label>
+      <label class="opt"><input type="radio" name="lAge" value="5"> 80&ndash;84 (5)</label>
+      <label class="opt"><input type="radio" name="lAge" value="7"> &ge;85 (7)</label>
+    </div>
+  </div>
+
+  <div class="item" data-item="lSex">
+    <label class="q">Sex</label>
+    <div class="options">
+      <label class="opt"><input type="radio" name="lSex" value="0"> Female (0)</label>
+      <label class="opt"><input type="radio" name="lSex" value="2"> Male (2)</label>
+    </div>
+  </div>
+
+  <div class="item" data-item="lBmi">
+    <label class="q">BMI</label>
+    <div class="options">
+      <label class="opt"><input type="radio" name="lBmi" value="0"> &ge;25 kg/m&sup2; (0)</label>
+      <label class="opt"><input type="radio" name="lBmi" value="1"> &lt;25 kg/m&sup2; (1)</label>
+    </div>
+  </div>
+
+  <div class="item" data-item="lDm">
+    <label class="q">Diabetes mellitus</label>
+    <div class="options">
+      <label class="opt"><input type="radio" name="lDm" value="0"> No (0)</label>
+      <label class="opt"><input type="radio" name="lDm" value="1"> Yes (1)</label>
+    </div>
+  </div>
+
+  <div class="item" data-item="lCa">
+    <label class="q">History of cancer (excluding minor skin cancer)</label>
+    <div class="options">
+      <label class="opt"><input type="radio" name="lCa" value="0"> No (0)</label>
+      <label class="opt"><input type="radio" name="lCa" value="2"> Yes (2)</label>
+    </div>
+  </div>
+
+  <div class="item" data-item="lLung">
+    <label class="q">Chronic lung disease limiting activity</label>
+    <div class="options">
+      <label class="opt"><input type="radio" name="lLung" value="0"> No (0)</label>
+      <label class="opt"><input type="radio" name="lLung" value="2"> Yes (2)</label>
+    </div>
+  </div>
+
+  <div class="item" data-item="lChf">
+    <label class="q">Congestive heart failure</label>
+    <div class="options">
+      <label class="opt"><input type="radio" name="lChf" value="0"> No (0)</label>
+      <label class="opt"><input type="radio" name="lChf" value="2"> Yes (2)</label>
+    </div>
+  </div>
+
+  <div class="item" data-item="lSmoke">
+    <label class="q">Current smoker</label>
+    <div class="options">
+      <label class="opt"><input type="radio" name="lSmoke" value="0"> No (0)</label>
+      <label class="opt"><input type="radio" name="lSmoke" value="2"> Yes (2)</label>
+    </div>
+  </div>
+
+  <div class="item" data-item="lBath">
+    <label class="q">Difficulty bathing/showering without help</label>
+    <div class="options">
+      <label class="opt"><input type="radio" name="lBath" value="0"> No (0)</label>
+      <label class="opt"><input type="radio" name="lBath" value="2"> Yes (2)</label>
+    </div>
+  </div>
+
+  <div class="item" data-item="lMoney">
+    <label class="q">Difficulty managing finances independently (paying bills, tracking expenses)</label>
+    <div class="options">
+      <label class="opt"><input type="radio" name="lMoney" value="0"> No (0)</label>
+      <label class="opt"><input type="radio" name="lMoney" value="2"> Yes (2)</label>
+    </div>
+  </div>
+
+  <div class="item" data-item="lWalk">
+    <label class="q">Difficulty walking several blocks (~500 m)</label>
+    <div class="options">
+      <label class="opt"><input type="radio" name="lWalk" value="0"> No (0)</label>
+      <label class="opt"><input type="radio" name="lWalk" value="2"> Yes (2)</label>
+    </div>
+  </div>
+
+  <div class="item" data-item="lPush">
+    <label class="q">Difficulty pushing or pulling large objects (&gt;5 kg)</label>
+    <div class="options">
+      <label class="opt"><input type="radio" name="lPush" value="0"> No (0)</label>
+      <label class="opt"><input type="radio" name="lPush" value="1"> Yes (1)</label>
+    </div>
+  </div>
+
+  <div class="result">
+    <div class="score" id="lee-score">&mdash; points</div>
+    <div class="interp" id="lee-interp">Answer all 12 items</div>
+  </div>
+  <div class="source">Lee SJ, Lindquist K, Segal MR, Covinsky KE. Development and validation of a prognostic index for 4-year mortality in older adults. <i>JAMA</i> 2006;295(7):801–808 (PMID 16478903).</div>
+</section>
+
+<!-- ============ Fried Frailty ============ -->
+<section class="tool" id="tool-fried">
+  <div class="tool-intro">
+    <b>Fried Frailty Phenotype</b> — 5 criteria; each present = 1 point. <b>0 = robust/non-frail, 1&ndash;2 = pre-frail/vulnerable, &ge;3 = frail.</b> Grip strength and gait speed require physical measurement (dynamometer / timed 4.5 m walk) — enter measured values if available.
+  </div>
+
+  <div class="item" data-item="fWeight">
+    <label class="q">1. Unintentional weight loss</label>
+    <div class="options">
+      <label class="opt"><input type="radio" name="fWeight" value="0"> No unintentional weight loss (0)</label>
+      <label class="opt"><input type="radio" name="fWeight" value="1"> &ge;4.5 kg (10 lb) OR &gt;5% of body weight lost unintentionally in the past year (1)</label>
+    </div>
+  </div>
+
+  <div class="item" data-item="fExhaust">
+    <label class="q">2. Exhaustion — in the past week, did the patient feel this way 3 or more days?</label>
+    <div class="options">
+      <label class="opt"><input type="radio" name="fExhaust" value="0"> Rarely/none (&lt;3 days) for both "everything felt like an effort" and "could not get going" (0)</label>
+      <label class="opt"><input type="radio" name="fExhaust" value="1"> &ge;3 days for either statement (1)</label>
+    </div>
+  </div>
+
+  <div class="item" data-item="fActivity">
+    <label class="q">3. Low physical activity (self-reported weekly energy expenditure)</label>
+    <div class="options">
+      <label class="opt"><input type="radio" name="fActivity" value="0"> Men &ge;383 kcal/week, Women &ge;270 kcal/week (0)</label>
+      <label class="opt"><input type="radio" name="fActivity" value="1"> Men &lt;383 kcal/week, Women &lt;270 kcal/week (1)</label>
+    </div>
+  </div>
+
+  <div class="item">
+    <label class="q">4. Slowness — gait speed (time to walk 4.5 m / 15 ft)</label>
+    <div class="grid2">
+      <div>
+        <label class="footnote">Sex</label>
+        <select id="fGaitSex"><option value="M">Male</option><option value="F">Female</option></select>
+      </div>
+      <div>
+        <label class="footnote">Height (cm)</label>
+        <input type="number" id="fGaitHeight" placeholder="e.g. 165">
+      </div>
+    </div>
+    <div style="margin-top:8px;">
+      <label class="footnote">Time to walk 4.5 m (seconds)</label>
+      <input type="number" id="fGaitTime" placeholder="e.g. 6.5" step="0.1">
+    </div>
+    <div class="footnote" id="fGaitCutoff" style="margin-top:8px;"></div>
+  </div>
+
+  <div class="item">
+    <label class="q">5. Weakness — grip strength (dynamometer, dominant hand, best of 3)</label>
+    <div class="grid2">
+      <div>
+        <label class="footnote">Sex</label>
+        <select id="fGripSex"><option value="M">Male</option><option value="F">Female</option></select>
+      </div>
+      <div>
+        <label class="footnote">BMI (kg/m&sup2;)</label>
+        <input type="number" id="fGripBmi" placeholder="e.g. 24.5" step="0.1">
+      </div>
+    </div>
+    <div style="margin-top:8px;">
+      <label class="footnote">Grip strength (kg)</label>
+      <input type="number" id="fGripValue" placeholder="e.g. 28" step="0.1">
+    </div>
+    <div class="footnote" id="fGripCutoff" style="margin-top:8px;"></div>
+  </div>
+
+  <div class="result">
+    <div class="score" id="fried-score">&mdash; / 5 criteria met</div>
+    <div class="interp" id="fried-interp">Complete all 5 criteria</div>
+  </div>
+  <div class="source">Fried LP et al. Frailty in older adults: evidence for a phenotype. <i>J Gerontol A Biol Sci Med Sci</i> 2001;56(3):M146–56 (PMID 11253156). Grip-strength cutoffs per original cohort tables.</div>
+</section>
+
+<!-- ============ Charlson Comorbidity Index ============ -->
+<section class="tool" id="tool-charlson">
+  <div class="tool-intro">
+    <b>Charlson Comorbidity Index (CCI)</b> — weighted comorbidity score originally developed to predict 1-year mortality; widely used (often age-adjusted, ACCI) to estimate overall comorbidity burden in oncology and geriatric contexts. Check every condition that applies; tiered conditions (diabetes, renal, liver, tumor) are single-select since only the more severe tier counts.
+  </div>
+
+  <div class="item">
+    <div class="cci-group-title">1 point each (check all that apply)</div>
+    <div class="options">
+      <label class="opt"><input type="checkbox" id="cci_mi" data-pts="1"> Myocardial infarction</label>
+      <label class="opt"><input type="checkbox" id="cci_chf" data-pts="1"> Congestive heart failure</label>
+      <label class="opt"><input type="checkbox" id="cci_pvd" data-pts="1"> Peripheral vascular disease</label>
+      <label class="opt"><input type="checkbox" id="cci_cva" data-pts="1"> Cerebrovascular disease (CVA or TIA)</label>
+      <label class="opt"><input type="checkbox" id="cci_dementia" data-pts="1"> Dementia</label>
+      <label class="opt"><input type="checkbox" id="cci_copd" data-pts="1"> Chronic pulmonary disease</label>
+      <label class="opt"><input type="checkbox" id="cci_ctd" data-pts="1"> Connective tissue disease</label>
+      <label class="opt"><input type="checkbox" id="cci_pud" data-pts="1"> Peptic ulcer disease</label>
+    </div>
+
+    <div class="cci-group-title">2 points each (check all that apply)</div>
+    <div class="options">
+      <label class="opt"><input type="checkbox" id="cci_hemi" data-pts="2"> Hemiplegia or paraplegia</label>
+      <label class="opt"><input type="checkbox" id="cci_leuk" data-pts="2"> Leukemia</label>
+      <label class="opt"><input type="checkbox" id="cci_lymph" data-pts="2"> Lymphoma</label>
+    </div>
+
+    <div class="cci-group-title">6 points</div>
+    <div class="options">
+      <label class="opt"><input type="checkbox" id="cci_aids" data-pts="6"> AIDS / HIV</label>
+    </div>
+  </div>
+
+  <div class="item">
+    <div class="cci-group-title">Diabetes mellitus</div>
+    <div class="options">
+      <label class="opt"><input type="radio" name="cciDm" value="0" checked> None (0)</label>
+      <label class="opt"><input type="radio" name="cciDm" value="1"> Uncomplicated (1)</label>
+      <label class="opt"><input type="radio" name="cciDm" value="2"> With end-organ damage (retinopathy, nephropathy, neuropathy) (2)</label>
+    </div>
+
+    <div class="cci-group-title">Renal disease</div>
+    <div class="options">
+      <label class="opt"><input type="radio" name="cciRenal" value="0" checked> None (0)</label>
+      <label class="opt"><input type="radio" name="cciRenal" value="2"> Moderate or severe (2)</label>
+    </div>
+
+    <div class="cci-group-title">Liver disease</div>
+    <div class="options">
+      <label class="opt"><input type="radio" name="cciLiver" value="0" checked> None (0)</label>
+      <label class="opt"><input type="radio" name="cciLiver" value="1"> Mild (1)</label>
+      <label class="opt"><input type="radio" name="cciLiver" value="3"> Moderate or severe (e.g. cirrhosis with ascites) (3)</label>
+    </div>
+
+    <div class="cci-group-title">Solid tumor</div>
+    <div class="options">
+      <label class="opt"><input type="radio" name="cciTumor" value="0" checked> None (0)</label>
+      <label class="opt"><input type="radio" name="cciTumor" value="2"> Localized, non-metastatic (within past 5 years) (2)</label>
+      <label class="opt"><input type="radio" name="cciTumor" value="6"> Metastatic (6)</label>
+    </div>
+  </div>
+
+  <div class="item">
+    <label class="q">Age (for age-adjusted CCI)</label>
+    <div class="options">
+      <label class="opt"><input type="radio" name="cciAge" value="0" checked> &lt;50 (0)</label>
+      <label class="opt"><input type="radio" name="cciAge" value="1"> 50&ndash;59 (1)</label>
+      <label class="opt"><input type="radio" name="cciAge" value="2"> 60&ndash;69 (2)</label>
+      <label class="opt"><input type="radio" name="cciAge" value="3"> 70&ndash;79 (3)</label>
+      <label class="opt"><input type="radio" name="cciAge" value="4"> 80&ndash;89 (4)</label>
+      <label class="opt"><input type="radio" name="cciAge" value="5"> 90&ndash;99 (5)</label>
+    </div>
+  </div>
+
+  <div class="result">
+    <div class="score" id="cci-score">0</div>
+    <div class="interp" id="cci-interp">Unadjusted Charlson Comorbidity Index</div>
+    <div class="footnote" id="cci-age-adjusted"></div>
+  </div>
+  <div class="source">Charlson ME et al. A new method of classifying prognostic comorbidity in longitudinal studies. <i>J Chronic Dis</i> 1987;40(5):373–83 (PMID 3558716). Age adjustment per Charlson et al. 1994 (<i>J Clin Epidemiol</i> 47(11):1245–51; PMID 7722560).</div>
+</section>
+
+<!-- ============ MNA-SF ============ -->
+<section class="tool" id="tool-mna">
+  <div class="tool-intro">
+    <b>Mini Nutritional Assessment &ndash; Short Form (MNA&reg;-SF)</b> &mdash; 6-item screen for malnutrition risk in older adults. Max 14 points. <b>12&ndash;14 normal, 8&ndash;11 at risk of malnutrition, 0&ndash;7 malnourished.</b> Use BMI (F1) when available; only use calf circumference (F2) if BMI cannot be obtained.
+  </div>
+
+  <div class="item" data-item="mnaA">
+    <label class="q">A. Has food intake declined over the past 3 months due to loss of appetite, digestive problems, or chewing/swallowing difficulties?</label>
+    <div class="options">
+      <label class="opt"><input type="radio" name="mnaA" value="0"> Severe decrease in food intake (0)</label>
+      <label class="opt"><input type="radio" name="mnaA" value="1"> Moderate decrease in food intake (1)</label>
+      <label class="opt"><input type="radio" name="mnaA" value="2"> No decrease in food intake (2)</label>
+    </div>
+  </div>
+
+  <div class="item" data-item="mnaB">
+    <label class="q">B. Involuntary weight loss during the last 3 months</label>
+    <div class="options">
+      <label class="opt"><input type="radio" name="mnaB" value="0"> Weight loss greater than 3 kg (0)</label>
+      <label class="opt"><input type="radio" name="mnaB" value="1"> Does not know (1)</label>
+      <label class="opt"><input type="radio" name="mnaB" value="2"> Weight loss between 1 and 3 kg (2)</label>
+      <label class="opt"><input type="radio" name="mnaB" value="3"> No weight loss (3)</label>
+    </div>
+  </div>
+
+  <div class="item" data-item="mnaC">
+    <label class="q">C. Mobility</label>
+    <div class="options">
+      <label class="opt"><input type="radio" name="mnaC" value="0"> Bed or chair bound (0)</label>
+      <label class="opt"><input type="radio" name="mnaC" value="1"> Able to get out of bed/chair but does not go out (1)</label>
+      <label class="opt"><input type="radio" name="mnaC" value="2"> Goes out (2)</label>
+    </div>
+  </div>
+
+  <div class="item" data-item="mnaD">
+    <label class="q">D. Has the patient suffered psychological stress or acute disease in the past 3 months?</label>
+    <div class="options">
+      <label class="opt"><input type="radio" name="mnaD" value="0"> Yes (0)</label>
+      <label class="opt"><input type="radio" name="mnaD" value="2"> No (2)</label>
+    </div>
+  </div>
+
+  <div class="item" data-item="mnaE">
+    <label class="q">E. Neuropsychological problems</label>
+    <div class="options">
+      <label class="opt"><input type="radio" name="mnaE" value="0"> Severe dementia or depression (0)</label>
+      <label class="opt"><input type="radio" name="mnaE" value="1"> Mild dementia (1)</label>
+      <label class="opt"><input type="radio" name="mnaE" value="2"> No psychological problems (2)</label>
+    </div>
+  </div>
+
+  <div class="item" data-item="mnaF">
+    <label class="q">F1. Body Mass Index (kg/m&sup2;) &mdash; use if available</label>
+    <div class="options">
+      <label class="opt"><input type="radio" name="mnaF" value="0"> BMI less than 19 (0)</label>
+      <label class="opt"><input type="radio" name="mnaF" value="1"> BMI 19 to less than 21 (1)</label>
+      <label class="opt"><input type="radio" name="mnaF" value="2"> BMI 21 to less than 23 (2)</label>
+      <label class="opt"><input type="radio" name="mnaF" value="3"> BMI 23 or greater (3)</label>
+      <label class="opt"><input type="radio" name="mnaF" value="cc"> BMI not available &mdash; use calf circumference (F2) instead</label>
+    </div>
+    <div id="mnaF2Wrap" style="display:none; margin-top:10px;">
+      <label class="footnote">F2. Calf circumference (cm)</label>
+      <div class="options">
+        <label class="opt"><input type="radio" name="mnaF2" value="0"> CC less than 31 cm (0)</label>
+        <label class="opt"><input type="radio" name="mnaF2" value="3"> CC 31 cm or greater (3)</label>
+      </div>
+    </div>
+  </div>
+
+  <div class="result">
+    <div class="score" id="mna-score">&mdash; / 14</div>
+    <div class="interp" id="mna-interp">Answer all 6 items</div>
+  </div>
+  <div class="source">Rubenstein LZ et al. Screening for undernutrition in geriatric practice: developing the short-form Mini Nutritional Assessment (MNA-SF). <i>J Gerontol A Biol Sci Med Sci</i> 2001;56(6):M366–72 (PMID 11382797); calf-circumference option per Kaiser MJ et al. J Nutr Health Aging 2009;13(9):782–8 (PMID 19812868). Item text and scoring per official Nestl&eacute; Nutrition Institute MNA&reg;-SF guide.</div>
+</section>
+
+</main>
+
+<script>
+// ---- tab switching ----
+document.querySelectorAll('.tab-btn').forEach(btn=>{
+  btn.addEventListener('click', ()=>{
+    document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
+    document.querySelectorAll('.tool').forEach(t=>t.classList.remove('active'));
+    btn.classList.add('active');
+    document.getElementById('tool-'+btn.dataset.tool).classList.add('active');
+  });
+});
+
+// ---- highlight selected option ----
+document.querySelectorAll('.opt input').forEach(inp=>{
+  inp.addEventListener('change', ()=>{
+    if(inp.type === 'checkbox'){
+      inp.closest('.opt').classList.toggle('selected', inp.checked);
+    } else {
+      const group = document.getElementsByName(inp.name);
+      group.forEach(g=>g.closest('.opt').classList.remove('selected'));
+      inp.closest('.opt').classList.add('selected');
+    }
+    recalcAll();
+  });
+});
+
+function getVal(name){
+  const el = document.querySelector('input[name="'+name+'"]:checked');
+  return el ? parseFloat(el.value) : null;
+}
+
+// ---- G8 ----
+function calcG8(){
+  const names = ['g8a','g8b','g8c','g8e','g8f','g8h','g8p','g8age'];
+  let sum = 0, answered = 0;
+  names.forEach(n=>{ const v = getVal(n); if(v!==null){ sum += v; answered++; } });
+  const scoreEl = document.getElementById('g8-score');
+  const interpEl = document.getElementById('g8-interp');
+  if(answered < names.length){
+    scoreEl.textContent = sum + ' / 17 (partial, ' + answered + '/8 answered)';
+    interpEl.textContent = 'Answer all 8 items';
+    interpEl.className = 'interp';
+    return;
+  }
+  scoreEl.textContent = sum + ' / 17';
+  if(sum <= 14){
+    interpEl.textContent = 'Score ≤14: recommend full Comprehensive Geriatric Assessment (CGA)';
+    interpEl.className = 'interp flag';
+  } else {
+    interpEl.textContent = 'Score >14: no immediate CGA indication by this screen alone';
+    interpEl.className = 'interp';
+  }
+}
+
+// ---- CARG ----
+function calcCARG(){
+  const names = ['cAge','cCancer','cDose','cDrugs','cHgb','cCrCl','cHearing','cFalls','cMeds','cWalk','cSocial'];
+  let sum = 0, answered = 0;
+  names.forEach(n=>{ const v = getVal(n); if(v!==null){ sum += v; answered++; } });
+  const scoreEl = document.getElementById('carg-score');
+  const interpEl = document.getElementById('carg-interp');
+  if(answered < names.length){
+    scoreEl.textContent = sum + ' / 23 (partial, ' + answered + '/11 answered)';
+    interpEl.textContent = 'Answer all 11 items';
+    interpEl.className = 'interp';
+    return;
+  }
+  scoreEl.textContent = sum + ' / 23';
+  if(sum <= 5){
+    interpEl.textContent = 'Low risk (0–5) of grade ≥3 chemotherapy toxicity';
+    interpEl.className = 'interp';
+  } else if(sum <= 9){
+    interpEl.textContent = 'Medium risk (6–9) of grade ≥3 chemotherapy toxicity';
+    interpEl.className = 'interp flag';
+  } else {
+    interpEl.textContent = 'High risk (10–19+) of grade ≥3 chemotherapy toxicity';
+    interpEl.className = 'interp high';
+  }
+}
+
+// ---- Lee Index ----
+function calcLee(){
+  const names = ['lAge','lSex','lBmi','lDm','lCa','lLung','lChf','lSmoke','lBath','lMoney','lWalk','lPush'];
+  let sum = 0, answered = 0;
+  names.forEach(n=>{ const v = getVal(n); if(v!==null){ sum += v; answered++; } });
+  const scoreEl = document.getElementById('lee-score');
+  const interpEl = document.getElementById('lee-interp');
+  if(answered < names.length){
+    scoreEl.textContent = sum + ' points (partial, ' + answered + '/12 answered)';
+    interpEl.textContent = 'Answer all 12 items';
+    interpEl.className = 'interp';
+    return;
+  }
+  scoreEl.textContent = sum + ' points';
+  let risk, cls;
+  if(sum <= 5){ risk = '0–5 points: <4% estimated 4-year mortality — Low risk'; cls='interp'; }
+  else if(sum <= 9){ risk = '6–9 points: ~15% estimated 4-year mortality — Medium risk'; cls='interp flag'; }
+  else if(sum <= 13){ risk = '10–13 points: ~42% estimated 4-year mortality — High risk'; cls='interp high'; }
+  else { risk = '≥14 points: ~64% estimated 4-year mortality — Highest risk'; cls='interp high'; }
+  interpEl.textContent = risk;
+  interpEl.className = cls;
+}
+
+// ---- Fried Frailty ----
+function gaitCutoffSec(sex, heightCm){
+  if(!heightCm) return null;
+  const heightIn = heightCm / 2.54;
+  if(sex === 'M') return heightIn <= 68 ? 7 : 6;
+  return heightIn <= 62.5 ? 7 : 6;
+}
+function gripCutoffKg(sex, bmi){
+  if(!bmi) return null;
+  if(sex === 'M'){
+    if(bmi <= 24) return 29;
+    if(bmi <= 28) return 30;
+    return 32;
+  } else {
+    if(bmi <= 23) return 17;
+    if(bmi <= 26) return 17.3;
+    if(bmi <= 29) return 18;
+    return 21;
+  }
+}
+function calcFried(){
+  const w = getVal('fWeight');
+  const ex = getVal('fExhaust');
+  const act = getVal('fActivity');
+
+  const gaitSex = document.getElementById('fGaitSex').value;
+  const gaitHeight = parseFloat(document.getElementById('fGaitHeight').value);
+  const gaitTime = parseFloat(document.getElementById('fGaitTime').value);
+  const gaitCut = gaitCutoffSec(gaitSex, gaitHeight);
+  const gaitCutEl = document.getElementById('fGaitCutoff');
+  let gaitPositive = null;
+  if(gaitCut){
+    gaitCutEl.textContent = 'Cutoff for this patient: ≤' + gaitCut + ' sec = slow (criterion met)';
+    if(!isNaN(gaitTime)) gaitPositive = gaitTime <= gaitCut ? 1 : 0;
+  } else {
+    gaitCutEl.textContent = 'Enter height to see cutoff';
+  }
+
+  const gripSex = document.getElementById('fGripSex').value;
+  const gripBmi = parseFloat(document.getElementById('fGripBmi').value);
+  const gripValue = parseFloat(document.getElementById('fGripValue').value);
+  const gripCut = gripCutoffKg(gripSex, gripBmi);
+  const gripCutEl = document.getElementById('fGripCutoff');
+  let gripPositive = null;
+  if(gripCut){
+    gripCutEl.textContent = 'Cutoff for this patient: <' + gripCut + ' kg = weak (criterion met)';
+    if(!isNaN(gripValue)) gripPositive = gripValue < gripCut ? 1 : 0;
+  } else {
+    gripCutEl.textContent = 'Enter BMI to see cutoff';
+  }
+
+  const criteria = [w, ex, act, gaitPositive, gripPositive];
+  const answered = criteria.filter(c => c !== null).length;
+  const sum = criteria.reduce((a,c)=> a + (c || 0), 0);
+
+  const scoreEl = document.getElementById('fried-score');
+  const interpEl = document.getElementById('fried-interp');
+  scoreEl.textContent = sum + ' / 5 criteria met' + (answered < 5 ? ' (partial, ' + answered + '/5 assessed)' : '');
+  if(answered < 5){
+    interpEl.textContent = 'Complete all 5 criteria for a full classification';
+    interpEl.className = 'interp';
+    return;
+  }
+  if(sum === 0){ interpEl.textContent = 'Robust / non-frail'; interpEl.className = 'interp'; }
+  else if(sum <= 2){ interpEl.textContent = 'Pre-frail / vulnerable'; interpEl.className = 'interp flag'; }
+  else { interpEl.textContent = 'Frail'; interpEl.className = 'interp high'; }
+}
+
+['fGaitSex','fGaitHeight','fGaitTime','fGripSex','fGripBmi','fGripValue'].forEach(id=>{
+  document.getElementById(id).addEventListener('input', recalcAll);
+  document.getElementById(id).addEventListener('change', recalcAll);
+});
+
+// ---- Charlson Comorbidity Index ----
+const CCI_CHECKBOX_IDS = ['cci_mi','cci_chf','cci_pvd','cci_cva','cci_dementia','cci_copd','cci_ctd','cci_pud','cci_hemi','cci_leuk','cci_lymph','cci_aids'];
+function calcCharlson(){
+  const el = id => document.getElementById(id);
+  if(!el('cci_mi')) return; // section not present yet
+  let sum = 0;
+
+  CCI_CHECKBOX_IDS.forEach(id=>{
+    const cb = el(id);
+    if(cb && cb.checked) sum += parseFloat(cb.dataset.pts);
+  });
+
+  sum += getVal('cciLiver') || 0;
+  sum += getVal('cciDm') || 0;
+  sum += getVal('cciRenal') || 0;
+  sum += getVal('cciTumor') || 0;
+
+  const ageAdj = getVal('cciAge') || 0;
+
+  document.getElementById('cci-score').textContent = sum;
+  document.getElementById('cci-interp').textContent = 'Unadjusted Charlson Comorbidity Index';
+  document.getElementById('cci-age-adjusted').textContent = 'Age-adjusted CCI (adds age points above): ' + (sum + ageAdj);
+}
+
+// ---- MNA-SF ----
+document.querySelectorAll('input[name="mnaF"]').forEach(r=>{
+  r.addEventListener('change', ()=>{
+    document.getElementById('mnaF2Wrap').style.display = (r.value === 'cc' && r.checked) ? 'block' : 'none';
+  });
+});
+function calcMNA(){
+  const items = ['mnaA','mnaB','mnaC','mnaD','mnaE'];
+  let sum = 0, answered = 0;
+  items.forEach(n=>{ const v = getVal(n); if(v!==null){ sum += v; answered++; } });
+
+  const fSel = document.querySelector('input[name="mnaF"]:checked');
+  const scoreEl = document.getElementById('mna-score');
+  const interpEl = document.getElementById('mna-interp');
+
+  let fAnswered = false;
+  if(fSel){
+    if(fSel.value === 'cc'){
+      const f2 = getVal('mnaF2');
+      if(f2 !== null){ sum += f2; fAnswered = true; }
+    } else {
+      sum += parseFloat(fSel.value);
+      fAnswered = true;
+    }
+  }
+  if(fAnswered) answered++;
+
+  if(answered < 6){
+    scoreEl.textContent = sum + ' / 14 (partial, ' + answered + '/6 answered)';
+    interpEl.textContent = 'Answer all 6 items (use F2 only if BMI unavailable)';
+    interpEl.className = 'interp';
+    return;
+  }
+  scoreEl.textContent = sum + ' / 14';
+  if(sum >= 12){ interpEl.textContent = 'Normal nutritional status (12–14)'; interpEl.className = 'interp'; }
+  else if(sum >= 8){ interpEl.textContent = 'At risk of malnutrition (8–11)'; interpEl.className = 'interp flag'; }
+  else { interpEl.textContent = 'Malnourished (0–7)'; interpEl.className = 'interp high'; }
+}
+
+function recalcAll(){
+  calcG8();
+  calcCARG();
+  calcLee();
+  calcFried();
+  calcCharlson();
+  calcMNA();
+}
+recalcAll();
+</script>
+
+</body>
+</html>
